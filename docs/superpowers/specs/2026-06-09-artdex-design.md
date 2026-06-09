@@ -47,10 +47,15 @@ Visit museum
    → app detects location (GPS) and loads that museum's currently-exhibited works
    → user photographs the artwork in front of them
    → AI matches the photo against the small on-site candidate set
-   → artwork is added to the user's Dex (with: timestamp, exhibition/city snapshot, optional selfie)
+   → artwork is added to the user's Dex (with: timestamp, exhibition/city snapshot, optional selfie, optional visit note)
+   → capture celebration: collection animation + sound effect, scaled to rarity (Legendary = bigger payoff)
    → progress updates ("Van Gogh 3/12"), rarity reveal (Common → Legendary)
    → the piece appears as an icon on the user's world map
 ```
+
+> **Capture feel:** the moment of collecting is the product's dopamine hit. It must feel
+> rewarding — a card-reveal animation plus a sound effect, with the intensity scaling to the
+> work's rarity tier (a Legendary capture is a noticeably bigger celebration than a Common one).
 
 - **Primary capture:** photo recognition (the "magic moment").
 - **Fallback capture:** manual search by artist/title when recognition fails.
@@ -107,7 +112,7 @@ manual search.
 - `exhibitions` — id, artwork_id, museum_id, start_date, end_date  *(temporal location of a work)*
 - `users` — id, handle, avatar
 - `collections` — id, user_id, artwork_id, collected_at, museum_id_at_capture,
-  exhibition_snapshot, selfie_url, photo_url
+  exhibition_snapshot, selfie_url, photo_url, note *(user's visit note / memory)*
 - `friendships` (stretch) — user_id, friend_id, status
 
 Key queries:
@@ -124,10 +129,11 @@ Key queries:
 
 ### Must-have (demo spine)
 1. Seeded catalog: ~50 famous works / ~15 artists / ~8 museums, with exhibition records.
-2. Capture flow: photo → Bedrock recognition → add to Dex (+ manual-search fallback).
+2. Capture flow: photo → Bedrock recognition → add to Dex (+ manual-search fallback),
+   with a rarity-scaled capture animation + sound effect.
 3. Location gate: GPS verification; Legendary works require on-site.
 4. Personal Dex: by-artist sets ("Van Gogh 3/12") + rarity tiers.
-5. Selfie upload (S3) + record of where the work was when collected.
+5. Selfie upload (S3) + visit note + record of where the work was when collected.
 6. World map with the user's collected-work icons.
 
 ### Stretch (only if time allows)
@@ -153,8 +159,10 @@ your selfie → "Van Gogh 3/12" progress ticks up.
 
 ## 7. Open Questions / Risks
 
-- **AWS account + Bedrock access:** need an AWS account with Aurora Serverless v2, RDS Data API,
-  S3, and Bedrock (Claude) enabled — confirm availability early; this is the critical path.
+- **AWS account (CRITICAL PATH — first task):** the user does **not** yet have an AWS account.
+  Step 0 of implementation is: create an AWS account, then enable/provision Aurora Serverless v2,
+  RDS Data API, S3, and Bedrock (Claude model access). Bedrock model access can require a request
+  with approval lag, and Aurora provisioning takes time — start this on day one before any code.
 - **GPS in demo:** real on-site GPS can't be shown in a video from a desk — need a dev override
   / mock-location toggle for the demo.
 - **Seed data quality:** artwork images + accurate current-exhibition data must be curated up
