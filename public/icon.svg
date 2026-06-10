@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#09090b"/>
+  <rect x="96" y="76" width="320" height="400" rx="24" fill="none" stroke="#f59e0b" stroke-width="20"/>
+  <rect x="136" y="116" width="240" height="240" rx="8" fill="#18181b"/>
+  <circle cx="196" cy="186" r="28" fill="#fde68a"/>
+  <path d="M136 300 L226 210 L296 280 L336 240 L376 280 L376 356 L136 356 Z" fill="#f59e0b"/>
+  <text x="256" y="448" text-anchor="middle" font-family="system-ui, sans-serif" font-size="64" font-weight="700" fill="#fafafa">ArtDex</text>
+</svg>

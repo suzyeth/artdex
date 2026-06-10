@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🖼️ ArtDex
 
-## Getting Started
+> **Pokémon GO, but you collect the world's masterpieces.**
+> Visit a museum, photograph the artwork in front of you, let AI identify it, and collect it into your personal art Pokédex.
 
-First, run the development server:
+Built solo (vibe-coded with Claude Code) for **[H0 — Hack the Zero Stack](https://h01.devpost.com/)** (Vercel v0 + AWS Databases).
+
+## How it works
+
+1. **GPS finds your museum** — the app detects which museum you're standing in and loads only the works currently on display there.
+2. **Snap the artwork** — Claude vision (AWS Bedrock) matches your photo against that small on-site candidate set, which makes recognition reliable. Manual search is the fallback.
+3. **Collect it** — rarity reveal (Common → Legendary) with a celebration that scales to the tier. **Legendary works can only be collected on-site** — GPS-verified within 150 m, enforced server-side.
+4. **Watch your Dex fill up** — by-artist sets ("Van Gogh 3/9"), by-rarity tiers, and a world map of everywhere your collection has taken you.
+
+### The database is the point
+
+Masterpieces travel between exhibitions, so an artwork's location is **time-bounded** (`exhibitions`), and your collection records **where a work was when you captured it**. Aurora PostgreSQL + PostGIS models this natively: geospatial museum lookups (`ST_Distance`), the location gate (`ST_DWithin` semantics), and temporal candidate filtering — all over the serverless RDS Data API.
+
+## Stack
+
+| Layer | Choice |
+|---|---|
+| App | Next.js 15 (App Router) + React 19 + Tailwind 4, deployed on Vercel |
+| Database | Aurora PostgreSQL Serverless v2 + PostGIS via RDS Data API |
+| Recognition | Claude vision on AWS Bedrock (candidate-set narrowed) |
+| Images | S3 presigned uploads |
+| Auth | Clerk |
+| Map | react-leaflet + OSM |
+| Tests | Vitest |
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm test           # vitest
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Set `NEXT_PUBLIC_MOCK_LOCATION="40.7614,-73.9776"` (MoMA) in `.env.local` to demo the capture flow from a desk. All env keys are documented in `.env.example`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> **Current status:** the full capture → collect → dex → map loop runs on a clearly-marked mock layer (`src/lib/mock/`) while the AWS infrastructure is provisioned. Each mock function maps 1:1 to a real API route. See [TODO.md](TODO.md) for the live checklist and `docs/superpowers/` for the design spec + implementation plan.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project layout
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/lib/domain/      pure, unit-tested logic (rarity, location gate, candidates, progress, recognition)
+src/lib/db/          schema.sql (PostGIS DDL), curated seed catalog (44 works / 18 artists / 10 museums)
+src/lib/mock/        temporary client-side stand-ins for the Phase 5 APIs
+src/app/             capture / dex / map pages + (upcoming) API routes
+src/components/      CaptureCelebration, CollectSheet, DexGrid, WorldMap, …
+test/                vitest suites mirroring src/
+```
