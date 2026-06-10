@@ -32,15 +32,13 @@ export default function DexPage() {
   const totalCollected = MOCK_COLLECTED.size;
 
   return (
-    <main className="min-h-screen bg-zinc-950 px-4 py-8 text-zinc-100 sm:px-8">
-      <header className="mb-8 flex items-end justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">My ArtDex</h1>
-          <p className="mt-1 text-sm text-zinc-400">
-            {totalCollected} / {artworks.length} masterpieces collected
-          </p>
-        </div>
-        <div className="h-2 w-40 overflow-hidden rounded-full bg-zinc-800 sm:w-64">
+    <main className="mx-auto min-h-screen max-w-md px-4 pb-24 pt-6 text-zinc-100">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">My ArtDex</h1>
+        <p className="mt-1 text-sm text-zinc-400">
+          {totalCollected} / {artworks.length} masterpieces collected
+        </p>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-800">
           <div
             className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-300"
             style={{ width: `${(totalCollected / artworks.length) * 100}%` }}
@@ -48,7 +46,7 @@ export default function DexPage() {
         </div>
       </header>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         {sorted.map((artist) => {
           const works = artworks.filter((w) => w.artistId === artist.id);
           const p = progress[artist.id] ?? { collected: 0, total: works.length };
