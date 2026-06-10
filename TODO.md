@@ -40,9 +40,12 @@
 
 - [ ] Phase 3 Clerk：建应用拿 key → Provider / middleware / `requireUserId()`（users upsert 半步等 Aurora）
 - [ ] Phase 9 世界地图：react-leaflet + OSM，先用 mock 收藏 + seedData 坐标（注意 dynamic import 关 SSR）
+- [ ] **mock 收藏升级为完整记录**：CollectSheet 的留言现在被丢弃——localStorage 存 `{artworkId, note, museumId, collectedAt}` 而不只是 id，图鉴详情和地图 popup 都要用
+- [ ] **图鉴 "By Rarity" 标签页**（Task 7.1 要求的双视图，现在只有 By Artist）
 - [ ] 未收集卡片 🔒 → 暗剪影（Pokémon 钩子，竞品调研结论）
 - [ ] 庆祝音效：WebAudio 合成 → `public/sfx/capture-<rarity>.mp3` 真实音效
 - [ ] PWA manifest + 图标（加到主屏幕更像 app）
+- [ ] README 重写（现在还是 create-next-app 默认模板，评委会看仓库）
 
 ## 🔵 收尾（Phase 11）
 
