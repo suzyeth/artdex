@@ -57,9 +57,9 @@ export default function CapturePage() {
     }, 1800);
   }
 
-  function onCollect() {
+  function onCollect(note: string) {
     if (!match || !museum || !coords) return;
-    addCollected(match.id);
+    addCollected({ artworkId: match.id, museumId: museum.id, note });
     setStep("celebrating");
   }
 
