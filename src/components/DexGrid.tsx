@@ -28,14 +28,12 @@ function DexCard({ entry }: { entry: DexEntry }) {
           className={`h-full w-full object-cover transition duration-300 ${
             entry.collected
               ? "group-hover:scale-105"
-              : "brightness-[0.25] grayscale"
+              : "brightness-[0.12] contrast-150 grayscale" // dark silhouette: shape stays teasingly readable
           }`}
         />
       </div>
       {!entry.collected && (
-        <div className="absolute inset-0 flex items-center justify-center text-3xl">
-          🔒
-        </div>
+        <div className="absolute right-1.5 top-1.5 text-sm opacity-70">🔒</div>
       )}
       <div className="space-y-1 p-2">
         <p className="truncate text-xs font-medium text-zinc-100">
