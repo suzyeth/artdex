@@ -1,23 +1,21 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import DexGrid, { type DexEntry } from "@/components/DexGrid";
 import { artists, artworks } from "@/lib/db/seedData";
 import { artistProgress } from "@/lib/domain/progress";
-import type { Rarity } from "@/lib/domain/rarity";
-
-// MOCK: pretend the user has collected these. Replaced by /api/collection in Phase 7.
-const MOCK_COLLECTED = new Set([
-  "starry-night",
-  "sunflowers",
-  "almond-blossom",
-  "mona-lisa",
-  "the-magpie",
-  "girl-pearl-earring",
-  "great-wave",
-  "primavera",
-]);
+// MOCK: localStorage-backed collection until /api/collection lands in Phase 7.
+import { getCollected, STARTER_COLLECTED } from "@/lib/mock/mockCollection";
 
 export default function DexPage() {
+  // render with the starter set first (SSR-safe), then hydrate from localStorage
+  const [collected, setCollected] = useState<Set<string>>(new Set(STARTER_COLLECTED));
+  useEffect(() => {
+    setCollected(getCollected());
+  }, []);
+
   const progress = artistProgress(
-    MOCK_COLLECTED,
+    collected,
     artworks.map((w) => ({ id: w.id, artist_id: w.artistId }))
   );
 
@@ -29,7 +27,7 @@ export default function DexPage() {
     return a.name.localeCompare(b.name);
   });
 
-  const totalCollected = MOCK_COLLECTED.size;
+  const totalCollected = collected.size;
 
   return (
     <main className="mx-auto min-h-screen max-w-md px-4 pb-24 pt-6 text-zinc-100">
@@ -54,9 +52,9 @@ export default function DexPage() {
             id: w.id,
             title: w.title,
             year: w.year,
-            rarity: w.rarity as Rarity,
+            rarity: w.rarity,
             imageUrl: w.imageUrl,
-            collected: MOCK_COLLECTED.has(w.id),
+            collected: collected.has(w.id),
           }));
           return (
             <section key={artist.id}>
