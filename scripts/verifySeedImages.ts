@@ -2,7 +2,7 @@
 // Run: npx tsx scripts/verifySeedImages.ts
 import { artworks } from "../src/lib/db/seedData";
 
-const UA = "ArtDex-seed-verifier/1.0 (hackathon project; contact: mincheng0266@gmail.com)";
+const UA = "ArtDex-seed-verifier/1.0 (hackathon project)";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function head(url: string): Promise<number> {

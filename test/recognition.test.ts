@@ -31,4 +31,11 @@ describe("parseRecognition", () => {
   it("returns null for an id not in the candidate set", () => {
     expect(parseRecognition("water-lilies", validIds)).toBeNull();
   });
+
+  it("never resolves an id that is a substring of the actual answer", () => {
+    const ids = ["starry-night", "starry-night-rhone", "medusa", "raft-medusa"];
+    expect(parseRecognition("starry-night-rhone", ids)).toBe("starry-night-rhone");
+    expect(parseRecognition("The match is raft-medusa.", ids)).toBe("raft-medusa");
+    expect(parseRecognition("starry-night", ids)).toBe("starry-night");
+  });
 });

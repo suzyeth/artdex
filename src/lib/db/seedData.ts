@@ -2,10 +2,10 @@
 // (stable filename-based redirects) with ?width=1000 so the app never downloads
 // the enormous Google Art Project originals.
 
+import type { Rarity } from "../domain/rarity";
+
 const img = (filename: string) =>
   `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=1000`;
-
-export type Rarity = "common" | "rare" | "epic" | "legendary";
 
 export const artists = [
   { id: "vangogh", name: "Vincent van Gogh", era: "1853–1890", movement: "Post-Impressionism" },
@@ -159,7 +159,7 @@ export const artworks: {
 
   // --- Rousseau ---
   { id: "sleeping-gypsy", artistId: "rousseau", title: "The Sleeping Gypsy", year: "1897",
-    rarity: "common", isSignature: true, imageUrl: img("La Bohémienne endormie.jpg") },
+    rarity: "rare", isSignature: true, imageUrl: img("La Bohémienne endormie.jpg") },
 
   // --- Delacroix ---
   { id: "liberty-leading", artistId: "delacroix", title: "Liberty Leading the People", year: "1830",
@@ -186,6 +186,8 @@ export const exhibitions: {
   { id: "ex-wheatfield-crows", artworkId: "wheatfield-crows", museumId: "vangoghmuseum", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-potato-eaters", artworkId: "potato-eaters", museumId: "vangoghmuseum", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-starry-night-rhone", artworkId: "starry-night-rhone", museumId: "orsay", start: "2020-01-01", end: "2030-01-01" },
+  // fictional loan for the demo: the 1889 Irises really lives at the Getty (not in
+  // our museum list); the Met owns a different 1890 "Irises" still life
   { id: "ex-irises", artworkId: "irises", museumId: "met", start: "2026-01-01", end: "2026-12-31" },
   { id: "ex-wheat-field-cypresses", artworkId: "wheat-field-cypresses", museumId: "met", start: "2020-01-01", end: "2030-01-01" },
 
