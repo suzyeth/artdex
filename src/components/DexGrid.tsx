@@ -10,10 +10,17 @@ export type DexEntry = {
   collected: boolean;
 };
 
-function DexCard({ entry }: { entry: DexEntry }) {
+function DexCard({ entry, onSelect }: { entry: DexEntry; onSelect?: (id: string) => void }) {
+  const clickable = entry.collected && !!onSelect;
   return (
     <div
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onClick={clickable ? () => onSelect!(entry.id) : undefined}
+      onKeyDown={clickable ? (e) => e.key === "Enter" && onSelect!(entry.id) : undefined}
       className={`group relative overflow-hidden rounded-xl border bg-zinc-900 transition-transform hover:-translate-y-1 ${
+        clickable ? "cursor-pointer" : ""
+      } ${
         entry.rarity === "legendary" && entry.collected
           ? "border-amber-400/60"
           : "border-zinc-800"
@@ -48,11 +55,17 @@ function DexCard({ entry }: { entry: DexEntry }) {
   );
 }
 
-export default function DexGrid({ entries }: { entries: DexEntry[] }) {
+export default function DexGrid({
+  entries,
+  onSelect,
+}: {
+  entries: DexEntry[];
+  onSelect?: (id: string) => void;
+}) {
   return (
     <div className="grid grid-cols-3 gap-2">
       {entries.map((e) => (
-        <DexCard key={e.id} entry={e} />
+        <DexCard key={e.id} entry={e} onSelect={onSelect} />
       ))}
     </div>
   );

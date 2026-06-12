@@ -1,11 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import DexGrid, { type DexEntry } from "@/components/DexGrid";
 import { artists, artworks } from "@/lib/db/seedData";
 import { artistProgress } from "@/lib/domain/progress";
 import { RARITY_ORDER, type Rarity } from "@/lib/domain/rarity";
 import { fetchCollection } from "@/lib/api";
+import type { CollectionItem } from "@/lib/types";
+import DexDetailSheet from "@/components/DexDetailSheet";
 
 const RARITY_LABELS: Record<Rarity, string> = {
   legendary: "Legendary",
@@ -28,11 +31,14 @@ function toEntry(w: (typeof artworks)[number], collected: Set<string>): DexEntry
 }
 
 export default function DexPage() {
-  const [collected, setCollected] = useState<Set<string>>(new Set());
+  const [items, setItems] = useState<CollectionItem[]>([]);
   const [view, setView] = useState<View>("artist");
+  const [detail, setDetail] = useState<CollectionItem | null>(null);
   useEffect(() => {
-    fetchCollection().then((items) => setCollected(new Set(items.map((i) => i.artworkId))));
+    fetchCollection().then(setItems);
   }, []);
+  const collected = new Set(items.map((i) => i.artworkId));
+  const openDetail = (id: string) => setDetail(items.find((i) => i.artworkId === id) ?? null);
 
   const progress = artistProgress(
     collected,
@@ -53,7 +59,15 @@ export default function DexPage() {
   return (
     <main className="mx-auto min-h-screen max-w-md px-4 pb-24 pt-6 text-zinc-100">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">My ArtDex</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight">My ArtDex</h1>
+          <Link
+            href="/premium"
+            className="rounded-full border border-amber-400/50 px-3 py-1 text-xs font-semibold text-amber-300"
+          >
+            ✦ Premium
+          </Link>
+        </div>
         <p className="mt-1 text-sm text-zinc-400">
           {totalCollected} / {artworks.length} masterpieces collected
         </p>
@@ -99,7 +113,7 @@ export default function DexPage() {
                   </span>
                   <span className="text-xs text-zinc-600">{artist.movement}</span>
                 </div>
-                <DexGrid entries={works.map((w) => toEntry(w, collected))} />
+                <DexGrid entries={works.map((w) => toEntry(w, collected))} onSelect={openDetail} />
               </section>
             );
           })}
@@ -128,12 +142,14 @@ export default function DexPage() {
                     {got === works.length && " ✦ complete"}
                   </span>
                 </div>
-                <DexGrid entries={works.map((w) => toEntry(w, collected))} />
+                <DexGrid entries={works.map((w) => toEntry(w, collected))} onSelect={openDetail} />
               </section>
             );
           })}
         </div>
       )}
+
+      {detail && <DexDetailSheet item={detail} onDismiss={() => setDetail(null)} />}
     </main>
   );
 }
