@@ -22,6 +22,14 @@
 - **退役 `src/lib/mock/`**：capture / dex / map 全接真 API（`src/lib/api.ts` + `types.ts`），tsc 干净
 - **Phase 8 自拍合照**：S3 presigned PUT/GET 完整往返实测（图入桶、key 入库、地图 popup 显示自拍）
 
+## ✅ 打磨已完成（2026-06-12 晚）
+
+- **防伪检测**：识别 prompt 同时判 live/repro（白嫖同一次 Bedrock 调用）——实测平面图判 repro ✅；
+  传说级 + repro → 拦截（demo 逃生口 `NEXT_PUBLIC_DEMO_ALLOW_REPRO=1`），低稀有度 → 琥珀色警告但可收
+- 客户端压图（≤1024px JPEG 再上传）、catalog 60s 内存缓存、收集震动反馈（按稀有度）
+- **图鉴详情弹层**：点已收集卡片 → 大图 + 自拍合照 + 笔记 + 「何时何地收集」
+- **Premium mock 页**（/premium，B2C 变现展示 + 博物馆 B 端合作 blurb），Dex 头部 ✦ 入口
+
 ## 🟡 剩余（不阻塞，按优先级）
 
 - [ ] 文档对齐：spec / 计划里的 Aurora 段落改成 DynamoDB（本 TODO 已注明）
