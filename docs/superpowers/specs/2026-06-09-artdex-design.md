@@ -7,6 +7,13 @@
 
 - **Hackathon:** H0 — Hack the Zero Stack (Vercel/v0 + AWS Databases)
 - **Target track:** Monetizable B2C App (fallback: Open Innovation)
+
+> **⚠️ DB UPDATE (2026-06-12):** This spec originally specified **Aurora PostgreSQL + RDS Data API**.
+> The AWS account is on the new free plan, which blocks Data API on Aurora (express config only).
+> To avoid a paid upgrade we shipped on **Amazon DynamoDB** instead (a hackathon-eligible database,
+> free tier, serverless). Geo needs are met without PostGIS: the legendary gate uses the haversine
+> in `locationGate.ts`, and "nearest museum" is computed in-app over ~10 museums. All other design
+> below stands; mentally substitute "Aurora/SQL" → "DynamoDB". See `TODO.md` for live status.
 - **Deadline:** 2026-06-29, 5:00 PM PDT
 - **Team:** Solo, vibe-coded with Claude Code
 - **Date:** 2026-06-09
