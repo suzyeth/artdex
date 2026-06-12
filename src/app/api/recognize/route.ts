@@ -17,8 +17,15 @@ export async function POST(req: NextRequest) {
   const prompt = buildRecognitionPrompt(
     candidates.map((c) => ({ id: c.id, title: c.title, artist: c.artistName }))
   );
-  const text = await recognizeArtwork(imageBase64, mediaType ?? "image/jpeg", prompt);
-  const id = parseRecognition(text, candidates.map((c) => c.id));
-  const artwork = candidates.find((c) => c.id === id) ?? null;
-  return NextResponse.json({ artwork });
+  try {
+    const text = await recognizeArtwork(imageBase64, mediaType ?? "image/jpeg", prompt);
+    const id = parseRecognition(text, candidates.map((c) => c.id));
+    const artwork = candidates.find((c) => c.id === id) ?? null;
+    return NextResponse.json({ artwork });
+  } catch (err) {
+    // Don't crash the capture flow on a Bedrock hiccup — the UI falls back to
+    // manual search when recognition is unavailable.
+    console.error("recognize failed:", err);
+    return NextResponse.json({ artwork: null, error: "recognition_unavailable" });
+  }
 }
