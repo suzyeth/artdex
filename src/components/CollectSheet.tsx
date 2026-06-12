@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import RarityBadge from "@/components/RarityBadge";
 import type { Candidate } from "@/lib/types";
+import { uploadSelfie } from "@/lib/api";
 
 interface CollectSheetProps {
   artwork: Candidate;
   museumName: string;
   alreadyCollected: boolean;
   gateError: string | null;
-  onCollect: (note: string) => void;
+  onCollect: (note: string, selfieKey?: string) => void;
   onDismiss: () => void;
 }
 
@@ -23,6 +24,16 @@ export default function CollectSheet({
   onDismiss,
 }: CollectSheetProps) {
   const [note, setNote] = useState("");
+  const [selfieFile, setSelfieFile] = useState<File | null>(null);
+  const [selfiePreview, setSelfiePreview] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function handleCollect() {
+    setBusy(true);
+    let key: string | undefined;
+    if (selfieFile) key = (await uploadSelfie(selfieFile)) ?? undefined;
+    onCollect(note, key);
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onDismiss}>
@@ -61,13 +72,35 @@ export default function CollectSheet({
             Already in your Dex — capture something new!
           </p>
         ) : (
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Add a memory… (optional)"
-            rows={2}
-            className="mt-4 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-amber-400 focus:outline-none"
-          />
+          <>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Add a memory… (optional)"
+              rows={2}
+              className="mt-4 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-amber-400 focus:outline-none"
+            />
+            <label className="mt-3 flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-sm text-zinc-300">
+              {selfiePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={selfiePreview} alt="Your selfie" className="h-12 w-12 rounded-lg object-cover" />
+              ) : (
+                <span className="text-2xl">📸</span>
+              )}
+              <span>{selfiePreview ? "Selfie added — tap to change" : "Add a selfie with it (optional)"}</span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="user"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] ?? null;
+                  setSelfieFile(f);
+                  setSelfiePreview(f ? URL.createObjectURL(f) : null);
+                }}
+              />
+            </label>
+          </>
         )}
 
         <div className="mt-4 flex gap-3">
@@ -79,10 +112,11 @@ export default function CollectSheet({
           </button>
           {!gateError && !alreadyCollected && (
             <button
-              onClick={() => onCollect(note)}
-              className="flex-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-300 py-3 font-semibold text-amber-950"
+              onClick={handleCollect}
+              disabled={busy}
+              className="flex-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-300 py-3 font-semibold text-amber-950 disabled:opacity-60"
             >
-              Collect ✦
+              {busy ? "Collecting…" : "Collect ✦"}
             </button>
           )}
         </div>

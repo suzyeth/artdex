@@ -77,7 +77,7 @@ export default function WorldMap({ items }: WorldMapProps) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={it.imageUrl}
+                    src={it.selfieUrl || it.imageUrl}
                     alt={it.title}
                     style={{ width: 32, height: 42, objectFit: "cover", borderRadius: 4 }}
                   />

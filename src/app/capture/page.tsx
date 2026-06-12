@@ -81,7 +81,7 @@ export default function CapturePage() {
     setStep(found ? "match" : "no-match");
   }
 
-  async function onCollect(note: string) {
+  async function onCollect(note: string, selfieKey?: string) {
     if (!match || !museum || !coords) return;
     const res = await collect({
       artworkId: match.id,
@@ -89,6 +89,7 @@ export default function CapturePage() {
       lat: coords.lat,
       lon: coords.lon,
       note,
+      selfieUrl: selfieKey,
     });
     if (res.ok) {
       setCollected((prev) => new Set(prev).add(match.id));

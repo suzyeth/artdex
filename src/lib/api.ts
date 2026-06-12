@@ -60,6 +60,24 @@ export async function fetchCollection(): Promise<CollectionItem[]> {
   return items ?? [];
 }
 
+/** Upload a selfie to S3 via a presigned PUT; returns the stored object key. */
+export async function uploadSelfie(file: File): Promise<string | null> {
+  const ct = file.type || "image/jpeg";
+  const res = await fetch("/api/upload-url", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contentType: ct }),
+  });
+  if (!res.ok) return null;
+  const { uploadUrl, key } = await res.json();
+  const put = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: { "Content-Type": ct },
+    body: file,
+  });
+  return put.ok ? key : null;
+}
+
 export async function search(q: string): Promise<Candidate[]> {
   const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
   if (!res.ok) return [];
