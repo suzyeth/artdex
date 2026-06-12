@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentCandidates } from "@/lib/db/queries";
-import { buildRecognitionPrompt, parseRecognition } from "@/lib/domain/recognition";
+import {
+  buildRecognitionPrompt,
+  parseRecognition,
+  isReproduction,
+} from "@/lib/domain/recognition";
 import { recognizeArtwork } from "@/lib/aws/bedrock";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +25,7 @@ export async function POST(req: NextRequest) {
     const text = await recognizeArtwork(imageBase64, mediaType ?? "image/jpeg", prompt);
     const id = parseRecognition(text, candidates.map((c) => c.id));
     const artwork = candidates.find((c) => c.id === id) ?? null;
-    return NextResponse.json({ artwork });
+    return NextResponse.json({ artwork, isReproduction: artwork ? isReproduction(text) : false });
   } catch (err) {
     // Don't crash the capture flow on a Bedrock hiccup — the UI falls back to
     // manual search when recognition is unavailable.

@@ -20,15 +20,15 @@ export async function recognize(
   museumId: string,
   imageBase64: string,
   mediaType: string
-): Promise<Candidate | null> {
+): Promise<{ artwork: Candidate | null; isReproduction: boolean }> {
   const res = await fetch("/api/recognize", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ museumId, imageBase64, mediaType }),
   });
-  if (!res.ok) return null;
-  const { artwork } = await res.json();
-  return artwork ?? null;
+  if (!res.ok) return { artwork: null, isReproduction: false };
+  const { artwork, isReproduction } = await res.json();
+  return { artwork: artwork ?? null, isReproduction: !!isReproduction };
 }
 
 export type CollectResult =

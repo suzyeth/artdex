@@ -4,7 +4,11 @@ export function buildRecognitionPrompt(
   const list = c.map((x) => `- ${x.id}: "${x.title}" by ${x.artist}`).join("\n");
   return (
     `You are identifying an artwork from a photo. It is one of these works currently on display:\n${list}\n` +
-    `Reply with ONLY the matching id from the list, or "none" if none match.`
+    `Also judge the photo itself: "live" means a photo of the physical artwork in front of the camera ` +
+    `(museum wall, frame, glare, perspective); "repro" means the photo shows a reproduction — a screen, ` +
+    `postcard, poster, book page, or a flat digital copy.\n` +
+    `Reply with ONLY one line: the matching id, a pipe, then live or repro (e.g. "starry-night|live" ` +
+    `or "starry-night|repro"), or "none" if no candidate matches.`
   );
 }
 
@@ -18,4 +22,12 @@ export function parseRecognition(text: string, validIds: string[]): string | nul
   // "starry-night-rhone" never resolves to "starry-night"
   const matches = validIds.filter((id) => t.includes(id.toLowerCase()));
   return matches.sort((a, b) => b.length - a.length)[0] ?? null;
+}
+
+/** True when the model judged the photo to show a reproduction (screen,
+ *  postcard, print) rather than the physical artwork. Token-based so an id
+ *  containing the substring "repro" can never trip it. */
+export function isReproduction(text: string): boolean {
+  const tokens = text.trim().toLowerCase().split(/[^a-z0-9-]+/);
+  return tokens.includes("repro");
 }

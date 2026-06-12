@@ -11,6 +11,7 @@ interface CollectSheetProps {
   museumName: string;
   alreadyCollected: boolean;
   gateError: string | null;
+  reproWarning?: boolean;
   onCollect: (note: string, selfieKey?: string) => void;
   onDismiss: () => void;
 }
@@ -20,6 +21,7 @@ export default function CollectSheet({
   museumName,
   alreadyCollected,
   gateError,
+  reproWarning,
   onCollect,
   onDismiss,
 }: CollectSheetProps) {
@@ -65,6 +67,12 @@ export default function CollectSheet({
           </div>
         </div>
 
+        {reproWarning && !gateError && !alreadyCollected && (
+          <p className="mt-4 rounded-lg bg-amber-950/50 p-3 text-sm text-amber-300">
+            ⚠️ This looks like a reproduction (screen, postcard, or print) — collected, but go see
+            the real one!
+          </p>
+        )}
         {gateError ? (
           <p className="mt-4 rounded-lg bg-red-950/60 p-3 text-sm text-red-300">⛔ {gateError}</p>
         ) : alreadyCollected ? (

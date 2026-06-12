@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { buildRecognitionPrompt, parseRecognition } from "@/lib/domain/recognition";
+import {
+  buildRecognitionPrompt,
+  parseRecognition,
+  isReproduction,
+} from "@/lib/domain/recognition";
 
 describe("buildRecognitionPrompt", () => {
   it("lists every candidate with id, title, and artist", () => {
@@ -10,6 +14,31 @@ describe("buildRecognitionPrompt", () => {
     expect(prompt).toContain('starry-night: "The Starry Night" by Vincent van Gogh');
     expect(prompt).toContain('mona-lisa: "Mona Lisa" by Leonardo da Vinci');
     expect(prompt).toMatch(/"none"/);
+  });
+
+  it("asks the model to flag reproductions vs live photos", () => {
+    const prompt = buildRecognitionPrompt([
+      { id: "starry-night", title: "The Starry Night", artist: "Vincent van Gogh" },
+    ]);
+    expect(prompt).toMatch(/\|live/);
+    expect(prompt).toMatch(/\|repro/);
+  });
+});
+
+describe("isReproduction", () => {
+  it("flags repro responses", () => {
+    expect(isReproduction("starry-night|repro")).toBe(true);
+    expect(isReproduction("The match is: mona-lisa | repro.")).toBe(true);
+  });
+
+  it("treats live responses (and anything else) as not reproduction", () => {
+    expect(isReproduction("starry-night|live")).toBe(false);
+    expect(isReproduction("starry-night")).toBe(false);
+    expect(isReproduction("none")).toBe(false);
+  });
+
+  it("never confuses the word inside an id with the repro flag", () => {
+    expect(isReproduction("repro-portrait|live")).toBe(false);
   });
 });
 

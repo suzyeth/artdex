@@ -29,19 +29,31 @@ export type Candidate = {
   artistName: string; rarity: Rarity; imageUrl: string;
 };
 
+// The catalog (artists/museums/artworks) is small and effectively immutable at
+// runtime, so cache Scans in module memory — DynamoDB only serves the user
+// write path (collections) per request.
+const CATALOG_TTL_MS = 60_000;
+const catalogCache = new Map<string, { at: number; rows: unknown[] }>();
+
+async function cachedScan<T>(table: string): Promise<T[]> {
+  const hit = catalogCache.get(table);
+  if (hit && Date.now() - hit.at < CATALOG_TTL_MS) return hit.rows as T[];
+  const r = await ddb().send(new ScanCommand({ TableName: table }));
+  const rows = (r.Items ?? []) as T[];
+  catalogCache.set(table, { at: Date.now(), rows });
+  return rows;
+}
+
 export async function getAllArtists(): Promise<ArtistRow[]> {
-  const r = await ddb().send(new ScanCommand({ TableName: TABLES.artists }));
-  return (r.Items ?? []) as ArtistRow[];
+  return cachedScan<ArtistRow>(TABLES.artists);
 }
 
 export async function getAllMuseums(): Promise<MuseumRow[]> {
-  const r = await ddb().send(new ScanCommand({ TableName: TABLES.museums }));
-  return (r.Items ?? []) as MuseumRow[];
+  return cachedScan<MuseumRow>(TABLES.museums);
 }
 
 export async function getAllArtworks(): Promise<ArtworkRow[]> {
-  const r = await ddb().send(new ScanCommand({ TableName: TABLES.artworks }));
-  return (r.Items ?? []) as ArtworkRow[];
+  return cachedScan<ArtworkRow>(TABLES.artworks);
 }
 
 export async function getArtwork(id: string): Promise<ArtworkRow | null> {

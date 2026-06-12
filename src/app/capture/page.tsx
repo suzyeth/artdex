@@ -15,17 +15,27 @@ const NEARBY_M = 50_000; // treat museums within 50km as "you're at"
 
 type Step = "camera" | "scanning" | "match" | "no-match" | "celebrating" | "done";
 
+const MAX_EDGE = 1024; // downscale before upload: faster request, cheaper Bedrock call
+
 function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string; // data:image/jpeg;base64,XXXX
-      const comma = result.indexOf(",");
-      const mediaType = result.slice(5, result.indexOf(";"));
-      resolve({ base64: result.slice(comma + 1), mediaType: mediaType || "image/jpeg" });
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+      resolve({ base64: dataUrl.slice(dataUrl.indexOf(",") + 1), mediaType: "image/jpeg" });
     };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("could not read image"));
+    };
+    img.src = url;
   });
 }
 
@@ -35,6 +45,7 @@ export default function CapturePage() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [step, setStep] = useState<Step>("camera");
   const [match, setMatch] = useState<Candidate | null>(null);
+  const [isRepro, setIsRepro] = useState(false);
   const [museum, setMuseum] = useState<NearbyMuseum | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [collected, setCollected] = useState<Set<string>>(new Set());
@@ -76,8 +87,9 @@ export default function CapturePage() {
     setPhoto(URL.createObjectURL(file));
     setStep("scanning");
     const { base64, mediaType } = await fileToBase64(file);
-    const found = await recognize(museum.id, base64, mediaType);
+    const { artwork: found, isReproduction } = await recognize(museum.id, base64, mediaType);
     setMatch(found);
+    setIsRepro(isReproduction);
     setStep(found ? "match" : "no-match");
   }
 
@@ -99,10 +111,13 @@ export default function CapturePage() {
     // already prevents the Collect button for legendaries you're not on-site for.
   }
 
+  const allowReproDemo = process.env.NEXT_PUBLIC_DEMO_ALLOW_REPRO === "1";
   const gateError =
     match && museum && isOnSiteRequired(match.rarity) && !isWithinGate(0, museum.distM)
       ? `This is a Legendary — you must be at ${museum.name} (within 150 m) to collect it.`
-      : null;
+      : match && isOnSiteRequired(match.rarity) && isRepro && !allowReproDemo
+        ? "This looks like a reproduction (screen, postcard, or print). Legendaries only count in front of the real thing."
+        : null;
 
   // --- locating / error states ---
   if (!coords) {
@@ -236,6 +251,7 @@ export default function CapturePage() {
           museumName={museum.name}
           alreadyCollected={collected.has(match.id)}
           gateError={gateError}
+          reproWarning={isRepro && !gateError}
           onCollect={onCollect}
           onDismiss={() => {
             setMatch(null);

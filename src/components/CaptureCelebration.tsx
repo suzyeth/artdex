@@ -50,6 +50,14 @@ export default function CaptureCelebration({
 
   useEffect(() => {
     playChime(intensity);
+    // haptics on mobile: short tick for common, building pattern up to legendary
+    try {
+      navigator.vibrate?.(
+        [40, 60, 40, 60, 80, 60, 160].slice(0, intensity * 2 - 1)
+      );
+    } catch {
+      // haptics are a nice-to-have
+    }
   }, [intensity]);
 
   return (
