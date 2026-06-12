@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-// MOCK: localStorage-backed collection until /api/collection lands in Phase 7.
-import { getRecords, STARTER_RECORDS, type CollectionRecord } from "@/lib/mock/mockCollection";
+import { fetchCollection } from "@/lib/api";
+import type { CollectionItem } from "@/lib/types";
 
 // Leaflet touches `window` at import time — must skip SSR entirely.
 const WorldMap = dynamic(() => import("@/components/WorldMap"), {
@@ -16,23 +16,23 @@ const WorldMap = dynamic(() => import("@/components/WorldMap"), {
 });
 
 export default function MapPage() {
-  const [records, setRecords] = useState<CollectionRecord[]>(STARTER_RECORDS);
+  const [items, setItems] = useState<CollectionItem[]>([]);
   useEffect(() => {
-    setRecords(getRecords());
+    fetchCollection().then(setItems);
   }, []);
 
-  const cities = new Set(records.map((r) => r.museumId)).size;
+  const cities = new Set(items.map((i) => i.museumId).filter(Boolean)).size;
 
   return (
     <main className="flex h-screen flex-col text-zinc-100">
       <header className="z-10 border-b border-zinc-800 bg-zinc-950/90 px-4 pb-3 pt-6 backdrop-blur">
         <h1 className="text-2xl font-bold tracking-tight">My Art World</h1>
         <p className="mt-0.5 text-sm text-zinc-400">
-          {records.length} works captured across {cities} museums
+          {items.length} works captured across {cities} museums
         </p>
       </header>
       <div className="min-h-0 flex-1 pb-[52px]">
-        <WorldMap records={records} />
+        <WorldMap items={items} />
       </div>
     </main>
   );

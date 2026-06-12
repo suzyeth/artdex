@@ -3,31 +3,30 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { divIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { museums, artworks, artists } from "@/lib/db/seedData";
-import type { CollectionRecord } from "@/lib/mock/mockCollection";
+import type { CollectionItem } from "@/lib/types";
 
 interface WorldMapProps {
-  records: CollectionRecord[];
+  items: CollectionItem[];
 }
 
 type MuseumPins = {
-  museum: (typeof museums)[number];
-  items: {
-    record: CollectionRecord;
-    artwork: (typeof artworks)[number];
-    artistName: string;
-  }[];
+  museumId: string;
+  museumName: string;
+  city: string;
+  lat: number;
+  lon: number;
+  items: CollectionItem[];
 };
 
-function groupByMuseum(records: CollectionRecord[]): MuseumPins[] {
+function groupByMuseum(items: CollectionItem[]): MuseumPins[] {
   const groups = new Map<string, MuseumPins>();
-  for (const record of records) {
-    const museum = museums.find((m) => m.id === record.museumId);
-    const artwork = artworks.find((w) => w.id === record.artworkId);
-    if (!museum || !artwork) continue;
-    const artistName = artists.find((a) => a.id === artwork.artistId)?.name ?? "";
-    const group = groups.get(museum.id) ?? { museum, items: [] };
-    groups.set(museum.id, { ...group, items: [...group.items, { record, artwork, artistName }] });
+  for (const it of items) {
+    if (!it.museumId || it.lat === null || it.lon === null) continue;
+    const group =
+      groups.get(it.museumId) ??
+      { museumId: it.museumId, museumName: it.museumName, city: it.city, lat: it.lat, lon: it.lon, items: [] };
+    group.items.push(it);
+    groups.set(it.museumId, group);
   }
   return [...groups.values()];
 }
@@ -46,8 +45,8 @@ function pinIcon(hasLegendary: boolean, count: number) {
   });
 }
 
-export default function WorldMap({ records }: WorldMapProps) {
-  const pins = groupByMuseum(records);
+export default function WorldMap({ items }: WorldMapProps) {
+  const pins = groupByMuseum(items);
 
   return (
     <MapContainer
@@ -61,37 +60,35 @@ export default function WorldMap({ records }: WorldMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
-      {pins.map(({ museum, items }) => (
+      {pins.map((pin) => (
         <Marker
-          key={museum.id}
-          position={[museum.lat, museum.lon]}
-          icon={pinIcon(items.some((i) => i.artwork.rarity === "legendary"), items.length)}
+          key={pin.museumId}
+          position={[pin.lat, pin.lon]}
+          icon={pinIcon(pin.items.some((i) => i.rarity === "legendary"), pin.items.length)}
         >
           <Popup>
             <div style={{ minWidth: 180 }}>
-              <p style={{ fontWeight: 700, margin: 0 }}>{museum.name}</p>
-              <p style={{ margin: "0 0 6px", fontSize: 12, color: "#71717a" }}>
-                {museum.city}, {museum.country}
-              </p>
-              {items.map(({ record, artwork, artistName }) => (
+              <p style={{ fontWeight: 700, margin: 0 }}>{pin.museumName}</p>
+              <p style={{ margin: "0 0 6px", fontSize: 12, color: "#71717a" }}>{pin.city}</p>
+              {pin.items.map((it) => (
                 <div
-                  key={artwork.id}
+                  key={it.artworkId}
                   style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={artwork.imageUrl}
-                    alt={artwork.title}
+                    src={it.imageUrl}
+                    alt={it.title}
                     style={{ width: 32, height: 42, objectFit: "cover", borderRadius: 4 }}
                   />
                   <div style={{ fontSize: 12, lineHeight: 1.3 }}>
-                    <div style={{ fontWeight: 600 }}>{artwork.title}</div>
+                    <div style={{ fontWeight: 600 }}>{it.title}</div>
                     <div style={{ color: "#71717a" }}>
-                      {artistName} · {record.collectedAt}
+                      {it.artistName} · {it.collectedAt.slice(0, 10)}
                     </div>
-                    {record.note && (
+                    {it.note && (
                       <div style={{ fontStyle: "italic", color: "#52525b" }}>
-                        &ldquo;{record.note}&rdquo;
+                        &ldquo;{it.note}&rdquo;
                       </div>
                     )}
                   </div>

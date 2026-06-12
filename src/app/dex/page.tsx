@@ -5,8 +5,7 @@ import DexGrid, { type DexEntry } from "@/components/DexGrid";
 import { artists, artworks } from "@/lib/db/seedData";
 import { artistProgress } from "@/lib/domain/progress";
 import { RARITY_ORDER, type Rarity } from "@/lib/domain/rarity";
-// MOCK: localStorage-backed collection until /api/collection lands in Phase 7.
-import { getCollected, STARTER_COLLECTED } from "@/lib/mock/mockCollection";
+import { fetchCollection } from "@/lib/api";
 
 const RARITY_LABELS: Record<Rarity, string> = {
   legendary: "Legendary",
@@ -29,11 +28,10 @@ function toEntry(w: (typeof artworks)[number], collected: Set<string>): DexEntry
 }
 
 export default function DexPage() {
-  // render with the starter set first (SSR-safe), then hydrate from localStorage
-  const [collected, setCollected] = useState<Set<string>>(new Set(STARTER_COLLECTED));
+  const [collected, setCollected] = useState<Set<string>>(new Set());
   const [view, setView] = useState<View>("artist");
   useEffect(() => {
-    setCollected(getCollected());
+    fetchCollection().then((items) => setCollected(new Set(items.map((i) => i.artworkId))));
   }, []);
 
   const progress = artistProgress(

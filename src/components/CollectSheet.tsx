@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import RarityBadge from "@/components/RarityBadge";
-import type { Candidate } from "@/lib/mock/mockApi";
+import type { Candidate } from "@/lib/types";
 
 interface CollectSheetProps {
   artwork: Candidate;
