@@ -1,6 +1,7 @@
 "use client"
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import { getArtwork } from "@/lib/data"
 
 export interface CollectedEntry {
   artworkId: string
@@ -14,48 +15,57 @@ interface CollectionContextValue {
   isCollected: (id: string) => boolean
   collect: (entry: CollectedEntry) => void
   count: number
+  loading: boolean
 }
 
 const CollectionContext = createContext<CollectionContextValue | null>(null)
 
-// Seed a few works so the Dex feels alive on first load.
-const SEED: Record<string, CollectedEntry> = {
-  "starry-night": {
-    artworkId: "starry-night",
-    note: "Stood in front of it for twenty minutes. The blues are impossible to photograph.",
-    selfie: "/selfies/selfie-1.png",
-    collectedAt: "2026-05-18",
-  },
-  sunflowers: {
-    artworkId: "sunflowers",
-    note: "Brighter in person than any print I've ever seen.",
-    selfie: "/selfies/selfie-2.png",
-    collectedAt: "2026-04-02",
-  },
-  "water-lilies": {
-    artworkId: "water-lilies",
-    note: "The whole oval room wraps you in the pond. Dizzying.",
-    collectedAt: "2026-03-21",
-  },
-  "great-wave": {
-    artworkId: "great-wave",
-    selfie: "/selfies/selfie-1.png",
-    collectedAt: "2026-02-11",
-  },
-}
-
+// Backed by the real DynamoDB collection (/api/collection + /api/collect),
+// keyed per browser by the anon cookie. Same shape the screens already consume.
 export function CollectionProvider({ children }: { children: ReactNode }) {
-  const [collected, setCollected] = useState<Record<string, CollectedEntry>>(SEED)
+  const [collected, setCollected] = useState<Record<string, CollectedEntry>>({})
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch("/api/collection")
+      .then((r) => (r.ok ? r.json() : { items: [] }))
+      .then(({ items }) => {
+        const map: Record<string, CollectedEntry> = {}
+        for (const it of items ?? []) {
+          map[it.artworkId] = {
+            artworkId: it.artworkId,
+            note: it.note || undefined,
+            selfie: it.selfieUrl || undefined,
+            collectedAt: (it.collectedAt || "").slice(0, 10),
+          }
+        }
+        setCollected(map)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
   const collect = useCallback((entry: CollectedEntry) => {
-    setCollected((prev) => ({ ...prev, [entry.artworkId]: entry }))
+    setCollected((prev) => ({ ...prev, [entry.artworkId]: entry })) // optimistic
+    const museumId = getArtwork(entry.artworkId)?.museumId
+    fetch("/api/collect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        artworkId: entry.artworkId,
+        museumId,
+        onSite: true, // the capture flow only fires once the user is "at" the museum
+        note: entry.note,
+        selfieUrl: entry.selfie,
+      }),
+    }).catch(() => {})
   }, [])
 
   const isCollected = useCallback((id: string) => Boolean(collected[id]), [collected])
 
   const value = useMemo<CollectionContextValue>(
-    () => ({ collected, isCollected, collect, count: Object.keys(collected).length }),
-    [collected, isCollected, collect],
+    () => ({ collected, isCollected, collect, count: Object.keys(collected).length, loading }),
+    [collected, isCollected, collect, loading],
   )
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>

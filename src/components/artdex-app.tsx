@@ -6,6 +6,7 @@ import { BottomNav, type Tab } from "@/components/bottom-nav"
 import { DexScreen } from "@/components/screens/dex-screen"
 import { CaptureScreen } from "@/components/screens/capture-screen"
 import { MapScreen } from "@/components/screens/map-screen"
+import { ProfileScreen } from "@/components/screens/profile-screen"
 import { PremiumScreen } from "@/components/screens/premium-screen"
 
 export function ArtDexApp() {
@@ -22,6 +23,7 @@ export function ArtDexApp() {
             {tab === "dex" && <DexScreen onPremium={() => setPremium(true)} />}
             {tab === "capture" && <CaptureScreen />}
             {tab === "map" && <MapScreen />}
+            {tab === "profile" && <ProfileScreen />}
             <BottomNav active={tab} onChange={setTab} />
           </>
         )}

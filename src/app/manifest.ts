@@ -6,10 +6,10 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "ArtDex",
     description:
       "Pokémon GO for the world's masterpieces — photograph real artworks at museums and collect them.",
-    start_url: "/dex",
+    start_url: "/",
     display: "standalone",
-    background_color: "#09090b",
-    theme_color: "#09090b",
+    background_color: "#f6f1e7",
+    theme_color: "#f6f1e7",
     icons: [
       {
         src: "/icon.svg",

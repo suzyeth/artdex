@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { ARTWORKS, getArtwork, type Artwork } from "@/lib/data"
+import { useRef, useState } from "react"
+import { getArtwork, type Artwork } from "@/lib/data"
 import { useCollection } from "@/lib/collection-store"
 import { MatchSheet } from "@/components/match-sheet"
 import { CaptureCelebration } from "@/components/capture-celebration"
@@ -11,23 +11,63 @@ import { Scan, ImageIcon, Zap } from "lucide-react"
 
 type Phase = "idle" | "scanning"
 
+// Demo museum: real Bedrock recognition is scoped to this museum's works on display.
+const MUSEUM_ID = "moma"
+const MAX_EDGE = 1024
+
+function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height))
+      const canvas = document.createElement("canvas")
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height)
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.82)
+      resolve({ base64: dataUrl.slice(dataUrl.indexOf(",") + 1), mediaType: "image/jpeg" })
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error("could not read image"))
+    }
+    img.src = url
+  })
+}
+
 export function CaptureScreen() {
   const { collect, isCollected } = useCollection()
   const [phase, setPhase] = useState<Phase>("idle")
   const [matchId, setMatchId] = useState<string | null>(null)
   const [celebrate, setCelebrate] = useState<Artwork | null>(null)
+  const [miss, setMiss] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
 
   function startScan() {
     if (phase === "scanning") return
+    fileRef.current?.click()
+  }
+
+  async function onPhoto(file: File) {
+    setMiss(false)
     setPhase("scanning")
-    // Pick a random not-yet-collected work, else any work.
-    const uncollected = ARTWORKS.filter((a) => !isCollected(a.id))
-    const pool = uncollected.length > 0 ? uncollected : ARTWORKS
-    const pick = pool[Math.floor(Math.random() * pool.length)]
-    setTimeout(() => {
+    try {
+      const { base64, mediaType } = await fileToBase64(file)
+      const res = await fetch("/api/recognize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ museumId: MUSEUM_ID, imageBase64: base64, mediaType }),
+      })
+      const { artwork } = await res.json()
       setPhase("idle")
-      setMatchId(pick.id)
-    }, 2600)
+      if (artwork?.id) setMatchId(artwork.id)
+      else setMiss(true)
+    } catch {
+      setPhase("idle")
+      setMiss(true)
+    }
   }
 
   function handleCollect(note: string, selfie?: string) {
@@ -101,7 +141,9 @@ export function CaptureScreen() {
 
         {phase === "idle" && (
           <div className="absolute inset-x-0 bottom-6 text-center">
-            <p className="text-xs text-muted-foreground">Frame the artwork inside the guides</p>
+            <p className="text-xs text-muted-foreground">
+              {miss ? "Couldn't identify it — try another angle" : "Frame the artwork inside the guides"}
+            </p>
           </div>
         )}
       </div>
@@ -109,11 +151,25 @@ export function CaptureScreen() {
       {/* Controls */}
       <div className="mx-auto mt-7 flex w-full max-w-sm items-center justify-between px-2">
         <button
+          onClick={startScan}
           className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground"
           aria-label="Upload from library"
         >
           <ImageIcon className="size-5" />
         </button>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            if (f) onPhoto(f)
+            e.target.value = ""
+          }}
+        />
 
         <button
           onClick={startScan}

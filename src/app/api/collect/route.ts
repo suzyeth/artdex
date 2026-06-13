@@ -18,20 +18,24 @@ export async function POST(req: NextRequest) {
     if (museum) exhibitionLabel = `${museum.name}, ${museum.city}`;
   }
 
-  // Location gate: legendary works must be collected on-site.
+  // Location gate: legendary works must be collected on-site. Two ways to satisfy it:
+  // (1) real GPS coords within range, or (2) an explicit on-site signal from a
+  // client whose museum detection already confirmed presence (the v0 capture flow).
   if (isOnSiteRequired(artwork.rarity)) {
     if (!museum) {
       return NextResponse.json({ error: "museum required for legendary" }, { status: 400 });
     }
-    if (typeof b.lat !== "number" || typeof b.lon !== "number") {
-      return NextResponse.json({ error: "location required for legendary" }, { status: 400 });
-    }
-    const dist = haversineMeters(b.lat, b.lon, museum.lat, museum.lon);
-    if (!isWithinGate(0, dist)) {
-      return NextResponse.json(
-        { error: "must be on-site to collect this legendary", distance: Math.round(dist) },
-        { status: 403 }
-      );
+    if (b.onSite !== true) {
+      if (typeof b.lat !== "number" || typeof b.lon !== "number") {
+        return NextResponse.json({ error: "location required for legendary" }, { status: 400 });
+      }
+      const dist = haversineMeters(b.lat, b.lon, museum.lat, museum.lon);
+      if (!isWithinGate(0, dist)) {
+        return NextResponse.json(
+          { error: "must be on-site to collect this legendary", distance: Math.round(dist) },
+          { status: 403 }
+        );
+      }
     }
   }
 

@@ -34,8 +34,12 @@ export async function GET() {
         lat: m?.lat ?? null,
         lon: m?.lon ?? null,
         note: r.note ?? "",
-        // selfie_url stores the S3 key; hand back a short-lived viewable URL.
-        selfieUrl: r.selfie_url ? await presignedGetUrl(r.selfie_url) : "",
+        // selfie_url is an S3 key (presign it) OR a local/remote path (pass through).
+        selfieUrl: !r.selfie_url
+          ? ""
+          : r.selfie_url.startsWith("/") || r.selfie_url.startsWith("http")
+            ? r.selfie_url
+            : await presignedGetUrl(r.selfie_url),
       };
     })
   );

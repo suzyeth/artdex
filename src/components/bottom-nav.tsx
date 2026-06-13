@@ -1,9 +1,9 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Grid2x2, Camera, Map } from "lucide-react"
+import { Grid2x2, Camera, Map, User } from "lucide-react"
 
-export type Tab = "dex" | "capture" | "map"
+export type Tab = "dex" | "capture" | "map" | "profile"
 
 export function BottomNav({
   active,
@@ -16,6 +16,7 @@ export function BottomNav({
     { id: "dex", label: "Dex", icon: Grid2x2 },
     { id: "capture", label: "Capture", icon: Camera },
     { id: "map", label: "Map", icon: Map },
+    { id: "profile", label: "Profile", icon: User },
   ]
 
   return (
