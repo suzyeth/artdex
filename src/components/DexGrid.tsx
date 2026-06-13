@@ -35,7 +35,7 @@ function DexCard({ entry, onSelect }: { entry: DexEntry; onSelect?: (id: string)
           className={`h-full w-full object-cover transition duration-300 ${
             entry.collected
               ? "group-hover:scale-105"
-              : "brightness-[0.12] contrast-150 grayscale" // dark silhouette: shape stays teasingly readable
+              : "brightness-[0.32] grayscale contrast-110 blur-[2px]" // teasing silhouette: shape readable, details hidden
           }`}
         />
       </div>
