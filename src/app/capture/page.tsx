@@ -222,25 +222,40 @@ export default function CapturePage() {
         </button>
       </div>
 
-      {/* no-match fallback: manual pick */}
+      {/* no-match fallback: manual pick — a bottom sheet that sits above the nav */}
       {step === "no-match" && (
-        <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
-          <p className="text-sm text-zinc-300">
-            Couldn&apos;t identify it — pick from the works on display:
-          </p>
-          <div className="mt-3 max-h-48 space-y-2 overflow-y-auto">
-            {candidates.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => {
-                  setMatch(c);
-                  setStep("match");
-                }}
-                className="block w-full rounded-lg bg-zinc-800 px-3 py-2 text-left text-sm text-zinc-200"
-              >
-                {c.title} — {c.artistName}
-              </button>
-            ))}
+        <div
+          className="fixed inset-0 z-[55] flex items-end bg-black/60"
+          onClick={() => setStep("camera")}
+        >
+          <div
+            className="w-full rounded-t-3xl border-t border-zinc-700 bg-zinc-900 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-zinc-700" />
+            <p className="text-sm text-zinc-300">
+              Couldn&apos;t identify it — pick from the works on display:
+            </p>
+            <div className="mt-3 max-h-[40vh] space-y-2 overflow-y-auto">
+              {candidates.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => {
+                    setMatch(c);
+                    setStep("match");
+                  }}
+                  className="block w-full rounded-lg bg-zinc-800 px-3 py-2 text-left text-sm text-zinc-200"
+                >
+                  {c.title} — {c.artistName}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setStep("camera")}
+              className="mt-4 w-full rounded-full border border-zinc-700 py-3 font-semibold text-zinc-300"
+            >
+              Retake photo
+            </button>
           </div>
         </div>
       )}
