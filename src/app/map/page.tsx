@@ -31,7 +31,7 @@ export default function MapPage() {
           {items.length} works captured across {cities} museums
         </p>
       </header>
-      <div className="min-h-0 flex-1 pb-[52px]">
+      <div className="min-h-0 flex-1 pb-[calc(56px+env(safe-area-inset-bottom))]">
         <WorldMap items={items} />
       </div>
     </main>

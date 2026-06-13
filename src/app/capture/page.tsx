@@ -122,7 +122,7 @@ export default function CapturePage() {
   // --- locating / error states ---
   if (!coords) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 pb-24 text-center text-zinc-100">
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 pb-[calc(6rem+env(safe-area-inset-bottom))] text-center text-zinc-100">
         {geo.status === "loading" ? (
           <>
             <p className="mb-3 animate-pulse text-5xl">📍</p>
@@ -147,7 +147,7 @@ export default function CapturePage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col px-4 pb-24 pt-6 text-zinc-100">
+    <main className="mx-auto flex min-h-screen max-w-md flex-col px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-zinc-100">
       {/* museum banner */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
         {atMuseum && museum ? (

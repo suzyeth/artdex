@@ -57,7 +57,7 @@ export default function DexPage() {
   const totalCollected = collected.size;
 
   return (
-    <main className="mx-auto min-h-screen max-w-md px-4 pb-24 pt-6 text-zinc-100">
+    <main className="mx-auto min-h-screen max-w-md px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-zinc-100">
       <header className="mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">My ArtDex</h1>

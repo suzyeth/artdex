@@ -17,7 +17,7 @@ export default function PremiumPage() {
   const [clicked, setClicked] = useState(false);
 
   return (
-    <main className="mx-auto min-h-screen max-w-md px-4 pb-24 pt-6 text-zinc-100">
+    <main className="mx-auto min-h-screen max-w-md px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-zinc-100">
       <Link href="/dex" className="text-sm text-zinc-500">
         ← Back to Dex
       </Link>
