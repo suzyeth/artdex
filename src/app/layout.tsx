@@ -1,36 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import BottomNav from "@/components/BottomNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Display serif for the wordmark + artwork titles — gives ArtDex an art-institution
-// face. Variable font: light weights read elegant, heavier weights read warm.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  title: "ArtDex",
+  title: "ArtDex — Collect the World's Masterpieces",
   description:
-    "Pokémon GO for the world's masterpieces — photograph real artworks at museums and collect them into your personal art Pokédex.",
+    "Pokémon GO for the world's masterpieces. Visit a museum, photograph real artwork, and collect it into your personal art Pokédex.",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#09090b",
+  colorScheme: "light",
+  themeColor: "#f6f1e7",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
 };
 
@@ -40,13 +32,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} bg-zinc-950 antialiased`}
-      >
-        {children}
-        <BottomNav />
-      </body>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} bg-background`}
+    >
+      <body className="font-sans antialiased">{children}</body>
     </html>
   );
 }

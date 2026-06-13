@@ -1,28 +1,125 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-/* ArtDex is a dark-only experience — force it regardless of OS preference so the
-   theme never half-renders white in a light-mode browser. */
-:root {
-  --background: #09090b; /* zinc-950 */
-  --foreground: #ededed;
-  color-scheme: dark;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-geist-sans), 'Geist Fallback';
+  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Prestige brass (gilded frame) */
+  --color-brass: var(--brass);
+  --color-brass-bright: var(--brass-bright);
+
+  /* Rarity */
+  --color-common: var(--common);
+  --color-rare: var(--rare);
+  --color-epic: var(--epic);
+  --color-legendary: var(--legendary);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  /* use the loaded Geist face, not a generic Arial fallback */
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+:root {
+  color-scheme: light;
+  /* Warm gallery cream */
+  --background: oklch(0.968 0.008 78);
+  --foreground: oklch(0.23 0.013 68);
+  --card: oklch(0.995 0.004 80);
+  --card-foreground: oklch(0.23 0.013 68);
+  --popover: oklch(0.995 0.004 80);
+  --popover-foreground: oklch(0.23 0.013 68);
+  /* Ultramarine / cobalt */
+  --primary: oklch(0.45 0.168 264);
+  --primary-foreground: oklch(0.98 0.012 264);
+  --secondary: oklch(0.935 0.008 78);
+  --secondary-foreground: oklch(0.3 0.013 68);
+  --muted: oklch(0.935 0.008 78);
+  --muted-foreground: oklch(0.52 0.012 68);
+  --accent: oklch(0.93 0.018 264);
+  --accent-foreground: oklch(0.32 0.05 264);
+  --destructive: oklch(0.57 0.2 25);
+  --border: oklch(0.23 0.01 68 / 11%);
+  --input: oklch(0.23 0.01 68 / 14%);
+  --ring: oklch(0.45 0.168 264);
+
+  --brass: oklch(0.62 0.092 80);
+  --brass-bright: oklch(0.72 0.1 84);
+
+  --common: oklch(0.56 0.015 68);
+  --rare: oklch(0.5 0.16 256);
+  --epic: oklch(0.55 0.145 38);
+  --legendary: oklch(0.6 0.094 80);
+
+  --radius: 0.3rem;
 }
 
-/* Display serif — wordmark + artwork titles only. Everything else stays Geist. */
-.font-display {
-  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Editorial serif headings — the museum-catalog voice */
+  .font-heading {
+    font-family: var(--font-heading);
+    font-feature-settings: 'liga' 1, 'kern' 1;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* Hairline rule — replaces soft drop-shadow cards with editorial lines */
+  .rule-t {
+    border-top: 1px solid var(--border);
+  }
+  .rule-b {
+    border-bottom: 1px solid var(--border);
+  }
+  /* Catalogue label: small caps, wide tracking, monospaced number */
+  .label-caps {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+  /* soft card shadow referenced by rarity styles */
+  .shadow-soft {
+    box-shadow: 0 6px 20px -12px oklch(0.23 0.013 68 / 0.25);
+  }
 }
