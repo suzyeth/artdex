@@ -56,7 +56,7 @@ export default function CollectSheet({
           />
           <div className="min-w-0 flex-1">
             <p className="text-xs uppercase tracking-widest text-emerald-400">Match found</p>
-            <h2 className="truncate text-lg font-bold text-zinc-100">{artwork.title}</h2>
+            <h2 className="font-display truncate text-xl font-semibold text-zinc-100">{artwork.title}</h2>
             <p className="text-sm text-zinc-400">
               {artwork.artistName} · {artwork.year}
             </p>

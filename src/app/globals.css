@@ -21,3 +21,8 @@ body {
   /* use the loaded Geist face, not a generic Arial fallback */
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 }
+
+/* Display serif — wordmark + artwork titles only. Everything else stays Geist. */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}

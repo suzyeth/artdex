@@ -60,7 +60,7 @@ export default function DexPage() {
     <main className="mx-auto min-h-screen max-w-md px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-6 text-zinc-100">
       <header className="mb-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">My ArtDex</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">My ArtDex</h1>
           <Link
             href="/premium"
             className="rounded-full border border-amber-400/50 px-3 py-1 text-xs font-semibold text-amber-300"

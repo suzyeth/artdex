@@ -32,7 +32,7 @@ export default function DexDetailSheet({ item, onDismiss }: DexDetailSheetProps)
         <div className="mt-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h2 className="text-xl font-bold text-zinc-100">{item.title}</h2>
+              <h2 className="font-display text-2xl font-semibold text-zinc-100">{item.title}</h2>
               <p className="text-sm text-zinc-400">{item.artistName}</p>
             </div>
             <RarityBadge rarity={item.rarity} />

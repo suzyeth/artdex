@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-zinc-950 px-6 text-center text-zinc-100">
       <p className="mb-3 text-5xl">🖼️</p>
-      <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">ArtDex</h1>
+      <h1 className="font-display text-5xl font-semibold tracking-tight sm:text-7xl">ArtDex</h1>
       <p className="mt-4 max-w-md text-balance text-zinc-400">
         Pokémon GO, but you collect the world&apos;s masterpieces. Visit a
         museum, snap the artwork in front of you, and add it to your Dex.
@@ -16,9 +16,12 @@ export default function Home() {
         >
           Open my Dex
         </Link>
-        <span className="cursor-not-allowed rounded-full border border-zinc-700 px-6 py-3 font-semibold text-zinc-500">
-          📷 Capture (soon)
-        </span>
+        <Link
+          href="/capture"
+          className="rounded-full border border-zinc-700 px-6 py-3 font-semibold text-zinc-200 transition hover:border-zinc-500"
+        >
+          📷 Capture
+        </Link>
       </div>
     </main>
   );

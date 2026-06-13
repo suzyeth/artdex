@@ -112,7 +112,7 @@ export default function CaptureCelebration({
         </div>
         <div className="space-y-1 p-4 text-center">
           <p className="text-xs uppercase tracking-widest text-zinc-500">Collected!</p>
-          <p className="font-bold text-zinc-100">{title}</p>
+          <p className="font-display text-lg font-semibold text-zinc-100">{title}</p>
           <p className="text-sm text-zinc-400">{artistName}</p>
           <div className="pt-1">
             <RarityBadge rarity={rarity} />
