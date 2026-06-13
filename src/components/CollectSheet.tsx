@@ -38,7 +38,7 @@ export default function CollectSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onDismiss}>
+    <div className="fixed inset-0 z-[55] flex items-end bg-black/60" onClick={onDismiss}>
       <motion.div
         className="w-full rounded-t-3xl border-t border-zinc-700 bg-zinc-900 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
         initial={{ y: "100%" }}

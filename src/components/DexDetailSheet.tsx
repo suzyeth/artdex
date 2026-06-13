@@ -14,7 +14,7 @@ interface DexDetailSheetProps {
 export default function DexDetailSheet({ item, onDismiss }: DexDetailSheetProps) {
   const date = item.collectedAt.slice(0, 10);
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onDismiss}>
+    <div className="fixed inset-0 z-[55] flex items-end bg-black/60" onClick={onDismiss}>
       <motion.div
         className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl border-t border-zinc-700 bg-zinc-900 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
         initial={{ y: "100%" }}
