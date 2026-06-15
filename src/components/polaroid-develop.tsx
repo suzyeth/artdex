@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { MomentKind } from "@/lib/domain/moments";
 import { useStampStyle } from "@/lib/stamp-preference";
 import { MomentStamp } from "@/components/moment-stamp";
@@ -34,13 +34,12 @@ export function PolaroidDevelop({
   }, []);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-background/96 px-8 backdrop-blur-md"
-      >
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-background/96 px-8 backdrop-blur-md"
+    >
         <p className="label-caps mb-4 text-muted-foreground">
           {developed ? (first ? "A first encounter" : "A reunion") : "Developing…"}
         </p>
@@ -87,7 +86,6 @@ export function PolaroidDevelop({
         >
           Continue
         </motion.button>
-      </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
 }
