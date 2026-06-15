@@ -16,6 +16,7 @@ interface CollectionContextValue {
   momentsByArtwork: Record<string, Moment[]>   // oldest-first per artwork
   isCollected: (id: string) => boolean
   collect: (entry: CollectedEntry) => void
+  updateMomentNote: (artworkId: string, index: number, note: string) => void
   count: number
   loading: boolean
 }
@@ -107,11 +108,25 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
     }).catch(() => {})
   }, [])
 
+  const updateMomentNote = useCallback((artworkId: string, index: number, note: string) => {
+    setMomentsByArtwork((prev) => {
+      const list = prev[artworkId]
+      if (!list || !list[index]) return prev
+      const next = list.map((m, i) => (i === index ? { ...m, note: note || undefined } : m))
+      return { ...prev, [artworkId]: next }
+    })
+    fetch("/api/moment", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ artworkId, index, note }),
+    }).catch(() => {})
+  }, [])
+
   const isCollected = useCallback((id: string) => Boolean(collected[id]), [collected])
 
   const value = useMemo<CollectionContextValue>(
-    () => ({ collected, momentsByArtwork, isCollected, collect, count: Object.keys(collected).length, loading }),
-    [collected, momentsByArtwork, isCollected, collect, loading],
+    () => ({ collected, momentsByArtwork, isCollected, collect, updateMomentNote, count: Object.keys(collected).length, loading }),
+    [collected, momentsByArtwork, isCollected, collect, updateMomentNote, loading],
   )
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>
