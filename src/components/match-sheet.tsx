@@ -44,6 +44,7 @@ function SealButton({ onSeal }: { onSeal: () => void }) {
       onPointerDown={start}
       onPointerUp={cancel}
       onPointerLeave={cancel}
+      onPointerCancel={cancel}
       className="relative mt-5 w-full select-none overflow-hidden bg-foreground py-4 text-sm font-semibold uppercase tracking-[0.15em] text-background"
     >
       <span className="relative z-10 inline-flex items-center justify-center gap-2">

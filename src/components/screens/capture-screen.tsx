@@ -115,6 +115,12 @@ export function CaptureScreen() {
     setMatchId(id);
   }
 
+  function handleContinue() {
+    if (capturePreview) URL.revokeObjectURL(capturePreview);
+    setCapturePreview(undefined);
+    setDevelop(null);
+  }
+
   function handleSeal(note: string) {
     const id = matchId;
     if (!id) return;
@@ -292,7 +298,7 @@ export function CaptureScreen() {
       </BottomSheet>
 
       <AnimatePresence>
-        {develop && <PolaroidDevelop {...develop} onContinue={() => setDevelop(null)} />}
+        {develop && <PolaroidDevelop {...develop} onContinue={handleContinue} />}
       </AnimatePresence>
     </div>
   );
