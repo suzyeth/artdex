@@ -4,7 +4,6 @@ import {
   ScanCommand,
   QueryCommand,
   GetCommand,
-  PutCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { ddb, TABLES } from "@/lib/aws/dynamo";
