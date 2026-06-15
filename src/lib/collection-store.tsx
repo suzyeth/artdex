@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { getArtwork } from "@/lib/data"
+import { sortMoments, type Moment } from "@/lib/domain/moments"
 
 export interface CollectedEntry {
   artworkId: string
@@ -12,6 +13,7 @@ export interface CollectedEntry {
 
 interface CollectionContextValue {
   collected: Record<string, CollectedEntry>
+  momentsByArtwork: Record<string, Moment[]>   // oldest-first per artwork
   isCollected: (id: string) => boolean
   collect: (entry: CollectedEntry) => void
   count: number
@@ -40,11 +42,20 @@ const MOCK_ENTRIES: CollectedEntry[] = [
 // keyed per browser by the anon cookie. Same shape the screens already consume.
 export function CollectionProvider({ children }: { children: ReactNode }) {
   const [collected, setCollected] = useState<Record<string, CollectedEntry>>({})
+  const [momentsByArtwork, setMomentsByArtwork] = useState<Record<string, Moment[]>>({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (MOCK_COLLECTION) {
       setCollected(Object.fromEntries(MOCK_ENTRIES.map((e) => [e.artworkId, e])))
+      setMomentsByArtwork(
+        Object.fromEntries(
+          MOCK_ENTRIES.map((e) => [
+            e.artworkId,
+            [{ capturedAt: `${e.collectedAt}T12:00:00.000Z`, museumId: getArtwork(e.artworkId)?.museumId ?? "" }],
+          ]),
+        ),
+      )
       setLoading(false)
       return
     }
@@ -52,6 +63,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
       .then((r) => (r.ok ? r.json() : { items: [] }))
       .then(({ items }) => {
         const map: Record<string, CollectedEntry> = {}
+        const moments: Record<string, Moment[]> = {}
         for (const it of items ?? []) {
           map[it.artworkId] = {
             artworkId: it.artworkId,
@@ -59,8 +71,12 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
             selfie: it.selfieUrl || undefined,
             collectedAt: (it.collectedAt || "").slice(0, 10),
           }
+          if (Array.isArray(it.moments) && it.moments.length > 0) {
+            moments[it.artworkId] = sortMoments(it.moments)
+          }
         }
         setCollected(map)
+        setMomentsByArtwork(moments)
       })
       .catch(() => {})
       .finally(() => setLoading(false))
@@ -69,6 +85,15 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
   const collect = useCallback((entry: CollectedEntry) => {
     setCollected((prev) => ({ ...prev, [entry.artworkId]: entry })) // optimistic
     const museumId = getArtwork(entry.artworkId)?.museumId
+    setMomentsByArtwork((prev) => {
+      const moment: Moment = {
+        capturedAt: new Date().toISOString(),
+        museumId: museumId ?? "",
+        photo: entry.selfie,
+        note: entry.note,
+      }
+      return { ...prev, [entry.artworkId]: sortMoments([...(prev[entry.artworkId] ?? []), moment]) }
+    })
     fetch("/api/collect", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -85,8 +110,8 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
   const isCollected = useCallback((id: string) => Boolean(collected[id]), [collected])
 
   const value = useMemo<CollectionContextValue>(
-    () => ({ collected, isCollected, collect, count: Object.keys(collected).length, loading }),
-    [collected, isCollected, collect, loading],
+    () => ({ collected, momentsByArtwork, isCollected, collect, count: Object.keys(collected).length, loading }),
+    [collected, momentsByArtwork, isCollected, collect, loading],
   )
 
   return <CollectionContext.Provider value={value}>{children}</CollectionContext.Provider>
