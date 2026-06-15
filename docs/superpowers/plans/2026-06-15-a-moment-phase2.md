@@ -849,7 +849,9 @@ export function CaptureScreen() {
         </div>
       </BottomSheet>
 
-      {develop && <PolaroidDevelop {...develop} onContinue={() => setDevelop(null)} />}
+      <AnimatePresence>
+        {develop && <PolaroidDevelop {...develop} onContinue={() => setDevelop(null)} />}
+      </AnimatePresence>
     </div>
   );
 }
