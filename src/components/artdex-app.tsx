@@ -8,6 +8,7 @@ import { CaptureScreen } from "@/components/screens/capture-screen"
 import { MapScreen } from "@/components/screens/map-screen"
 import { ProfileScreen } from "@/components/screens/profile-screen"
 import { PremiumScreen } from "@/components/screens/premium-screen"
+import { AchievementCelebration } from "@/components/achievement-celebration"
 
 export function ArtDexApp() {
   const [tab, setTab] = useState<Tab>("dex")
@@ -28,6 +29,7 @@ export function ArtDexApp() {
           </>
         )}
       </div>
+      <AchievementCelebration />
     </CollectionProvider>
   )
 }

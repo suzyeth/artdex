@@ -12,14 +12,20 @@ import {
 } from "@/lib/data"
 import { useCollection } from "@/lib/collection-store"
 import { rarityStyles } from "@/lib/rarity"
-import { Landmark, Palette, Globe, BadgeCheck } from "lucide-react"
+import { computeAchievements } from "@/lib/achievements"
+import { AchievementsScreen } from "@/components/screens/achievements-screen"
+import { Landmark, Palette, Globe, BadgeCheck, Trophy, ChevronRight } from "lucide-react"
 
 const RARITY_HIGH_TO_LOW: Rarity[] = ["legendary", "epic", "rare", "common"]
 
 export function ProfileScreen() {
   const { collected, count, loading } = useCollection()
+  const [showAchievements, setShowAchievements] = useState(false)
   const total = ARTWORKS.length
   const progress = total ? Math.round((count / total) * 100) : 0
+
+  const ach = useMemo(() => computeAchievements(collected), [collected])
+  const achUnlocked = ach.filter((a) => a.unlocked).length
 
   const stats = useMemo(() => {
     const mine = ARTWORKS.filter((a) => collected[a.id])
@@ -47,6 +53,8 @@ export function ProfileScreen() {
       recent,
     }
   }, [collected])
+
+  if (showAchievements) return <AchievementsScreen onBack={() => setShowAchievements(false)} />
 
   // Loading state — quiet skeleton, matches the ledger layout
   if (loading) {
@@ -97,6 +105,24 @@ export function ProfileScreen() {
           </div>
         </div>
       </header>
+
+      {/* Achievements entry — Steam-style */}
+      <button
+        onClick={() => setShowAchievements(true)}
+        className="mb-9 flex w-full items-center gap-3 rounded-md border border-border bg-card p-4 text-left transition-transform active:scale-[0.99]"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-[oklch(0.6_0.094_80)]/15 text-[oklch(0.46_0.09_80)]">
+          <Trophy className="size-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-heading text-base font-bold leading-tight">Achievements</span>
+          <span className="block text-xs text-muted-foreground">{achUnlocked} of {ach.length} unlocked</span>
+        </span>
+        <span className="font-mono text-sm tabular-nums text-muted-foreground">
+          {achUnlocked}/{ach.length}
+        </span>
+        <ChevronRight className="size-4 text-muted-foreground" />
+      </button>
 
       {/* Empty state — collection not started */}
       {count === 0 ? (
