@@ -44,15 +44,16 @@ export function PolaroidDevelop({
           {developed ? (first ? "A first encounter" : "A reunion") : "Developing…"}
         </p>
 
-        <div className={cn("w-64 rounded-sm bg-card p-3 pb-4 shadow-xl", first && "ring-2 ring-brass")}>
-          <div className="relative aspect-square w-full overflow-hidden rounded-sm bg-muted">
+        <div className={cn("w-[82vw] max-w-sm rounded-sm bg-card p-3 pb-4 shadow-xl", first && "ring-2 ring-brass")}>
+          {/* Show the photo at the proportions it was actually shot — no square crop. */}
+          <div className="relative w-full overflow-hidden rounded-sm bg-muted">
             <motion.img
               src={photo}
               alt="Your moment"
               initial={{ filter: "blur(16px) brightness(1.6) saturate(0.25)", opacity: 0.2 }}
               animate={{ filter: "blur(0px) brightness(1) saturate(1)", opacity: 1 }}
               transition={{ duration: DEVELOP_MS / 1000, ease: "easeOut" }}
-              className="size-full object-cover"
+              className="block max-h-[60vh] w-full object-contain"
             />
             {style === "postmark" && developed && (
               <motion.div
