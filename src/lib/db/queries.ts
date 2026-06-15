@@ -5,10 +5,12 @@ import {
   QueryCommand,
   GetCommand,
   PutCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { ddb, TABLES } from "@/lib/aws/dynamo";
 import { filterCurrentExhibits } from "@/lib/domain/candidates";
 import type { Rarity } from "@/lib/domain/rarity";
+import type { Moment } from "@/lib/domain/moments";
 
 export type ArtistRow = { id: string; name: string; era?: string; movement?: string };
 export type MuseumRow = {
@@ -22,6 +24,7 @@ export type CollectionRow = {
   user_id: string; artwork_id: string; collected_at: string;
   museum_id?: string; exhibition_label?: string;
   selfie_url?: string; photo_url?: string; note?: string;
+  moments?: Moment[];   // append-only list; earliest = 初遇
 };
 
 export type Candidate = {
@@ -124,4 +127,35 @@ export async function addCollection(row: CollectionRow): Promise<boolean> {
     }
     throw err;
   }
+}
+
+/**
+ * Append one moment to a (user, artwork) record, creating the item on first capture.
+ * Atomic via list_append — concurrent captures both land. Returns { isFirst }:
+ * isFirst is true when this capture is the artwork's 初遇 (the list now has one entry).
+ */
+export async function appendMoment(
+  userId: string,
+  artworkId: string,
+  moment: Moment,
+): Promise<{ isFirst: boolean }> {
+  const res = await ddb().send(
+    new UpdateCommand({
+      TableName: TABLES.collections,
+      Key: { user_id: userId, artwork_id: artworkId },
+      UpdateExpression:
+        "SET moments = list_append(if_not_exists(moments, :empty), :one), " +
+        "collected_at = if_not_exists(collected_at, :ts), " +
+        "museum_id = if_not_exists(museum_id, :mid)",
+      ExpressionAttributeValues: {
+        ":empty": [] as Moment[],
+        ":one": [moment],
+        ":ts": moment.capturedAt,
+        ":mid": moment.museumId,
+      },
+      ReturnValues: "ALL_NEW",
+    }),
+  );
+  const moments = (res.Attributes?.moments as Moment[]) ?? [];
+  return { isFirst: moments.length <= 1 };
 }
