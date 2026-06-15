@@ -11,6 +11,7 @@ import {
   type Rarity,
 } from "@/lib/data"
 import { useCollection } from "@/lib/collection-store"
+import { useStampStyle, type StampStyle } from "@/lib/stamp-preference"
 import { rarityStyles } from "@/lib/rarity"
 import { computeAchievements } from "@/lib/achievements"
 import { AchievementsScreen } from "@/components/screens/achievements-screen"
@@ -123,6 +124,8 @@ export function ProfileScreen() {
         </span>
         <ChevronRight className="size-4 text-muted-foreground" />
       </button>
+
+      <StampToggle />
 
       {/* Empty state — collection not started */}
       {count === 0 ? (
@@ -292,4 +295,31 @@ function Stat({
       <span className="label-caps text-muted-foreground">{label}</span>
     </div>
   )
+}
+
+function StampToggle() {
+  const [style, setStyle] = useStampStyle();
+  const opts: { value: StampStyle; label: string }[] = [
+    { value: "postmark", label: "邮戳 Postmark" },
+    { value: "ticket", label: "票根 Ticket" },
+  ];
+  return (
+    <section className="mb-9">
+      <h2 className="label-caps mb-3 text-muted-foreground">Keepsake stamp</h2>
+      <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md bg-border">
+        {opts.map((o) => (
+          <button
+            key={o.value}
+            onClick={() => setStyle(o.value)}
+            className={cn(
+              "bg-background py-3 text-sm font-medium transition-colors",
+              style === o.value ? "text-brass" : "text-muted-foreground",
+            )}
+          >
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </section>
+  );
 }
