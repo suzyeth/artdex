@@ -17,10 +17,37 @@ export async function GET() {
   const nameById = new Map(artists.map((a) => [a.id, a.name]));
   const museumById = new Map(museums.map((m) => [m.id, m]));
 
+  // S3 keys are presigned; local/remote paths pass through.
+  const resolvePhoto = async (u?: string): Promise<string> =>
+    !u ? "" : u.startsWith("/") || u.startsWith("http") ? u : await presignedGetUrl(u);
+
   const items = await Promise.all(
     records.map(async (r) => {
       const w = artworkById.get(r.artwork_id);
       const m = r.museum_id ? museumById.get(r.museum_id) : undefined;
+
+      // Prefer the new moments list; synthesize one from legacy fields for old rows.
+      const rawMoments =
+        r.moments && r.moments.length > 0
+          ? r.moments
+          : [{
+              capturedAt: r.collected_at,
+              museumId: r.museum_id ?? "",
+              exhibitionLabel: r.exhibition_label,
+              photo: r.selfie_url,
+              note: r.note,
+            }];
+
+      const moments = await Promise.all(
+        rawMoments.map(async (mo) => ({
+          capturedAt: mo.capturedAt,
+          museumId: mo.museumId ?? "",
+          exhibitionLabel: mo.exhibitionLabel ?? "",
+          note: mo.note ?? "",
+          photo: await resolvePhoto(mo.photo),
+        })),
+      );
+
       return {
         artworkId: r.artwork_id,
         title: w?.title ?? r.artwork_id,
@@ -34,12 +61,8 @@ export async function GET() {
         lat: m?.lat ?? null,
         lon: m?.lon ?? null,
         note: r.note ?? "",
-        // selfie_url is an S3 key (presign it) OR a local/remote path (pass through).
-        selfieUrl: !r.selfie_url
-          ? ""
-          : r.selfie_url.startsWith("/") || r.selfie_url.startsWith("http")
-            ? r.selfie_url
-            : await presignedGetUrl(r.selfie_url),
+        selfieUrl: await resolvePhoto(r.selfie_url),
+        moments,
       };
     })
   );
