@@ -34,3 +34,13 @@ describe("kindOf", () => {
     expect(kindOf(ms, ms[0])).toBe("reunion");
   });
 });
+
+describe("kindOf with identical timestamps", () => {
+  it("marks only the first of two same-timestamp captures as first", () => {
+    const a = m("2024-01-01");
+    const b = m("2024-01-01");
+    const ms = [a, b];
+    expect(kindOf(ms, a)).toBe("first");
+    expect(kindOf(ms, b)).toBe("reunion");
+  });
+});

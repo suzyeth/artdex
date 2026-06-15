@@ -22,8 +22,17 @@ export function firstMoment(moments: Moment[]): Moment | undefined {
   return sortMoments(moments)[0];
 }
 
-/** "first" only for the single earliest capture; "reunion" for every later one. */
+/**
+ * "first" only for the single earliest capture; "reunion" for every later one.
+ * Precondition: `target` is normally one of `moments`. When `target` is present
+ * by identity, only the literal earliest object is the 初遇 — so two captures that
+ * share an identical `capturedAt` are correctly split into first + reunion. For a
+ * deserialized `target` not present by reference, falls back to a capturedAt match.
+ */
 export function kindOf(moments: Moment[], target: Moment): MomentKind {
-  const first = firstMoment(moments);
-  return first && first.capturedAt === target.capturedAt ? "first" : "reunion";
+  const sorted = sortMoments(moments);
+  if (moments.includes(target)) {
+    return sorted[0] === target ? "first" : "reunion";
+  }
+  return sorted[0]?.capturedAt === target.capturedAt ? "first" : "reunion";
 }
