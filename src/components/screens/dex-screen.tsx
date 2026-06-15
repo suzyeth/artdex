@@ -39,8 +39,6 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
       .filter((g) => g.works.length > 0)
   }, [])
 
-  const openEntry = openId ? collected[openId] : null
-
   if (loading) return <DexSkeleton />
 
   return (
@@ -163,7 +161,7 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
         </div>
       )}
 
-      <ArtworkDetailSheet entry={openEntry} onClose={() => setOpenId(null)} />
+      <ArtworkDetailSheet artworkId={openId} onClose={() => setOpenId(null)} />
     </div>
   )
 }
