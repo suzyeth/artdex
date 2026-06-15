@@ -106,6 +106,36 @@ export const MUSEUMS: Record<string, Museum> = {
     "lat": 40.4138,
     "x": 48.97,
     "y": 27.55
+  },
+  "courtauld": {
+    "id": "courtauld",
+    "name": "The Courtauld Gallery",
+    "city": "London",
+    "country": "UK",
+    "lon": -0.117,
+    "lat": 51.5115,
+    "x": 49.97,
+    "y": 21.38
+  },
+  "tate-britain": {
+    "id": "tate-britain",
+    "name": "Tate Britain",
+    "city": "London",
+    "country": "UK",
+    "lon": -0.1276,
+    "lat": 51.4911,
+    "x": 49.96,
+    "y": 21.39
+  },
+  "scottish-national": {
+    "id": "scottish-national",
+    "name": "Scottish National Gallery",
+    "city": "Edinburgh",
+    "country": "UK",
+    "lon": -3.1956,
+    "lat": 55.9509,
+    "x": 49.11,
+    "y": 18.92
   }
 }
 
@@ -213,6 +243,11 @@ export const ARTISTS: Artist[] = [
   {
     "id": "constable",
     "name": "John Constable",
+    "nationality": "British"
+  },
+  {
+    "id": "millais",
+    "name": "John Everett Millais",
     "nationality": "British"
   }
 ]
@@ -815,6 +850,66 @@ export const ARTWORKS: Artwork[] = [
     "rarity": "rare",
     "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Venus%20and%20Mars%20National%20Gallery.jpg?width=1000",
     "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "bar-folies-bergere",
+    "title": "A Bar at the Folies-Bergère",
+    "artist": "Édouard Manet",
+    "artistId": "manet",
+    "year": "1882",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Edouard%20Manet%2C%20A%20Bar%20at%20the%20Folies-Berg%C3%A8re.jpg?width=1000",
+    "museumId": "courtauld",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "self-portrait-bandaged-ear",
+    "title": "Self-Portrait with Bandaged Ear",
+    "artist": "Vincent van Gogh",
+    "artistId": "vangogh",
+    "year": "1889",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Self-portrait%20with%20bandaged%20ear%20(1889%2C%20Courtauld%20Institute).jpg?width=1000",
+    "museumId": "courtauld",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "ophelia",
+    "title": "Ophelia",
+    "artist": "John Everett Millais",
+    "artistId": "millais",
+    "year": "1852",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Everett%20Millais%20-%20Ophelia%20-%20Google%20Art%20Project.jpg?width=1000",
+    "museumId": "tate-britain",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "snow-storm-steamboat",
+    "title": "Snow Storm – Steam-Boat off a Harbour's Mouth",
+    "artist": "J. M. W. Turner",
+    "artistId": "turner",
+    "year": "1842",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Joseph%20Mallord%20William%20Turner%20-%20Snow%20Storm%20-%20Steam-Boat%20off%20a%20Harbour's%20Mouth%20-%20WGA23178.jpg?width=1000",
+    "museumId": "tate-britain",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "old-woman-eggs",
+    "title": "An Old Woman Cooking Eggs",
+    "artist": "Diego Velázquez",
+    "artistId": "velazquez",
+    "year": "1618",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Diego%20Velazquez%20-%20An%20Old%20Woman%20Cooking%20Eggs%20-%20Google%20Art%20Project.jpg?width=1000",
+    "museumId": "scottish-national",
     "medium": "Oil on canvas",
     "blurb": ""
   }

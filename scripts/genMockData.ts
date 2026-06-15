@@ -9,7 +9,7 @@ const NATIONALITY: Record<string, string> = {
   renoir: "French", cezanne: "French", caravaggio: "Italian", velazquez: "Spanish",
   goya: "Spanish", turner: "British", manet: "French", rousseau: "French",
   delacroix: "French", gericault: "French",
-  vaneyck: "Flemish", holbein: "German", constable: "British",
+  vaneyck: "Flemish", holbein: "German", constable: "British", millais: "British",
 };
 
 const today = "2026-06-13";

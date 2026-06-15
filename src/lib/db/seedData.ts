@@ -29,6 +29,7 @@ export const artists = [
   { id: "vaneyck", name: "Jan van Eyck", era: "c.1390–1441", movement: "Early Netherlandish" },
   { id: "holbein", name: "Hans Holbein the Younger", era: "1497–1543", movement: "Northern Renaissance" },
   { id: "constable", name: "John Constable", era: "1776–1837", movement: "Romanticism" },
+  { id: "millais", name: "John Everett Millais", era: "1829–1896", movement: "Pre-Raphaelite" },
 ];
 
 export const museums = [
@@ -42,6 +43,9 @@ export const museums = [
   { id: "mauritshuis", name: "Mauritshuis", city: "The Hague", country: "Netherlands", lon: 4.3144, lat: 52.0805 },
   { id: "uffizi", name: "Uffizi Gallery", city: "Florence", country: "Italy", lon: 11.2553, lat: 43.7678 },
   { id: "prado", name: "Museo del Prado", city: "Madrid", country: "Spain", lon: -3.6921, lat: 40.4138 },
+  { id: "courtauld", name: "The Courtauld Gallery", city: "London", country: "UK", lon: -0.117, lat: 51.5115 },
+  { id: "tate-britain", name: "Tate Britain", city: "London", country: "UK", lon: -0.1276, lat: 51.4911 },
+  { id: "scottish-national", name: "Scottish National Gallery", city: "Edinburgh", country: "UK", lon: -3.1956, lat: 55.9509 },
 ];
 
 export const artworks: {
@@ -185,6 +189,18 @@ export const artworks: {
     rarity: "rare", isSignature: false, imageUrl: img("Supper at Emmaus-Caravaggio (1601).jpg") },
   { id: "venus-and-mars", artistId: "botticelli", title: "Venus and Mars", year: "1485",
     rarity: "rare", isSignature: false, imageUrl: img("Venus and Mars National Gallery.jpg") },
+
+  // --- More UK galleries (added) ---
+  { id: "bar-folies-bergere", artistId: "manet", title: "A Bar at the Folies-Bergère", year: "1882",
+    rarity: "epic", isSignature: true, imageUrl: img("Edouard Manet, A Bar at the Folies-Bergère.jpg") },
+  { id: "self-portrait-bandaged-ear", artistId: "vangogh", title: "Self-Portrait with Bandaged Ear", year: "1889",
+    rarity: "rare", isSignature: false, imageUrl: img("Vincent van Gogh - Self-portrait with bandaged ear (1889, Courtauld Institute).jpg") },
+  { id: "ophelia", artistId: "millais", title: "Ophelia", year: "1852",
+    rarity: "epic", isSignature: true, imageUrl: img("John Everett Millais - Ophelia - Google Art Project.jpg") },
+  { id: "snow-storm-steamboat", artistId: "turner", title: "Snow Storm – Steam-Boat off a Harbour's Mouth", year: "1842",
+    rarity: "rare", isSignature: false, imageUrl: img("Joseph Mallord William Turner - Snow Storm - Steam-Boat off a Harbour's Mouth - WGA23178.jpg") },
+  { id: "old-woman-eggs", artistId: "velazquez", title: "An Old Woman Cooking Eggs", year: "1618",
+    rarity: "rare", isSignature: false, imageUrl: img("Diego Velazquez - An Old Woman Cooking Eggs - Google Art Project.jpg") },
 ];
 
 // Exhibitions: every artwork is placed at its real home museum with a window
@@ -285,4 +301,11 @@ export const exhibitions: {
   { id: "ex-hay-wain", artworkId: "hay-wain", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-supper-at-emmaus", artworkId: "supper-at-emmaus", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-venus-and-mars", artworkId: "venus-and-mars", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+
+  // More UK galleries (added)
+  { id: "ex-bar-folies-bergere", artworkId: "bar-folies-bergere", museumId: "courtauld", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-self-portrait-bandaged-ear", artworkId: "self-portrait-bandaged-ear", museumId: "courtauld", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-ophelia", artworkId: "ophelia", museumId: "tate-britain", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-snow-storm-steamboat", artworkId: "snow-storm-steamboat", museumId: "tate-britain", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-old-woman-eggs", artworkId: "old-woman-eggs", museumId: "scottish-national", start: "2020-01-01", end: "2030-01-01" },
 ];

@@ -33,6 +33,7 @@ const MOCK_ENTRIES: CollectedEntry[] = [
   { artworkId: "liberty-leading", collectedAt: "2026-05-21" },
   { artworkId: "blue-water-lilies", collectedAt: "2026-04-15" },
   { artworkId: "ballet-class", collectedAt: "2026-04-16" },
+  { artworkId: "bar-folies-bergere", collectedAt: "2026-06-09" },
 ]
 
 // Backed by the real DynamoDB collection (/api/collection + /api/collect),
