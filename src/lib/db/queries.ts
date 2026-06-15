@@ -139,3 +139,28 @@ export async function appendMoment(
   const moments = (res.Attributes?.moments as Moment[]) ?? [];
   return { isFirst: moments.length <= 1 };
 }
+
+/**
+ * Edit the note on one moment of a (user, artwork) record, targeted by its index in
+ * the oldest-first list. Stored order == append order == chronological, so the index
+ * the client sees matches the stored index. DynamoDB cannot parameterise a list index,
+ * so the validated integer index is inlined into the expression.
+ */
+export async function updateMomentNote(
+  userId: string,
+  artworkId: string,
+  index: number,
+  note: string,
+): Promise<void> {
+  if (!Number.isInteger(index) || index < 0) throw new Error("invalid moment index");
+  await ddb().send(
+    new UpdateCommand({
+      TableName: TABLES.collections,
+      Key: { user_id: userId, artwork_id: artworkId },
+      UpdateExpression: `SET moments[${index}].#note = :note`,
+      ExpressionAttributeNames: { "#note": "note" },
+      ExpressionAttributeValues: { ":note": note },
+      ConditionExpression: "attribute_exists(user_id)",
+    }),
+  );
+}
