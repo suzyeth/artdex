@@ -9,6 +9,7 @@ const NATIONALITY: Record<string, string> = {
   renoir: "French", cezanne: "French", caravaggio: "Italian", velazquez: "Spanish",
   goya: "Spanish", turner: "British", manet: "French", rousseau: "French",
   delacroix: "French", gericault: "French",
+  vaneyck: "Flemish", holbein: "German", constable: "British",
 };
 
 const today = "2026-06-13";
@@ -28,6 +29,7 @@ const museumsObj = Object.fromEntries(
     m.id,
     {
       id: m.id, name: m.name, city: m.city, country: m.country,
+      lon: m.lon, lat: m.lat,
       // percentage coords on an equirectangular world map
       x: +(((m.lon + 180) / 360) * 100).toFixed(2),
       y: +(((90 - m.lat) / 180) * 100).toFixed(2),
@@ -49,7 +51,7 @@ const out = `// AUTO-GENERATED from src/lib/db/seedData.ts by scripts/genMockDat
 // IDs match the DynamoDB catalog so real collection + recognition line up.
 export type Rarity = "common" | "rare" | "epic" | "legendary"
 
-export interface Museum { id: string; name: string; city: string; country: string; x: number; y: number }
+export interface Museum { id: string; name: string; city: string; country: string; lon: number; lat: number; x: number; y: number }
 export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string }
 export interface Artist { id: string; name: string; nationality: string }
 

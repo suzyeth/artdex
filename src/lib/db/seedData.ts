@@ -26,6 +26,9 @@ export const artists = [
   { id: "rousseau", name: "Henri Rousseau", era: "1844–1910", movement: "Naïve art" },
   { id: "delacroix", name: "Eugène Delacroix", era: "1798–1863", movement: "Romanticism" },
   { id: "gericault", name: "Théodore Géricault", era: "1791–1824", movement: "Romanticism" },
+  { id: "vaneyck", name: "Jan van Eyck", era: "c.1390–1441", movement: "Early Netherlandish" },
+  { id: "holbein", name: "Hans Holbein the Younger", era: "1497–1543", movement: "Northern Renaissance" },
+  { id: "constable", name: "John Constable", era: "1776–1837", movement: "Romanticism" },
 ];
 
 export const museums = [
@@ -168,6 +171,20 @@ export const artworks: {
   // --- Géricault ---
   { id: "raft-medusa", artistId: "gericault", title: "The Raft of the Medusa", year: "1819",
     rarity: "epic", isSignature: true, imageUrl: img("JEAN LOUIS THÉODORE GÉRICAULT - La Balsa de la Medusa (Museo del Louvre, 1818-19).jpg") },
+
+  // --- National Gallery, London (added) ---
+  { id: "arnolfini-portrait", artistId: "vaneyck", title: "The Arnolfini Portrait", year: "1434",
+    rarity: "legendary", isSignature: true, imageUrl: img("Van Eyck - Arnolfini Portrait.jpg") },
+  { id: "the-ambassadors", artistId: "holbein", title: "The Ambassadors", year: "1533",
+    rarity: "epic", isSignature: true, imageUrl: img("Hans Holbein the Younger - The Ambassadors - Google Art Project.jpg") },
+  { id: "rokeby-venus", artistId: "velazquez", title: "The Rokeby Venus", year: "1647",
+    rarity: "epic", isSignature: false, imageUrl: img("Diego Velázquez - Rokeby Venus.jpg") },
+  { id: "hay-wain", artistId: "constable", title: "The Hay Wain", year: "1821",
+    rarity: "epic", isSignature: true, imageUrl: img("John Constable The Hay Wain.jpg") },
+  { id: "supper-at-emmaus", artistId: "caravaggio", title: "The Supper at Emmaus", year: "1601",
+    rarity: "rare", isSignature: false, imageUrl: img("Supper at Emmaus-Caravaggio (1601).jpg") },
+  { id: "venus-and-mars", artistId: "botticelli", title: "Venus and Mars", year: "1485",
+    rarity: "rare", isSignature: false, imageUrl: img("Venus and Mars National Gallery.jpg") },
 ];
 
 // Exhibitions: every artwork is placed at its real home museum with a window
@@ -260,4 +277,12 @@ export const exhibitions: {
 
   // Géricault
   { id: "ex-raft-medusa", artworkId: "raft-medusa", museumId: "louvre", start: "2020-01-01", end: "2030-01-01" },
+
+  // National Gallery, London (added)
+  { id: "ex-arnolfini-portrait", artworkId: "arnolfini-portrait", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-the-ambassadors", artworkId: "the-ambassadors", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-rokeby-venus", artworkId: "rokeby-venus", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-hay-wain", artworkId: "hay-wain", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-supper-at-emmaus", artworkId: "supper-at-emmaus", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-venus-and-mars", artworkId: "venus-and-mars", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
 ];

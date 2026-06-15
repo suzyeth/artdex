@@ -2,7 +2,7 @@
 // IDs match the DynamoDB catalog so real collection + recognition line up.
 export type Rarity = "common" | "rare" | "epic" | "legendary"
 
-export interface Museum { id: string; name: string; city: string; country: string; x: number; y: number }
+export interface Museum { id: string; name: string; city: string; country: string; lon: number; lat: number; x: number; y: number }
 export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string }
 export interface Artist { id: string; name: string; nationality: string }
 
@@ -12,6 +12,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Museum of Modern Art",
     "city": "New York",
     "country": "USA",
+    "lon": -73.9776,
+    "lat": 40.7614,
     "x": 29.45,
     "y": 27.35
   },
@@ -20,6 +22,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "The Metropolitan Museum of Art",
     "city": "New York",
     "country": "USA",
+    "lon": -73.9632,
+    "lat": 40.7794,
     "x": 29.45,
     "y": 27.34
   },
@@ -28,6 +32,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Louvre",
     "city": "Paris",
     "country": "France",
+    "lon": 2.3364,
+    "lat": 48.8606,
     "x": 50.65,
     "y": 22.86
   },
@@ -36,6 +42,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Musée d'Orsay",
     "city": "Paris",
     "country": "France",
+    "lon": 2.3266,
+    "lat": 48.86,
     "x": 50.65,
     "y": 22.86
   },
@@ -44,6 +52,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "The National Gallery",
     "city": "London",
     "country": "UK",
+    "lon": -0.1283,
+    "lat": 51.5089,
     "x": 49.96,
     "y": 21.38
   },
@@ -52,6 +62,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Rijksmuseum",
     "city": "Amsterdam",
     "country": "Netherlands",
+    "lon": 4.8852,
+    "lat": 52.36,
     "x": 51.36,
     "y": 20.91
   },
@@ -60,6 +72,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Van Gogh Museum",
     "city": "Amsterdam",
     "country": "Netherlands",
+    "lon": 4.881,
+    "lat": 52.3584,
     "x": 51.36,
     "y": 20.91
   },
@@ -68,6 +82,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Mauritshuis",
     "city": "The Hague",
     "country": "Netherlands",
+    "lon": 4.3144,
+    "lat": 52.0805,
     "x": 51.2,
     "y": 21.07
   },
@@ -76,6 +92,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Uffizi Gallery",
     "city": "Florence",
     "country": "Italy",
+    "lon": 11.2553,
+    "lat": 43.7678,
     "x": 53.13,
     "y": 25.68
   },
@@ -84,6 +102,8 @@ export const MUSEUMS: Record<string, Museum> = {
     "name": "Museo del Prado",
     "city": "Madrid",
     "country": "Spain",
+    "lon": -3.6921,
+    "lat": 40.4138,
     "x": 48.97,
     "y": 27.55
   }
@@ -179,6 +199,21 @@ export const ARTISTS: Artist[] = [
     "id": "gericault",
     "name": "Théodore Géricault",
     "nationality": "French"
+  },
+  {
+    "id": "vaneyck",
+    "name": "Jan van Eyck",
+    "nationality": "Flemish"
+  },
+  {
+    "id": "holbein",
+    "name": "Hans Holbein the Younger",
+    "nationality": "German"
+  },
+  {
+    "id": "constable",
+    "name": "John Constable",
+    "nationality": "British"
   }
 ]
 
@@ -708,6 +743,78 @@ export const ARTWORKS: Artwork[] = [
     "rarity": "epic",
     "image": "https://commons.wikimedia.org/wiki/Special:FilePath/JEAN%20LOUIS%20TH%C3%89ODORE%20G%C3%89RICAULT%20-%20La%20Balsa%20de%20la%20Medusa%20(Museo%20del%20Louvre%2C%201818-19).jpg?width=1000",
     "museumId": "louvre",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "arnolfini-portrait",
+    "title": "The Arnolfini Portrait",
+    "artist": "Jan van Eyck",
+    "artistId": "vaneyck",
+    "year": "1434",
+    "rarity": "legendary",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Van%20Eyck%20-%20Arnolfini%20Portrait.jpg?width=1000",
+    "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "the-ambassadors",
+    "title": "The Ambassadors",
+    "artist": "Hans Holbein the Younger",
+    "artistId": "holbein",
+    "year": "1533",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hans%20Holbein%20the%20Younger%20-%20The%20Ambassadors%20-%20Google%20Art%20Project.jpg?width=1000",
+    "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "rokeby-venus",
+    "title": "The Rokeby Venus",
+    "artist": "Diego Velázquez",
+    "artistId": "velazquez",
+    "year": "1647",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Diego%20Vel%C3%A1zquez%20-%20Rokeby%20Venus.jpg?width=1000",
+    "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "hay-wain",
+    "title": "The Hay Wain",
+    "artist": "John Constable",
+    "artistId": "constable",
+    "year": "1821",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Constable%20The%20Hay%20Wain.jpg?width=1000",
+    "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "supper-at-emmaus",
+    "title": "The Supper at Emmaus",
+    "artist": "Caravaggio",
+    "artistId": "caravaggio",
+    "year": "1601",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Supper%20at%20Emmaus-Caravaggio%20(1601).jpg?width=1000",
+    "museumId": "nationalgallery",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "venus-and-mars",
+    "title": "Venus and Mars",
+    "artist": "Sandro Botticelli",
+    "artistId": "botticelli",
+    "year": "1485",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Venus%20and%20Mars%20National%20Gallery.jpg?width=1000",
+    "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
   }

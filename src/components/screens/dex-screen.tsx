@@ -12,7 +12,7 @@ import { Sparkles, Check } from "lucide-react"
 type View = "artist" | "rarity"
 
 export function DexScreen({ onPremium }: { onPremium: () => void }) {
-  const { collected, count } = useCollection()
+  const { collected, count, loading } = useCollection()
   const [view, setView] = useState<View>("artist")
   const [openId, setOpenId] = useState<string | null>(null)
 
@@ -41,6 +41,8 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
 
   const openEntry = openId ? collected[openId] : null
 
+  if (loading) return <DexSkeleton />
+
   return (
     <div className="px-5 pb-28 pt-6">
       {/* Masthead */}
@@ -54,7 +56,7 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
           </div>
           <button
             onClick={onPremium}
-            className="mt-1 inline-flex items-center gap-1 border-b border-[oklch(0.5_0.09_80)] pb-0.5 text-xs font-semibold uppercase tracking-wider text-[oklch(0.46_0.09_80)]"
+            className="mt-1 inline-flex items-center gap-1 border-b border-[oklch(0.5_0.09_80)] pb-0.5 text-xs font-semibold uppercase tracking-wider text-[oklch(0.46_0.09_80)] transition-transform active:scale-95"
           >
             <Sparkles className="size-3" />
             Premium
@@ -83,7 +85,7 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
             key={v}
             onClick={() => setView(v)}
             className={cn(
-              "-mb-px border-b-2 pb-2.5 text-sm font-medium transition-colors",
+              "-mb-px border-b-2 pb-2.5 text-sm font-medium transition-colors active:opacity-70",
               view === v ? "border-foreground text-foreground" : "border-transparent text-muted-foreground",
             )}
           >
@@ -98,7 +100,11 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
           {byArtist.map(({ artist, works, got }, idx) => {
             const complete = got === works.length
             return (
-              <section key={artist.id}>
+              <section
+                key={artist.id}
+                className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+                style={{ animationDelay: `${idx * 40}ms` }}
+              >
                 <div className="mb-4 flex items-end justify-between border-b border-border pb-2">
                   <div className="flex items-baseline gap-3">
                     <span className="font-mono text-xs text-muted-foreground">
@@ -130,11 +136,15 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
         </div>
       ) : (
         <div className="space-y-9">
-          {byRarity.map(({ rarity, works }) => {
+          {byRarity.map(({ rarity, works }, idx) => {
             const got = works.filter((w) => collected[w.id]).length
             const s = rarityStyles[rarity]
             return (
-              <section key={rarity}>
+              <section
+                key={rarity}
+                className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+                style={{ animationDelay: `${idx * 40}ms` }}
+              >
                 <div className="mb-4 flex items-center gap-2.5 border-b border-border pb-2">
                   <span className={cn("size-2 rounded-full", s.dot)} />
                   <h2 className={cn("font-heading text-xl font-bold", s.text)}>{RARITY_META[rarity].label}</h2>
@@ -154,6 +164,36 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
       )}
 
       <ArtworkDetailSheet entry={openEntry} onClose={() => setOpenId(null)} />
+    </div>
+  )
+}
+
+function DexSkeleton() {
+  return (
+    <div className="px-5 pb-28 pt-6">
+      <div className="mb-6">
+        <div className="h-3 w-40 animate-pulse rounded bg-muted" />
+        <div className="mt-2 h-10 w-52 animate-pulse rounded bg-muted" />
+        <div className="mt-6 rule-t rule-b py-3">
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+      <div className="mb-7 flex gap-6 border-b border-border pb-2">
+        <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+        <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+      </div>
+      <div className="space-y-9">
+        {[0, 1].map((s) => (
+          <div key={s}>
+            <div className="mb-4 h-5 w-40 animate-pulse rounded bg-muted" />
+            <div className="grid grid-cols-3 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="aspect-[3/4] w-full animate-pulse rounded-sm bg-muted" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

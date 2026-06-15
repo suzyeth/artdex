@@ -14,16 +14,6 @@ const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
 
 const RARITY_RANK: Record<Rarity, number> = { common: 0, rare: 1, epic: 2, legendary: 3 }
 
-// Approx lng/lat for each museum for the geographic projection.
-const MUSEUM_COORDS: Record<string, [number, number]> = {
-  moma: [-73.98, 40.76],
-  louvre: [2.34, 48.86],
-  rijks: [4.89, 52.36],
-  metro: [139.77, 35.72],
-  mauritshuis: [4.31, 52.08],
-  orangerie: [2.32, 48.86],
-}
-
 export function MapScreen() {
   const { collected } = useCollection()
   const [openMuseum, setOpenMuseum] = useState<string | null>(null)
@@ -48,13 +38,20 @@ export function MapScreen() {
   const openData = openMuseum ? pins.find((p) => p.museumId === openMuseum) : null
   const openMuseumMeta = openMuseum ? MUSEUMS[openMuseum] : null
 
+  const visited = useMemo(() => new Map(pins.map((p) => [p.museumId, p])), [pins])
+  // unvisited first so visited markers paint on top
+  const orderedMuseums = useMemo(
+    () => Object.values(MUSEUMS).sort((a, b) => Number(visited.has(a.id)) - Number(visited.has(b.id))),
+    [visited],
+  )
+
   return (
     <div className="px-5 pb-28 pt-6">
       <header className="mb-5 border-b border-border pb-4">
         <p className="label-caps text-muted-foreground">The ArtDex · Atlas</p>
         <h1 className="mt-1 font-heading text-[2.5rem] font-bold leading-[0.95] tracking-tight">World Map</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {pins.length} {pins.length === 1 ? "location" : "locations"} visited ·{" "}
+          {pins.length} / {Object.keys(MUSEUMS).length} locations visited ·{" "}
           {Object.keys(collected).length} works captured
         </p>
       </header>
@@ -85,35 +82,32 @@ export function MapScreen() {
             }
           </Geographies>
 
-          {pins.map((pin) => {
-            const coords = MUSEUM_COORDS[pin.museumId]
-            if (!coords) return null
-            const isGold = pin.topRarity === "legendary"
+          {orderedMuseums.map((m) => {
+            const pin = visited.get(m.id)
+            const isGold = pin?.topRarity === "legendary"
             return (
-              <Marker key={pin.museumId} coordinates={coords} onClick={() => setOpenMuseum(pin.museumId)}>
-                <g style={{ cursor: "pointer" }}>
-                  <circle
-                    r={11}
-                    fill={isGold ? "oklch(0.6 0.094 80 / 0.22)" : "oklch(0.5 0.16 256 / 0.18)"}
-                  />
-                  <circle
-                    r={6}
-                    fill={isGold ? "oklch(0.6 0.094 80)" : "oklch(0.5 0.16 256)"}
-                    stroke="oklch(0.995 0.004 80)"
-                    strokeWidth={1.5}
-                  />
-                  <text
-                    textAnchor="middle"
-                    y={-13}
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 700,
-                      fill: isGold ? "oklch(0.46 0.09 80)" : "oklch(0.45 0.16 256)",
-                    }}
-                  >
-                    {pin.works.length}
-                  </text>
-                </g>
+              <Marker key={m.id} coordinates={[m.lon, m.lat]} onClick={() => pin && setOpenMuseum(m.id)}>
+                {pin ? (
+                  <g style={{ cursor: "pointer" }}>
+                    <circle r={11} fill={isGold ? "oklch(0.6 0.094 80 / 0.22)" : "oklch(0.5 0.16 256 / 0.18)"} />
+                    <circle
+                      r={6}
+                      fill={isGold ? "oklch(0.6 0.094 80)" : "oklch(0.5 0.16 256)"}
+                      stroke="oklch(0.995 0.004 80)"
+                      strokeWidth={1.5}
+                    />
+                    <text
+                      textAnchor="middle"
+                      y={-13}
+                      style={{ fontSize: 11, fontWeight: 700, fill: isGold ? "oklch(0.46 0.09 80)" : "oklch(0.45 0.16 256)" }}
+                    >
+                      {pin.works.length}
+                    </text>
+                  </g>
+                ) : (
+                  /* not visited — muted grey dot */
+                  <circle r={3.5} fill="oklch(0.7 0.01 78)" stroke="oklch(0.995 0.004 80)" strokeWidth={1} />
+                )}
               </Marker>
             )
           })}
@@ -127,6 +121,9 @@ export function MapScreen() {
         </span>
         <span className="inline-flex items-center gap-2">
           <span className="size-2.5 rounded-full bg-[oklch(0.5_0.16_256)]" /> Visited location
+        </span>
+        <span className="inline-flex items-center gap-2">
+          <span className="size-2.5 rounded-full bg-[oklch(0.7_0.01_78)]" /> Not visited yet
         </span>
       </div>
 
@@ -159,6 +156,23 @@ export function MapScreen() {
             </button>
           )
         })}
+
+        {orderedMuseums
+          .filter((m) => !visited.has(m.id))
+          .map((m) => (
+            <div key={m.id} className="flex items-center gap-3 border-b border-border py-3 opacity-55">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-muted text-muted-foreground">
+                <MapPin className="size-4" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-heading text-base font-semibold">{m.name}</span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {m.city}, {m.country}
+                </span>
+              </span>
+              <span className="label-caps text-muted-foreground">Not visited</span>
+            </div>
+          ))}
       </div>
 
       {/* Pin popup */}

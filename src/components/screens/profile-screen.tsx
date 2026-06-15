@@ -52,10 +52,20 @@ export function ProfileScreen() {
   if (loading) {
     return (
       <div className="px-5 pb-28 pt-6">
-        <div className="h-3 w-32 rounded bg-muted" />
-        <div className="mt-3 h-10 w-56 rounded bg-muted" />
+        <div className="h-3 w-32 animate-pulse rounded bg-muted" />
+        <div className="mt-3 h-10 w-56 animate-pulse rounded bg-muted" />
         <div className="mt-6 rule-t rule-b py-3">
-          <div className="h-4 w-full rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+        </div>
+        <div className="mt-9 grid grid-cols-2 gap-px overflow-hidden rounded-md bg-border">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-24 animate-pulse bg-muted" />
+          ))}
+        </div>
+        <div className="mt-9 space-y-3.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-6 w-full animate-pulse rounded bg-muted" />
+          ))}
         </div>
       </div>
     )
@@ -91,7 +101,10 @@ export function ProfileScreen() {
       {/* Empty state — collection not started */}
       {count === 0 ? (
         <div className="rule-b flex flex-col items-center gap-3 py-16 text-center">
-          <Palette className="size-7 text-muted-foreground" />
+          {/* Empty-frame motif — an unhung gallery wall */}
+          <div className="flex h-16 w-12 items-center justify-center rounded-sm border-2 border-dashed border-muted-foreground/30">
+            <span className="label-caps text-muted-foreground/50">Empty</span>
+          </div>
           <p className="font-heading text-xl font-bold">An empty gallery</p>
           <p className="max-w-[15rem] text-sm text-muted-foreground">
             Visit a museum and capture your first masterpiece — it will be catalogued here.
@@ -100,7 +113,7 @@ export function ProfileScreen() {
       ) : (
         <>
           {/* Stat ledger */}
-          <section className="mb-9 grid grid-cols-2 gap-px overflow-hidden rounded-md bg-border">
+          <section className="mb-9 grid grid-cols-2 gap-px overflow-hidden rounded-md bg-border animate-in fade-in fill-mode-both">
             <Stat icon={Palette} label="Works" value={count} />
             <Stat icon={BadgeCheck} label="Artists" value={stats.artists} />
             <Stat icon={Landmark} label="Museums" value={stats.museums} />
@@ -111,11 +124,15 @@ export function ProfileScreen() {
           <section className="mb-9">
             <h2 className="label-caps mb-4 text-muted-foreground">By rarity</h2>
             <div className="space-y-3.5">
-              {stats.byRarity.map(({ rarity, got, total: t }) => {
+              {stats.byRarity.map(({ rarity, got, total: t }, idx) => {
                 const s = rarityStyles[rarity]
                 const pct = t ? Math.round((got / t) * 100) : 0
                 return (
-                  <div key={rarity}>
+                  <div
+                    key={rarity}
+                    className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+                    style={{ animationDelay: `${idx * 50}ms` }}
+                  >
                     <div className="mb-1.5 flex items-center gap-2.5">
                       <span className={cn("size-2 rounded-full", s.dot)} />
                       <span className={cn("font-heading text-base font-bold", s.text)}>
@@ -142,14 +159,15 @@ export function ProfileScreen() {
             <section>
               <h2 className="label-caps mb-4 text-muted-foreground">Recent acquisitions</h2>
               <ul>
-                {stats.recent.map(({ entry, artwork }) => {
+                {stats.recent.map(({ entry, artwork }, idx) => {
                   const a = artwork!
                   const s = rarityStyles[a.rarity]
                   const museum = getMuseum(a.museumId)
                   return (
                     <li
                       key={entry.artworkId}
-                      className="rule-t flex items-baseline gap-3 py-3"
+                      className="rule-t flex items-baseline gap-3 py-3 animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+                      style={{ animationDelay: `${idx * 50}ms` }}
                     >
                       <span className={cn("mt-1.5 size-2 shrink-0 rounded-full", s.dot)} />
                       <div className="min-w-0 flex-1">

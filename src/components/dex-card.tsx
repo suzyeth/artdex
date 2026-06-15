@@ -36,6 +36,13 @@ export function DexCard({
             className="absolute inset-0 size-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.18_0.01_68)]/85 via-[oklch(0.18_0.01_68)]/10 to-transparent" />
+          {/* Matted frame — brass for legendary, hairline mat otherwise */}
+          <span
+            className={cn(
+              "pointer-events-none absolute inset-0 rounded-sm ring-1 ring-inset",
+              artwork.rarity === "legendary" ? "ring-[var(--brass-bright)]/70" : "ring-white/15",
+            )}
+          />
           <div className="absolute inset-x-0 bottom-0 p-2">
             <span className={cn("mb-1 block h-px w-4", s.dot)} />
             <p className="truncate font-heading text-[12px] font-semibold leading-tight text-white">{artwork.title}</p>
@@ -49,7 +56,7 @@ export function DexCard({
             src={artwork.image || "/placeholder.svg"}
             alt=""
             aria-hidden
-            className="absolute inset-0 size-full object-cover opacity-[0.06] grayscale"
+            className="absolute inset-0 size-full object-cover opacity-20 grayscale blur-[2px]"
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5">
             <Lock className="size-4 text-muted-foreground/50" />

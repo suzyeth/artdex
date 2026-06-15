@@ -5,6 +5,10 @@ import { getArtwork, type Artwork } from "@/lib/data"
 import { useCollection } from "@/lib/collection-store"
 import { MatchSheet } from "@/components/match-sheet"
 import { CaptureCelebration } from "@/components/capture-celebration"
+import { BottomSheet } from "@/components/bottom-sheet"
+import { RarityBadge } from "@/components/rarity-badge"
+import { fetchCandidates } from "@/lib/api"
+import type { Candidate } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
 import { Scan, ImageIcon, Zap } from "lucide-react"
@@ -43,6 +47,8 @@ export function CaptureScreen() {
   const [matchId, setMatchId] = useState<string | null>(null)
   const [celebrate, setCelebrate] = useState<Artwork | null>(null)
   const [miss, setMiss] = useState(false)
+  const [isRepro, setIsRepro] = useState(false)
+  const [manual, setManual] = useState<Candidate[] | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   function startScan() {
@@ -50,8 +56,14 @@ export function CaptureScreen() {
     fileRef.current?.click()
   }
 
+  async function openManual() {
+    const candidates = await fetchCandidates(MUSEUM_ID)
+    setManual(candidates)
+  }
+
   async function onPhoto(file: File) {
     setMiss(false)
+    setIsRepro(false)
     setPhase("scanning")
     try {
       const { base64, mediaType } = await fileToBase64(file)
@@ -60,14 +72,25 @@ export function CaptureScreen() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ museumId: MUSEUM_ID, imageBase64: base64, mediaType }),
       })
-      const { artwork } = await res.json()
+      const { artwork, isReproduction } = await res.json()
       setPhase("idle")
-      if (artwork?.id) setMatchId(artwork.id)
-      else setMiss(true)
+      if (artwork?.id) {
+        setIsRepro(Boolean(isReproduction))
+        setMatchId(artwork.id)
+      } else {
+        setMiss(true)
+        openManual() // let the user pick from works on display
+      }
     } catch {
       setPhase("idle")
       setMiss(true)
     }
+  }
+
+  function pickManual(id: string) {
+    setManual(null)
+    setIsRepro(false)
+    setMatchId(id)
   }
 
   function handleCollect(note: string, selfie?: string) {
@@ -152,7 +175,7 @@ export function CaptureScreen() {
       <div className="mx-auto mt-7 flex w-full max-w-sm items-center justify-between px-2">
         <button
           onClick={startScan}
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground"
+          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
           aria-label="Upload from library"
         >
           <ImageIcon className="size-5" />
@@ -190,7 +213,7 @@ export function CaptureScreen() {
         </button>
 
         <button
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground"
+          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
           aria-label="Toggle flash"
         >
           <Zap className="size-5" />
@@ -200,9 +223,40 @@ export function CaptureScreen() {
       <MatchSheet
         artworkId={matchId}
         alreadyCollected={matchId ? isCollected(matchId) : false}
+        isReproduction={isRepro}
         onClose={() => setMatchId(null)}
         onCollect={handleCollect}
       />
+
+      {/* Manual fallback — pick from the works currently on display */}
+      <BottomSheet open={manual !== null} onClose={() => setManual(null)}>
+        <div className="px-5 pb-8 pt-3">
+          <p className="label-caps mb-1 text-center text-primary">Couldn&apos;t identify it</p>
+          <p className="mb-4 text-center text-sm text-muted-foreground">
+            Pick the work from what&apos;s on display
+          </p>
+          <div className="max-h-[50vh] space-y-2 overflow-y-auto">
+            {(manual ?? []).map((c) => (
+              <button
+                key={c.id}
+                onClick={() => pickManual(c.id)}
+                className="flex w-full items-center gap-3 rounded-sm border border-border p-2 text-left transition-colors active:bg-secondary/50"
+              >
+                <img
+                  src={c.imageUrl || "/placeholder.svg"}
+                  alt={c.title}
+                  className="size-12 shrink-0 rounded-sm object-cover"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-heading text-sm font-semibold">{c.title}</span>
+                  <span className="label-caps text-muted-foreground">{c.artistName}</span>
+                </span>
+                <RarityBadge rarity={c.rarity} size="sm" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </BottomSheet>
 
       <CaptureCelebration artwork={celebrate} onContinue={() => setCelebrate(null)} />
     </div>

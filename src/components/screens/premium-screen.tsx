@@ -15,7 +15,7 @@ export function PremiumScreen({ onBack }: { onBack: () => void }) {
     <div className="px-5 pb-28 pt-6">
       <button
         onClick={onBack}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-opacity active:opacity-60"
       >
         <ArrowLeft className="size-4" /> Back
       </button>
@@ -33,10 +33,6 @@ export function PremiumScreen({ onBack }: { onBack: () => void }) {
           <span className="font-heading text-5xl font-bold tracking-tight">$3.99</span>
           <span className="mb-1.5 text-sm text-muted-foreground">/ month</span>
         </div>
-        <button className="mt-5 w-full bg-foreground py-4 text-sm font-semibold uppercase tracking-[0.15em] text-background transition-opacity active:opacity-90">
-          Start 7-day free trial
-        </button>
-        <p className="mt-2 text-center text-xs text-muted-foreground">Cancel anytime · Then $3.99/mo</p>
       </div>
 
       {/* Perks — numbered ledger */}
@@ -44,7 +40,11 @@ export function PremiumScreen({ onBack }: { onBack: () => void }) {
         {PERKS.map((perk, idx) => {
           const Icon = perk.icon
           return (
-            <li key={perk.title} className="flex items-start gap-4 border-b border-border py-4">
+            <li
+              key={perk.title}
+              className="flex items-start gap-4 border-b border-border py-4 animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+              style={{ animationDelay: `${idx * 50}ms` }}
+            >
               <span className="mt-0.5 font-mono text-xs text-muted-foreground">
                 {String(idx + 1).padStart(2, "0")}
               </span>
@@ -69,9 +69,17 @@ export function PremiumScreen({ onBack }: { onBack: () => void }) {
           Turn your collection into a living game. Drive footfall, unlock on-site legendaries and reach a new generation
           of visitors.
         </p>
-        <button className="mt-4 inline-flex items-center gap-1.5 border-b border-foreground pb-0.5 text-sm font-medium">
+        <button className="mt-4 inline-flex items-center gap-1.5 border-b border-foreground pb-0.5 text-sm font-medium transition-opacity active:opacity-60">
           <Building2 className="size-4" /> Get the partner kit
         </button>
+      </div>
+
+      {/* Sticky primary CTA — keeps the action in the thumb zone while reading */}
+      <div className="sticky bottom-0 z-10 -mx-5 mt-8 border-t border-border bg-background/95 px-5 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur-md">
+        <button className="w-full bg-foreground py-4 text-sm font-semibold uppercase tracking-[0.15em] text-background transition-all active:scale-[0.99] active:opacity-90">
+          Start 7-day free trial
+        </button>
+        <p className="mt-2 text-center text-xs text-muted-foreground">Cancel anytime · Then $3.99/mo</p>
       </div>
     </div>
   )

@@ -20,6 +20,21 @@ interface CollectionContextValue {
 
 const CollectionContext = createContext<CollectionContextValue | null>(null)
 
+// Dev-only: with NEXT_PUBLIC_MOCK_COLLECTION=1, seed a sample collection so the
+// visited-map state, framed/legendary cards, and profile stats are visible
+// without an AWS backend. Lights up National Gallery + Louvre (gold, hold a
+// legendary) and Musée d'Orsay (blue).
+const MOCK_COLLECTION = process.env.NEXT_PUBLIC_MOCK_COLLECTION === "1"
+const MOCK_ENTRIES: CollectedEntry[] = [
+  { artworkId: "arnolfini-portrait", collectedAt: "2026-06-10" },
+  { artworkId: "the-ambassadors", collectedAt: "2026-06-11" },
+  { artworkId: "sunflowers", collectedAt: "2026-06-12" },
+  { artworkId: "mona-lisa", collectedAt: "2026-05-20" },
+  { artworkId: "liberty-leading", collectedAt: "2026-05-21" },
+  { artworkId: "blue-water-lilies", collectedAt: "2026-04-15" },
+  { artworkId: "ballet-class", collectedAt: "2026-04-16" },
+]
+
 // Backed by the real DynamoDB collection (/api/collection + /api/collect),
 // keyed per browser by the anon cookie. Same shape the screens already consume.
 export function CollectionProvider({ children }: { children: ReactNode }) {
@@ -27,6 +42,11 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (MOCK_COLLECTION) {
+      setCollected(Object.fromEntries(MOCK_ENTRIES.map((e) => [e.artworkId, e])))
+      setLoading(false)
+      return
+    }
     fetch("/api/collection")
       .then((r) => (r.ok ? r.json() : { items: [] }))
       .then(({ items }) => {

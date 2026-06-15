@@ -72,13 +72,14 @@
 | 2026-06-13 | Editorial museum-catalogue treatment (rules + small-caps + mono ledgers) | Gives ArtDex an art-institution face; restraint lets the artwork carry the color. |
 | 2026-06-13 | Rarity = muted museum-label tones, not neon glow | Fits the warm gallery; neon read as generic game UI. |
 
-## Drift note (cleanup pending)
-There is a **parallel dead UI** still in the repo: Family-A App-Router pages
-(`app/dex`, `app/capture`, `app/map`, `app/premium`) + PascalCase components
-(`RarityBadge.tsx`, `BottomNav.tsx`, `DexGrid.tsx`, `CaptureCelebration.tsx`,
-`CollectSheet.tsx`, `DexDetailSheet.tsx`, `WorldMap.tsx`) that hardcode the old
-**dark zinc/amber** palette and ignore the tokens. `app/manifest.ts` even sets
-`start_url: "/dex"`, so the **installed PWA launches the dead dark version**.
-The live UI is `app/page.tsx → components/artdex-app.tsx → components/screens/*`
-(kebab-case, `lib/rarity.ts` tokens). **Action:** remove Family-A and set
-`start_url: "/"`. `lib/domain/rarity.ts` is NOT dead — the API/data layer uses it.
+## Drift note (resolved)
+The old dark **Family-A** UI (App-Router pages `app/dex|capture|map|premium` +
+PascalCase components `RarityBadge`/`BottomNav`/`DexGrid`/`CaptureCelebration`/
+`CollectSheet`/`DexDetailSheet`/`WorldMap`, which hardcoded a dark zinc/amber
+palette) has been **removed**, and `app/manifest.ts` `start_url` fixed `/dex → /`
+(theme color → `#f6f1e7`). Done in commit `370a0c4`.
+
+The single live UI is now `app/page.tsx → components/artdex-app.tsx →
+components/screens/*` (kebab-case, `lib/rarity.ts` OKLCH tokens). Note
+`lib/domain/rarity.ts` is **not** dead — the API/data layer (`/api/collect`,
+`lib/db`, `lib/types`) still uses its `Rarity` type + `isOnSiteRequired`.
