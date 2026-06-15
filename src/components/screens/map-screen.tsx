@@ -18,8 +18,13 @@ const RARITY_RANK: Record<Rarity, number> = { common: 0, rare: 1, epic: 2, legen
 export function MapScreen() {
   const { collected } = useCollection()
   const [openMuseum, setOpenMuseum] = useState<string | null>(null)
-  const [zoom, setZoom] = useState(1)
-  const [center, setCenter] = useState<[number, number]>([10, 30])
+  const [position, setPosition] = useState<{ coordinates: [number, number]; zoom: number }>({
+    coordinates: [-20, 48],
+    zoom: 1.8,
+  })
+
+  const zoomIn = () => setPosition((p) => ({ ...p, zoom: Math.min(40, +(p.zoom * 1.5).toFixed(2)) }))
+  const zoomOut = () => setPosition((p) => ({ ...p, zoom: Math.max(1, +(p.zoom / 1.5).toFixed(2)) }))
 
   // Group collected works by museum.
   const pins = useMemo(() => {
@@ -63,14 +68,14 @@ export function MapScreen() {
         {/* Zoom controls */}
         <div className="absolute right-2 top-2 z-10 flex flex-col overflow-hidden rounded-sm border border-border bg-card/95 backdrop-blur">
           <button
-            onClick={() => setZoom((z) => Math.min(8, +(z * 1.5).toFixed(2)))}
+            onClick={zoomIn}
             aria-label="Zoom in"
             className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
           >
             <Plus className="size-4" />
           </button>
           <button
-            onClick={() => setZoom((z) => Math.max(1, +(z / 1.5).toFixed(2)))}
+            onClick={zoomOut}
             aria-label="Zoom out"
             className="flex size-8 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:text-foreground"
           >
@@ -85,63 +90,63 @@ export function MapScreen() {
           style={{ width: "100%", height: "auto" }}
         >
           <ZoomableGroup
-            zoom={zoom}
-            center={center}
+            zoom={position.zoom}
+            center={position.coordinates}
             minZoom={1}
-            maxZoom={8}
-            onMoveEnd={({ zoom: z, coordinates }: { zoom: number; coordinates: [number, number] }) => {
-              setZoom(z)
-              setCenter(coordinates)
-            }}
+            maxZoom={40}
+            onMoveEnd={(pos: { coordinates: [number, number]; zoom: number }) => setPosition(pos)}
           >
-          <Geographies geography={GEO_URL}>
-            {({ geographies }: { geographies: any[] }) =>
-              geographies.map((geo: any) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill="oklch(0.91 0.01 78)"
-                  stroke="oklch(0.84 0.012 78)"
-                  strokeWidth={0.4}
-                  style={{
-                    default: { outline: "none" },
-                    hover: { outline: "none", fill: "oklch(0.88 0.014 78)" },
-                    pressed: { outline: "none" },
-                  }}
-                />
-              ))
-            }
-          </Geographies>
+            <Geographies geography={GEO_URL}>
+              {({ geographies }: { geographies: any[] }) =>
+                geographies.map((geo: any) => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill="oklch(0.91 0.01 78)"
+                    stroke="oklch(0.84 0.012 78)"
+                    strokeWidth={0.4}
+                    style={{
+                      default: { outline: "none" },
+                      hover: { outline: "none", fill: "oklch(0.88 0.014 78)" },
+                      pressed: { outline: "none" },
+                    }}
+                  />
+                ))
+              }
+            </Geographies>
 
-          {orderedMuseums.map((m) => {
-            const pin = visited.get(m.id)
-            const isGold = pin?.topRarity === "legendary"
-            return (
-              <Marker key={m.id} coordinates={[m.lon, m.lat]} onClick={() => pin && setOpenMuseum(m.id)}>
-                {pin ? (
-                  <g style={{ cursor: "pointer" }}>
-                    <circle r={11} fill={isGold ? "oklch(0.6 0.094 80 / 0.22)" : "oklch(0.5 0.16 256 / 0.18)"} />
-                    <circle
-                      r={6}
-                      fill={isGold ? "oklch(0.6 0.094 80)" : "oklch(0.5 0.16 256)"}
-                      stroke="oklch(0.995 0.004 80)"
-                      strokeWidth={1.5}
-                    />
-                    <text
-                      textAnchor="middle"
-                      y={-13}
-                      style={{ fontSize: 11, fontWeight: 700, fill: isGold ? "oklch(0.46 0.09 80)" : "oklch(0.45 0.16 256)" }}
-                    >
-                      {pin.works.length}
-                    </text>
+            {orderedMuseums.map((m) => {
+              const pin = visited.get(m.id)
+              const isGold = pin?.topRarity === "legendary"
+              return (
+                <Marker key={m.id} coordinates={[m.lon, m.lat]} onClick={() => pin && setOpenMuseum(m.id)}>
+                  {/* counter-scale so markers stay a constant screen size as the map zooms */}
+                  <g transform={`scale(${1 / position.zoom})`}>
+                    {pin ? (
+                      <g style={{ cursor: "pointer" }}>
+                        <circle r={11} fill={isGold ? "oklch(0.6 0.094 80 / 0.22)" : "oklch(0.5 0.16 256 / 0.18)"} />
+                        <circle
+                          r={6}
+                          fill={isGold ? "oklch(0.6 0.094 80)" : "oklch(0.5 0.16 256)"}
+                          stroke="oklch(0.995 0.004 80)"
+                          strokeWidth={1.5}
+                        />
+                        <text
+                          textAnchor="middle"
+                          y={-13}
+                          style={{ fontSize: 11, fontWeight: 700, fill: isGold ? "oklch(0.46 0.09 80)" : "oklch(0.45 0.16 256)" }}
+                        >
+                          {pin.works.length}
+                        </text>
+                      </g>
+                    ) : (
+                      /* not visited — muted grey dot */
+                      <circle r={3.5} fill="oklch(0.7 0.01 78)" stroke="oklch(0.995 0.004 80)" strokeWidth={1} />
+                    )}
                   </g>
-                ) : (
-                  /* not visited — muted grey dot */
-                  <circle r={3.5} fill="oklch(0.7 0.01 78)" stroke="oklch(0.995 0.004 80)" strokeWidth={1} />
-                )}
-              </Marker>
-            )
-          })}
+                </Marker>
+              )
+            })}
           </ZoomableGroup>
         </ComposableMap>
       </div>
