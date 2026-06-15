@@ -1,7 +1,8 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps"
+import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps"
+import { Plus, Minus } from "lucide-react"
 import { ARTWORKS, MUSEUMS, type Rarity } from "@/lib/data"
 import { useCollection } from "@/lib/collection-store"
 import { rarityStyles } from "@/lib/rarity"
@@ -17,6 +18,8 @@ const RARITY_RANK: Record<Rarity, number> = { common: 0, rare: 1, epic: 2, legen
 export function MapScreen() {
   const { collected } = useCollection()
   const [openMuseum, setOpenMuseum] = useState<string | null>(null)
+  const [zoom, setZoom] = useState(1)
+  const [center, setCenter] = useState<[number, number]>([10, 30])
 
   // Group collected works by museum.
   const pins = useMemo(() => {
@@ -56,13 +59,41 @@ export function MapScreen() {
         </p>
       </header>
 
-      <div className="overflow-hidden rounded-sm border border-border bg-card">
+      <div className="relative overflow-hidden rounded-sm border border-border bg-card">
+        {/* Zoom controls */}
+        <div className="absolute right-2 top-2 z-10 flex flex-col overflow-hidden rounded-sm border border-border bg-card/95 backdrop-blur">
+          <button
+            onClick={() => setZoom((z) => Math.min(8, +(z * 1.5).toFixed(2)))}
+            aria-label="Zoom in"
+            className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Plus className="size-4" />
+          </button>
+          <button
+            onClick={() => setZoom((z) => Math.max(1, +(z / 1.5).toFixed(2)))}
+            aria-label="Zoom out"
+            className="flex size-8 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Minus className="size-4" />
+          </button>
+        </div>
+
         <ComposableMap
           projectionConfig={{ scale: 145 }}
           width={800}
           height={420}
           style={{ width: "100%", height: "auto" }}
         >
+          <ZoomableGroup
+            zoom={zoom}
+            center={center}
+            minZoom={1}
+            maxZoom={8}
+            onMoveEnd={({ zoom: z, coordinates }: { zoom: number; coordinates: [number, number] }) => {
+              setZoom(z)
+              setCenter(coordinates)
+            }}
+          >
           <Geographies geography={GEO_URL}>
             {({ geographies }: { geographies: any[] }) =>
               geographies.map((geo: any) => (
@@ -111,6 +142,7 @@ export function MapScreen() {
               </Marker>
             )
           })}
+          </ZoomableGroup>
         </ComposableMap>
       </div>
 
