@@ -110,25 +110,6 @@ export async function getCollection(userId: string): Promise<CollectionRow[]> {
   return (r.Items ?? []) as CollectionRow[];
 }
 
-/** Insert a collection record; returns false if the user already had this artwork. */
-export async function addCollection(row: CollectionRow): Promise<boolean> {
-  try {
-    await ddb().send(
-      new PutCommand({
-        TableName: TABLES.collections,
-        Item: row,
-        ConditionExpression: "attribute_not_exists(user_id)",
-      })
-    );
-    return true;
-  } catch (err: unknown) {
-    if (err && typeof err === "object" && (err as { name?: string }).name === "ConditionalCheckFailedException") {
-      return false;
-    }
-    throw err;
-  }
-}
-
 /**
  * Append one moment to a (user, artwork) record, creating the item on first capture.
  * Atomic via list_append — concurrent captures both land. Returns { isFirst }:

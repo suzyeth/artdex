@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUserId } from "@/lib/auth";
-import { getArtwork, getMuseum, addCollection } from "@/lib/db/queries";
+import { getArtwork, getMuseum, appendMoment } from "@/lib/db/queries";
 import { isOnSiteRequired } from "@/lib/domain/rarity";
 import { haversineMeters, isWithinGate } from "@/lib/domain/locationGate";
 
@@ -40,16 +40,14 @@ export async function POST(req: NextRequest) {
   }
 
   const userId = await getUserId();
-  const inserted = await addCollection({
-    user_id: userId,
-    artwork_id: artwork.id,
-    collected_at: new Date().toISOString(),
-    museum_id: b.museumId || undefined,
-    exhibition_label: exhibitionLabel || undefined,
-    selfie_url: b.selfieUrl || undefined,
-    photo_url: b.photoUrl || undefined,
+  const capturedAt = new Date().toISOString();
+  const { isFirst } = await appendMoment(userId, artwork.id, {
+    capturedAt,
+    museumId: b.museumId || "",
+    exhibitionLabel: exhibitionLabel || undefined,
+    photo: b.selfieUrl || b.photoUrl || undefined,
     note: b.note || undefined,
   });
 
-  return NextResponse.json({ collected: true, alreadyHad: !inserted, rarity: artwork.rarity });
+  return NextResponse.json({ collected: true, isFirst, rarity: artwork.rarity });
 }
