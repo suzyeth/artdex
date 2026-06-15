@@ -1,5 +1,6 @@
 // Shared client/server types for ArtDex. Type-only — safe to import anywhere.
 import type { Rarity } from "@/lib/domain/rarity";
+import type { Moment } from "@/lib/domain/moments";
 
 export type Candidate = {
   id: string;
@@ -33,4 +34,5 @@ export type CollectionItem = {
   lon: number | null;
   note: string;
   selfieUrl: string;
+  moments: Moment[];
 };

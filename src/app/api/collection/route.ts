@@ -25,6 +25,8 @@ export async function GET() {
     records.map(async (r) => {
       const w = artworkById.get(r.artwork_id);
       const m = r.museum_id ? museumById.get(r.museum_id) : undefined;
+      // Resolve the legacy top-level selfie once; reused below so we never presign it twice.
+      const selfieUrl = await resolvePhoto(r.selfie_url);
 
       // Prefer the new moments list; synthesize one from legacy fields for old rows.
       const rawMoments =
@@ -34,7 +36,7 @@ export async function GET() {
               capturedAt: r.collected_at,
               museumId: r.museum_id ?? "",
               exhibitionLabel: r.exhibition_label,
-              photo: r.selfie_url,
+              photo: selfieUrl,
               note: r.note,
             }];
 
@@ -61,7 +63,7 @@ export async function GET() {
         lat: m?.lat ?? null,
         lon: m?.lon ?? null,
         note: r.note ?? "",
-        selfieUrl: await resolvePhoto(r.selfie_url),
+        selfieUrl,
         moments,
       };
     })
