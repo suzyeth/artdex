@@ -32,7 +32,7 @@ export async function recognize(
 }
 
 export type CollectResult =
-  | { ok: true; alreadyHad: boolean }
+  | { ok: true; isFirst: boolean }
   | { ok: false; gated: boolean; error: string };
 
 export async function collect(payload: {
@@ -49,7 +49,7 @@ export async function collect(payload: {
     body: JSON.stringify(payload),
   });
   const data = await res.json().catch(() => ({}));
-  if (res.ok && data.collected) return { ok: true, alreadyHad: !!data.alreadyHad };
+  if (res.ok && data.collected) return { ok: true, isFirst: !!data.isFirst };
   return { ok: false, gated: res.status === 403, error: data.error ?? "collect failed" };
 }
 
