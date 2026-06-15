@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { cn } from "@/lib/utils"
 import {
   ARTWORKS,
@@ -190,7 +190,61 @@ export function ProfileScreen() {
           )}
         </>
       )}
+
+      <Leaderboard />
     </div>
+  )
+}
+
+type LeaderRow = { rank: number; handle: string; count: number; score: number; isMe: boolean }
+type LeaderData = { top: LeaderRow[]; me: { rank: number | null; count: number; score: number }; totalCollectors: number }
+
+function Leaderboard() {
+  const [data, setData] = useState<LeaderData | null>(null)
+  useEffect(() => {
+    fetch("/api/leaderboard")
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setData)
+      .catch(() => {})
+  }, [])
+
+  if (!data || data.top.length === 0) return null
+
+  return (
+    <section className="mt-10">
+      <div className="mb-4 flex items-baseline justify-between">
+        <h2 className="label-caps text-muted-foreground">Collectors leaderboard</h2>
+        <span className="label-caps text-muted-foreground">{data.totalCollectors} collectors</span>
+      </div>
+      <ol>
+        {data.top.map((r) => (
+          <li
+            key={r.rank}
+            className={cn(
+              "rule-t flex items-center gap-3 py-2.5",
+              r.isMe && "-mx-2 rounded-sm bg-primary/5 px-2",
+            )}
+          >
+            <span className="w-5 shrink-0 font-mono text-sm tabular-nums text-muted-foreground">{r.rank}</span>
+            <span
+              className={cn(
+                "min-w-0 flex-1 truncate font-heading text-base",
+                r.isMe ? "font-bold text-primary" : "font-semibold",
+              )}
+            >
+              {r.handle}
+            </span>
+            <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">{r.count} works</span>
+            <span className="w-12 shrink-0 text-right font-mono text-sm font-bold tabular-nums">{r.score}</span>
+          </li>
+        ))}
+      </ol>
+      {data.me.rank && data.me.rank > data.top.length && (
+        <p className="rule-t py-2.5 text-center font-mono text-xs tabular-nums text-muted-foreground">
+          You · rank {data.me.rank} · {data.me.score} pts
+        </p>
+      )}
+    </section>
   )
 }
 
