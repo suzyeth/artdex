@@ -60,6 +60,7 @@ export function CaptureScreen() {
   const [manual, setManual] = useState<Candidate[] | null>(null);
   const [capturePreview, setCapturePreview] = useState<string | undefined>();
   const captureKey = useRef<string | undefined>(undefined);
+  const uploadPromise = useRef<Promise<string | undefined> | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function startScan() {
@@ -79,11 +80,13 @@ export function CaptureScreen() {
     // This photo IS the keepsake: show it locally and upload to S3 in the background.
     setCapturePreview(URL.createObjectURL(file));
     captureKey.current = undefined;
-    uploadSelfie(file)
+    // Keep the upload promise so a fast seal can wait for the key instead of losing it.
+    uploadPromise.current = uploadSelfie(file)
       .then((key) => {
         if (key) captureKey.current = key;
+        return key ?? undefined;
       })
-      .catch(() => {});
+      .catch(() => undefined);
     try {
       const { base64, mediaType } = await fileToBase64(file);
       const res = await fetch("/api/recognize", {
@@ -113,22 +116,24 @@ export function CaptureScreen() {
   }
 
   function handleSeal(note: string) {
-    if (!matchId) return;
-    const art = getArtwork(matchId);
+    const id = matchId;
+    if (!id) return;
+    const art = getArtwork(id);
     const museum = art ? getMuseum(art.museumId) : undefined;
     const capturedAt = new Date().toISOString();
 
     // Derive 初遇/重逢 from the moments BEFORE this one is appended (kindOf sorts internally).
-    const prior = momentsByArtwork[matchId] ?? [];
+    const prior = momentsByArtwork[id] ?? [];
     const thisMoment: Moment = { capturedAt, museumId: art?.museumId ?? "" };
     const kind = kindOf([...prior, thisMoment], thisMoment);
 
-    collect({
-      artworkId: matchId,
-      note: note || undefined,
-      selfie: captureKey.current,
-      collectedAt: capturedAt.slice(0, 10),
-    });
+    // Persist with the keepsake key. If the S3 upload hasn't finished yet, wait for
+    // it so we never silently drop the photo; the develop overlay still shows instantly.
+    const commit = (selfie?: string) =>
+      collect({ artworkId: id, note: note || undefined, selfie, collectedAt: capturedAt.slice(0, 10) });
+    if (captureKey.current) commit(captureKey.current);
+    else if (uploadPromise.current) uploadPromise.current.then(commit);
+    else commit(undefined);
     setMatchId(null);
 
     if (art && museum) {

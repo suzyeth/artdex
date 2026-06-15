@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { RarityBadge } from "@/components/rarity-badge";
 import { getArtwork, getMuseum } from "@/lib/data";
@@ -33,6 +33,11 @@ function SealButton({ onSeal }: { onSeal: () => void }) {
       timer.current = null;
     }
   }
+
+  // Clear a pending hold if the sheet unmounts mid-press.
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
+  }, []);
 
   return (
     <button
