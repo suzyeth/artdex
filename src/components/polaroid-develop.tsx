@@ -52,6 +52,7 @@ export function PolaroidDevelop({
         style={style}
         size="lg"
         showStamp={developed}
+        animateStamp
         photoNode={
           <motion.img
             src={photo}
