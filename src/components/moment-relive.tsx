@@ -25,13 +25,17 @@ export function MomentRelive({
 }) {
   const [style] = useStampStyle();
   const { updateMomentNote } = useCollection();
+  // Init from props at mount. The strip always unmounts the relive on close, so this
+  // is recreated (with fresh moment data) on next open — no stale-state sync needed.
   const [editing, setEditing] = useState(!moment.note);
   const [note, setNote] = useState(moment.note ?? "");
   const museum = getMuseum(moment.museumId);
 
   function save() {
-    updateMomentNote(artworkId, index, note);
     setEditing(false);
+    // Skip a no-op write (e.g. opening an empty memory and saving without typing).
+    if (note === (moment.note ?? "")) return;
+    updateMomentNote(artworkId, index, note);
   }
 
   return (
