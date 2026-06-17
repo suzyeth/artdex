@@ -48,7 +48,7 @@ function SealButton({ onSeal }: { onSeal: () => void }) {
       className="relative mt-5 w-full select-none overflow-hidden bg-foreground py-4 text-sm font-semibold uppercase tracking-[0.15em] text-background"
     >
       <span className="relative z-10 inline-flex items-center justify-center gap-2">
-        长按封缄 · Hold to seal <Sparkles className="size-4" />
+        Hold to seal <Sparkles className="size-4" />
       </span>
       <span
         className="absolute inset-y-0 left-0 bg-brass ease-linear"
@@ -131,7 +131,7 @@ export function MatchSheet({
 
           {alreadyCollected && (
             <div className="mt-4 inline-flex items-center gap-2 text-xs text-brass">
-              <RotateCcw className="size-3.5" /> 你又来看它了 · this will be a reunion (重逢)
+              <RotateCcw className="size-3.5" /> You&apos;re back — this will be a reunion
             </div>
           )}
 

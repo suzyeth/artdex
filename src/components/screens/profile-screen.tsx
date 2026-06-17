@@ -152,30 +152,46 @@ export function ProfileScreen() {
           {/* Rarity breakdown */}
           <section className="mb-9">
             <h2 className="label-caps mb-4 text-muted-foreground">By rarity</h2>
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               {stats.byRarity.map(({ rarity, got, total: t }, idx) => {
                 const s = rarityStyles[rarity]
                 const pct = t ? Math.round((got / t) * 100) : 0
+                const left = Math.max(0, t - got)
+                const complete = t > 0 && got >= t
                 return (
                   <div
                     key={rarity}
                     className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
                     style={{ animationDelay: `${idx * 50}ms` }}
                   >
-                    <div className="mb-1.5 flex items-center gap-2.5">
-                      <span className={cn("size-2 rounded-full", s.dot)} />
+                    <div className="mb-2 flex items-baseline gap-2.5">
+                      <span className={cn("size-2 translate-y-[-1px] rounded-full", s.dot)} />
                       <span className={cn("font-heading text-base font-bold", s.text)}>
                         {RARITY_META[rarity].label}
                       </span>
-                      <span className="ml-auto font-mono text-xs tabular-nums text-muted-foreground">
-                        {got}/{t}
+                      {complete ? (
+                        <span className="label-caps text-[9px] text-brass">Complete</span>
+                      ) : (
+                        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+                          {left} to go
+                        </span>
+                      )}
+                      <span className="ml-auto font-mono text-sm tabular-nums">
+                        <span className="text-foreground">{got}</span>
+                        <span className="text-muted-foreground">/{t}</span>
+                      </span>
+                      <span className="w-9 text-right font-mono text-xs tabular-nums text-muted-foreground">
+                        {pct}%
                       </span>
                     </div>
-                    <div className="h-px w-full bg-border">
-                      <div
-                        className={cn("h-px transition-all", s.dot)}
-                        style={{ width: `${pct}%` }}
-                      />
+                    {/* one pip per artwork in the tier — filled = collected */}
+                    <div className="flex gap-[3px]">
+                      {Array.from({ length: t }).map((_, i) => (
+                        <span
+                          key={i}
+                          className={cn("h-1.5 flex-1 rounded-[1px]", i < got ? s.dot : "bg-border")}
+                        />
+                      ))}
                     </div>
                   </div>
                 )
@@ -300,8 +316,8 @@ function Stat({
 function StampToggle() {
   const [style, setStyle] = useStampStyle();
   const opts: { value: StampStyle; label: string }[] = [
-    { value: "postmark", label: "邮戳 Postmark" },
-    { value: "ticket", label: "票根 Ticket" },
+    { value: "postmark", label: "Postmark" },
+    { value: "ticket", label: "Ticket" },
   ];
   return (
     <section className="mb-9">

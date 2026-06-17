@@ -29,7 +29,7 @@ export function MomentStamp({
         )}
       >
         <div>● {museumShort(museumName)} · {city}</div>
-        <div>{stampDateLong(capturedAt)} · {first ? "初遇 · first" : "重逢"}</div>
+        <div>{stampDateLong(capturedAt)} · {first ? "FIRST" : "REUNION"}</div>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export function MomentStamp({
     >
       <span className="text-[8px] font-semibold tracking-wide">{museumShort(museumName)}</span>
       <span className="text-[10px] font-bold leading-none">{stampYear(capturedAt)}</span>
-      {first && <span className="text-[7px] leading-none">初遇</span>}
+      {first && <span className="text-[7px] leading-none">1ST</span>}
     </div>
   );
 }
