@@ -11,9 +11,8 @@ const RARITY_INTENSITY: Record<Artwork["rarity"], number> = {
   common: 1, rare: 2, epic: 3, legendary: 4,
 }
 
-// Synthesized capture chime + haptics — louder/longer arpeggio for higher rarity.
-function playCelebration(rarity: Artwork["rarity"]) {
-  const intensity = RARITY_INTENSITY[rarity] ?? 1
+// Fallback: synthesize the chime inline if the pre-rendered SFX file can't load.
+function synthChime(intensity: number) {
   try {
     const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
     const ctx = new Ctx()
@@ -34,6 +33,19 @@ function playCelebration(rarity: Artwork["rarity"]) {
     })
   } catch {
     // audio is a nice-to-have; never break the flow
+  }
+}
+
+// Capture chime + haptics — richer pre-rendered SFX per rarity (see scripts/genSfx.ts),
+// with the inline synth as a graceful fallback. Plays on a user gesture, so autoplay is allowed.
+function playCelebration(rarity: Artwork["rarity"]) {
+  const intensity = RARITY_INTENSITY[rarity] ?? 1
+  try {
+    const audio = new Audio(`/sfx/collect-${rarity}.wav`)
+    audio.volume = 0.2 + intensity * 0.12
+    audio.play().catch(() => synthChime(intensity))
+  } catch {
+    synthChime(intensity)
   }
   try {
     navigator.vibrate?.([40, 60, 40, 60, 80, 60, 160].slice(0, intensity * 2 - 1))
