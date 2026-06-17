@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Caveat, Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -9,6 +9,8 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   style: ["normal", "italic"],
 });
+// Handwritten voice — used only for personal memory captions on moment polaroids.
+const caveat = Caveat({ variable: "--font-caveat", subsets: ["latin"], weight: ["500", "600"] });
 
 export const metadata: Metadata = {
   title: "ArtDex — Collect the World's Masterpieces",
@@ -34,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} bg-background`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${caveat.variable} bg-background`}
     >
       <body className="font-sans antialiased">{children}</body>
     </html>
