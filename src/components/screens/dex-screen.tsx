@@ -7,7 +7,7 @@ import { useCollection } from "@/lib/collection-store"
 import { DexCard } from "@/components/dex-card"
 import { ArtworkDetailSheet } from "@/components/artwork-detail-sheet"
 import { rarityStyles } from "@/lib/rarity"
-import { Sparkles, Check } from "lucide-react"
+import { Sparkles, Check, Search, X } from "lucide-react"
 
 type View = "artist" | "rarity"
 
@@ -15,6 +15,8 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
   const { collected, count, loading } = useCollection()
   const [view, setView] = useState<View>("artist")
   const [openId, setOpenId] = useState<string | null>(null)
+  const [query, setQuery] = useState("")
+  const q = query.trim().toLowerCase()
 
   const total = ARTWORKS.length
   const progress = Math.round((count / total) * 100)
@@ -38,6 +40,15 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
       }))
       .filter((g) => g.works.length > 0)
   }, [])
+
+  // Client-side search over the whole catalogue — matches artwork title or artist name.
+  const results = useMemo(() => {
+    if (!q) return []
+    return ARTWORKS.filter((a) => {
+      const artist = ARTISTS.find((ar) => ar.id === a.artistId)
+      return a.title.toLowerCase().includes(q) || (artist?.name.toLowerCase().includes(q) ?? false)
+    })
+  }, [q])
 
   if (loading) return <DexSkeleton />
 
@@ -76,6 +87,47 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
         </div>
       </header>
 
+      {/* Search — filter the catalogue by artwork title or artist name */}
+      <div className="relative mb-6">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search works or artists…"
+          aria-label="Search works or artists"
+          className="w-full rounded-sm border border-border bg-transparent py-2.5 pl-9 pr-9 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-foreground focus:outline-none"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            aria-label="Clear search"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
+        )}
+      </div>
+
+      {q ? (
+        <section>
+          <div className="mb-4 flex items-baseline gap-2.5 border-b border-border pb-2">
+            <h2 className="label-caps text-muted-foreground">Results</h2>
+            <span className="ml-auto font-mono text-xs tabular-nums text-muted-foreground">{results.length}</span>
+          </div>
+          {results.length > 0 ? (
+            <div className="grid grid-cols-3 gap-3">
+              {results.map((w) => (
+                <DexCard key={w.id} artwork={w} collected={Boolean(collected[w.id])} onClick={() => setOpenId(w.id)} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              No works or artists match “{query.trim()}”.
+            </p>
+          )}
+        </section>
+      ) : (
+        <>
       {/* Tabs — underlined editorial nav, not a pill switch */}
       <div className="mb-7 flex gap-6 border-b border-border">
         {(["artist", "rarity"] as View[]).map((v) => (
@@ -159,6 +211,8 @@ export function DexScreen({ onPremium }: { onPremium: () => void }) {
             )
           })}
         </div>
+      )}
+        </>
       )}
 
       <ArtworkDetailSheet artworkId={openId} onClose={() => setOpenId(null)} />
