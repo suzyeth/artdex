@@ -97,8 +97,8 @@ export function MapScreen() {
             onMoveEnd={(pos: { coordinates: [number, number]; zoom: number }) => setPosition(pos)}
           >
             <Geographies geography={GEO_URL}>
-              {({ geographies }: { geographies: any[] }) =>
-                geographies.map((geo: any) => (
+              {({ geographies }: { geographies: Array<{ rsmKey: string }> }) =>
+                geographies.map((geo) => (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
