@@ -7,6 +7,9 @@ import type { StampStyle } from "@/lib/stamp-preference";
 import { MomentStamp } from "@/components/moment-stamp";
 import { cn } from "@/lib/utils";
 
+// An authentic instant-film frame: glossy near-white stock, near-square image, and the
+// iconic thick bottom "chin" you write on. Shared by the develop overlay, the relive
+// view, and the moment timeline so a captured Polaroid looks the same everywhere.
 export function PolaroidCard({
   photo,
   museumName,
@@ -17,6 +20,8 @@ export function PolaroidCard({
   size = "lg",
   showStamp = true,
   animateStamp = false,
+  square = false,
+  chinNote,
   photoNode,
 }: {
   photo: string;
@@ -27,8 +32,12 @@ export function PolaroidCard({
   style: StampStyle;
   size?: "sm" | "lg";
   showStamp?: boolean;
-  /** Spring the postmark in (the develop climax). Off for static contexts like the strip. */
+  /** Spring the postmark in (the develop climax). Off for static contexts. */
   animateStamp?: boolean;
+  /** Crop the image to a square (the classic instant-film aperture). Off => full frame. */
+  square?: boolean;
+  /** Handwritten line inked across the chin. Falls back to the museum caption when absent. */
+  chinNote?: string;
   /** Override the photo element (e.g. an animated develop image). Defaults to a static img. */
   photoNode?: ReactNode;
 }) {
@@ -37,15 +46,27 @@ export function PolaroidCard({
   return (
     <div
       className={cn(
-        "rounded-sm bg-card",
-        lg ? "w-[82vw] max-w-sm p-3 pb-4 shadow-xl" : "w-40 p-2 pb-3 shadow-md",
-        first && "ring-2 ring-brass",
+        // glossy film stock, sharp corners (instant film isn't rounded)
+        "rounded-[2px] bg-[oklch(0.987_0.007_86)]",
+        lg ? "w-[82vw] max-w-sm p-3 pb-14 shadow-xl" : "w-full p-2 pb-10 shadow-md",
+        first && "ring-1 ring-brass/50",
       )}
     >
-      <div className="relative w-full overflow-hidden rounded-sm bg-muted">
+      <div className={cn("relative overflow-hidden bg-muted", square && "aspect-square")}>
         {photoNode ?? (
-          <img src={photo || "/placeholder.svg"} alt="Your moment" className="block max-h-[60vh] w-full object-contain" />
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={photo || "/placeholder.svg"}
+            alt="Your moment"
+            className={cn("block w-full", square ? "h-full object-cover" : "max-h-[60vh] object-contain")}
+          />
         )}
+        {/* developed-film vignette for depth */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ boxShadow: "inset 0 0 30px rgba(45,32,12,0.22), inset 0 0 8px rgba(45,32,12,0.12)" }}
+        />
         {showStamp && style === "postmark" && (
           <motion.div
             className="absolute bottom-2 right-2"
@@ -58,14 +79,25 @@ export function PolaroidCard({
         )}
       </div>
 
-      <p
-        className={cn(
-          "px-1 text-center font-heading italic text-muted-foreground",
-          lg ? "pt-3 text-sm" : "pt-2 text-xs",
-        )}
-      >
-        {museumName} · {city}
-      </p>
+      {chinNote ? (
+        <p
+          className={cn(
+            "px-2 text-center font-hand leading-tight text-foreground/85",
+            lg ? "pt-4 text-2xl" : "pt-3 text-lg",
+          )}
+        >
+          {chinNote}
+        </p>
+      ) : (
+        <p
+          className={cn(
+            "px-1 text-center font-heading italic text-muted-foreground",
+            lg ? "pt-4 text-sm" : "pt-3 text-xs",
+          )}
+        >
+          {museumName} · {city}
+        </p>
+      )}
 
       {showStamp && style === "ticket" && (
         <div className="px-1 pt-1">
