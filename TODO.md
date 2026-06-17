@@ -32,9 +32,9 @@
 
 ## 🟡 剩余（不阻塞，按优先级）
 
-- [ ] 文档对齐：spec / 计划里的 Aurora 段落改成 DynamoDB（本 TODO 已注明）
-- [ ] README 重写（评委会看仓库；现在偏默认模板）
-- [ ] 庆祝音效：换成真实/合成音效文件
+- [x] 文档对齐：spec / 计划 / 上层 CLAUDE.md 的 Aurora→DynamoDB + Clerk→cookie 已在勘误横幅注明
+- [x] README 重写：DynamoDB 栈、真实 AWS 状态、拍立得 moment 特性、准确 catalog 数（55/22/13/57）
+- [x] 庆祝音效：换成预渲染钟琴音色 WAV（`scripts/genSfx.ts` → `public/sfx/collect-<rarity>.wav`），合成器作降级
 - [ ] **Phase 3 Clerk（可选）**：现用 cookie 匿名 id，每浏览器独立收藏，demo 够用；要"加好友/跨设备"才需要
 
 ## 🔵 收尾（Phase 11 提交）
