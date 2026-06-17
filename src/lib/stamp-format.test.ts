@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { stampDateLong, stampYear, museumShort } from "./stamp-format";
+import { stampDateLong, stampTime, stampYear, museumShort } from "./stamp-format";
 
 describe("stampDateLong", () => {
   it("formats an ISO timestamp as 'D MON YYYY' in UTC", () => {
@@ -7,6 +7,18 @@ describe("stampDateLong", () => {
   });
   it("returns '' for an invalid date", () => {
     expect(stampDateLong("not-a-date")).toBe("");
+  });
+});
+
+describe("stampTime", () => {
+  it("formats an ISO timestamp as 'HH:MM' in UTC", () => {
+    expect(stampTime("2026-06-15T14:32:00.000Z")).toBe("14:32");
+  });
+  it("zero-pads hours and minutes", () => {
+    expect(stampTime("2026-01-02T03:05:00.000Z")).toBe("03:05");
+  });
+  it("returns '' for an invalid date", () => {
+    expect(stampTime("not-a-date")).toBe("");
   });
 });
 

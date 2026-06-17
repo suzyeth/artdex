@@ -8,6 +8,14 @@ export function stampDateLong(iso: string): string {
   return `${d.getUTCDate()} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
 
+export function stampTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  const mm = String(d.getUTCMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+}
+
 export function stampYear(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
