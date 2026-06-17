@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { getArtwork, getMuseum } from "@/lib/data";
 import { useCollection } from "@/lib/collection-store";
-import { kindOf, type Moment, type MomentKind } from "@/lib/domain/moments";
+import { kindOf, type Moment, type MomentKind, type StampStyle } from "@/lib/domain/moments";
 import { MatchSheet } from "@/components/match-sheet";
 import { PolaroidDevelop } from "@/components/polaroid-develop";
 import { BottomSheet } from "@/components/bottom-sheet";
@@ -22,6 +22,7 @@ type DevelopState = {
   city: string;
   capturedAt: string;
   kind: MomentKind;
+  stampStyle: StampStyle;
 };
 
 // Demo museum: real Bedrock recognition is scoped to this museum's works on display.
@@ -121,7 +122,7 @@ export function CaptureScreen() {
     setDevelop(null);
   }
 
-  function handleSeal(note: string) {
+  function handleSeal(note: string, stampStyle: StampStyle) {
     const id = matchId;
     if (!id) return;
     const art = getArtwork(id);
@@ -136,7 +137,7 @@ export function CaptureScreen() {
     // Persist with the keepsake key. If the S3 upload hasn't finished yet, wait for
     // it so we never silently drop the photo; the develop overlay still shows instantly.
     const commit = (selfie?: string) =>
-      collect({ artworkId: id, note: note || undefined, selfie, collectedAt: capturedAt.slice(0, 10) });
+      collect({ artworkId: id, note: note || undefined, selfie, collectedAt: capturedAt.slice(0, 10), stampStyle });
     if (captureKey.current) commit(captureKey.current);
     else if (uploadPromise.current) uploadPromise.current.then(commit);
     else commit(undefined);
@@ -149,6 +150,7 @@ export function CaptureScreen() {
         city: museum.city,
         capturedAt,
         kind,
+        stampStyle,
       });
     }
   }

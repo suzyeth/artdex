@@ -6,6 +6,7 @@ import { RarityBadge } from "@/components/rarity-badge";
 import { getArtwork, getMuseum } from "@/lib/data";
 import { rarityStyles } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
+import type { StampStyle } from "@/lib/domain/moments";
 import { Sparkles, Lock, MapPin, AlertTriangle, RotateCcw } from "lucide-react";
 
 const HOLD_MS = 1000;
@@ -71,18 +72,21 @@ export function MatchSheet({
   isReproduction?: boolean;
   photoPreview?: string;
   onClose: () => void;
-  onSeal: (note: string) => void;
+  onSeal: (note: string, stampStyle: StampStyle) => void;
 }) {
   const artwork = artworkId ? getArtwork(artworkId) : undefined;
   const museum = artwork ? getMuseum(artwork.museumId) : undefined;
   const [note, setNote] = useState("");
+  // Stamp is chosen here, once, and fixed on the moment — not changeable afterward.
+  const [stamp, setStamp] = useState<StampStyle>("postmark");
 
   const isLegendary = artwork?.rarity === "legendary";
   const s = artwork ? rarityStyles[artwork.rarity] : null;
 
   function handleSeal() {
-    onSeal(note);
+    onSeal(note, stamp);
     setNote("");
+    setStamp("postmark");
   }
 
   return (
@@ -148,6 +152,26 @@ export function MatchSheet({
               placeholder="What struck you about it?"
               className="w-full resize-none rounded-sm border border-border bg-transparent p-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-foreground focus:outline-none"
             />
+          </div>
+
+          {/* Keepsake stamp — picked here, once, then fixed on this moment */}
+          <div className="mt-5">
+            <span className="label-caps mb-2 block text-muted-foreground">Keepsake stamp</span>
+            <div className="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border">
+              {(["postmark", "ticket"] as StampStyle[]).map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => setStamp(opt)}
+                  className={cn(
+                    "bg-card py-2.5 text-sm font-medium transition-colors",
+                    stamp === opt ? "text-brass" : "text-muted-foreground",
+                  )}
+                >
+                  {opt === "postmark" ? "Postmark" : "Ticket"}
+                </button>
+              ))}
+            </div>
           </div>
 
           <SealButton onSeal={handleSeal} />

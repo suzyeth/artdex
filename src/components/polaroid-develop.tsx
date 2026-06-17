@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import type { MomentKind } from "@/lib/domain/moments";
-import { useStampStyle } from "@/lib/stamp-preference";
+import type { MomentKind, StampStyle } from "@/lib/domain/moments";
 import { PolaroidCard } from "@/components/polaroid-card";
 
 const DEVELOP_MS = 13000; // within the 10–20s window from the spec
@@ -14,6 +13,7 @@ export function PolaroidDevelop({
   city,
   capturedAt,
   kind,
+  stampStyle,
   onContinue,
 }: {
   photo: string;
@@ -21,9 +21,10 @@ export function PolaroidDevelop({
   city: string;
   capturedAt: string;
   kind: MomentKind;
+  stampStyle: StampStyle;
   onContinue: () => void;
 }) {
-  const [style] = useStampStyle();
+  const style = stampStyle;
   const [developed, setDeveloped] = useState(false);
   const first = kind === "first";
 

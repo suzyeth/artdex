@@ -2,13 +2,14 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { getArtwork } from "@/lib/data"
-import { sortMoments, type Moment } from "@/lib/domain/moments"
+import { sortMoments, type Moment, type StampStyle } from "@/lib/domain/moments"
 
 export interface CollectedEntry {
   artworkId: string
   note?: string
   selfie?: string
   collectedAt: string // ISO date
+  stampStyle?: StampStyle
 }
 
 interface CollectionContextValue {
@@ -92,6 +93,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
         museumId: museumId ?? "",
         photo: entry.selfie,
         note: entry.note,
+        stampStyle: entry.stampStyle,
       }
       return { ...prev, [entry.artworkId]: sortMoments([...(prev[entry.artworkId] ?? []), moment]) }
     })
@@ -104,6 +106,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
         onSite: true, // the capture flow only fires once the user is "at" the museum
         note: entry.note,
         selfieUrl: entry.selfie,
+        stampStyle: entry.stampStyle,
       }),
     }).catch(() => {})
   }, [])

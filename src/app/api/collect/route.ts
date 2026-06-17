@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
     exhibitionLabel: exhibitionLabel || undefined,
     photo: b.selfieUrl || b.photoUrl || undefined,
     note: b.note || undefined,
+    stampStyle: b.stampStyle === "ticket" ? "ticket" : "postmark",
   });
 
   return NextResponse.json({ collected: true, isFirst, rarity: artwork.rarity });

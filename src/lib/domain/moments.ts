@@ -2,12 +2,16 @@
 // The earliest capture of an artwork is the 初遇 (first encounter); later ones are
 // 重逢 (reunions). Kind is always DERIVED from capturedAt, never stored as state.
 
+// The keepsake stamp style, chosen once at capture and fixed on the moment.
+export type StampStyle = "postmark" | "ticket";
+
 export interface Moment {
   capturedAt: string;        // ISO timestamp, e.g. "2026-06-15T10:30:00.000Z"
   museumId: string;          // museum the capture happened in
   exhibitionLabel?: string;  // snapshot label, e.g. "The Louvre, Paris"
   photo?: string;            // keepsake photo (the with-it / selfie shot)
   note?: string;
+  stampStyle?: StampStyle;   // chosen at capture; defaults to "postmark" when absent
 }
 
 export type MomentKind = "first" | "reunion";

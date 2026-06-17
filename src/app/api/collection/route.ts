@@ -47,6 +47,7 @@ export async function GET() {
           exhibitionLabel: mo.exhibitionLabel ?? "",
           note: mo.note ?? "",
           photo: await resolvePhoto(mo.photo),
+          stampStyle: mo.stampStyle === "ticket" ? "ticket" : "postmark",
         })),
       );
 
