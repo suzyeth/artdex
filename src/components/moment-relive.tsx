@@ -24,7 +24,7 @@ export function MomentRelive({
   initialIndex: number;
   onClose: () => void;
 }) {
-  const [style] = useStampStyle();
+  const [style, setStyle] = useStampStyle();
   const [index, setIndex] = useState(initialIndex);
   const moment = moments[index];
   const museum = getMuseum(moment.museumId);
@@ -133,6 +133,22 @@ export function MomentRelive({
           </>
         )}
       </p>
+
+      {/* Stamp-style toggle — lives here so the change is visible on the polaroid above */}
+      <div className="mt-4 inline-flex items-center gap-0.5 rounded-full border border-border p-0.5">
+        {(["postmark", "ticket"] as const).map((opt) => (
+          <button
+            key={opt}
+            onClick={() => setStyle(opt)}
+            className={cn(
+              "rounded-full px-3 py-1 text-[11px] font-medium uppercase tracking-wide transition-colors",
+              style === opt ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {opt === "postmark" ? "Postmark" : "Ticket"}
+          </button>
+        ))}
+      </div>
 
       <MemoryEditor key={index} artworkId={artworkId} index={index} note={moment.note} />
     </motion.div>
