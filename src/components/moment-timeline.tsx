@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { Moment } from "@/lib/domain/moments";
 import { PolaroidCard } from "@/components/polaroid-card";
 import { MomentRelive } from "@/components/moment-relive";
-import { getMuseum } from "@/lib/data";
+import { getArtwork, getMuseum } from "@/lib/data";
 import { stampDateLong, stampYear } from "@/lib/stamp-format";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,7 @@ const tiltOf = (i: number) => TILT[i % TILT.length];
 // Photo-forward, dated timeline. `moments` arrives oldest-first (index 0 = 初遇, top).
 export function MomentTimeline({ artworkId, moments }: { artworkId: string; moments: Moment[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const rarity = getArtwork(artworkId)?.rarity ?? "common";
 
   return (
     <>
@@ -88,6 +89,7 @@ export function MomentTimeline({ artworkId, moments }: { artworkId: string; mome
                     capturedAt={m.capturedAt}
                     kind={first ? "first" : "reunion"}
                     style={m.stampStyle ?? "postmark"}
+                    rarity={rarity}
                     size="sm"
                     square
                     chinNote={m.note}

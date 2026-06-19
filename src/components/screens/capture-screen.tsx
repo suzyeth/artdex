@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { getArtwork, getMuseum } from "@/lib/data";
+import { getArtwork, getMuseum, type Rarity } from "@/lib/data";
 import { useCollection } from "@/lib/collection-store";
 import { kindOf, type Moment, type MomentKind, type StampStyle } from "@/lib/domain/moments";
 import { MatchSheet } from "@/components/match-sheet";
@@ -23,6 +23,7 @@ type DevelopState = {
   capturedAt: string;
   kind: MomentKind;
   stampStyle: StampStyle;
+  rarity: Rarity;
 };
 
 // Demo museum: real Bedrock recognition is scoped to this museum's works on display.
@@ -151,6 +152,7 @@ export function CaptureScreen() {
         capturedAt,
         kind,
         stampStyle,
+        rarity: art.rarity,
       });
     }
   }

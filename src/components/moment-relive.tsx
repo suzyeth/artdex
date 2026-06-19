@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import type { Moment } from "@/lib/domain/moments";
 import { useCollection } from "@/lib/collection-store";
 import { PolaroidCard } from "@/components/polaroid-card";
-import { getMuseum } from "@/lib/data";
+import { getArtwork, getMuseum } from "@/lib/data";
 import { stampDateLong, stampTime } from "@/lib/stamp-format";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -27,6 +27,7 @@ export function MomentRelive({
   const moment = moments[index];
   const style = moment.stampStyle ?? "postmark";
   const museum = getMuseum(moment.museumId);
+  const rarity = getArtwork(artworkId)?.rarity ?? "common";
   const first = index === 0;
   const many = moments.length > 1;
 
@@ -106,6 +107,7 @@ export function MomentRelive({
             capturedAt={moment.capturedAt}
             kind={first ? "first" : "reunion"}
             style={style}
+            rarity={rarity}
             size="lg"
           />
         </motion.div>

@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { MomentKind } from "@/lib/domain/moments";
 import type { StampStyle } from "@/lib/stamp-preference";
+import type { Rarity } from "@/lib/data";
+import { rarityGradeFilter, rarityHalation } from "@/lib/rarity-fx";
 import { MomentStamp } from "@/components/moment-stamp";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +19,7 @@ export function PolaroidCard({
   capturedAt,
   kind,
   style,
+  rarity = "common",
   size = "lg",
   showStamp = true,
   animateStamp = false,
@@ -30,6 +33,8 @@ export function PolaroidCard({
   capturedAt: string;
   kind: MomentKind;
   style: StampStyle;
+  /** Drives the film grade + halation — rarer works develop richer (E/F). */
+  rarity?: Rarity;
   size?: "sm" | "lg";
   showStamp?: boolean;
   /** Spring the postmark in (the develop climax). Off for static contexts. */
@@ -43,6 +48,7 @@ export function PolaroidCard({
 }) {
   const first = kind === "first";
   const lg = size === "lg";
+  const halation = rarityHalation(rarity);
   return (
     <div
       className={cn(
@@ -59,7 +65,12 @@ export function PolaroidCard({
             src={photo || "/placeholder.svg"}
             alt="Your moment"
             className={cn("block w-full", square ? "h-full object-cover" : "max-h-[60vh] object-contain")}
+            style={{ filter: rarityGradeFilter(rarity) }}
           />
+        )}
+        {/* F — warm halation bleeding from the highlights (epic / legendary only) */}
+        {halation && (
+          <span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: halation, mixBlendMode: "screen" }} />
         )}
         {/* developed-film vignette for depth */}
         <span
