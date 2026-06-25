@@ -2,8 +2,7 @@
 
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-import type { MomentKind } from "@/lib/domain/moments";
-import type { StampStyle } from "@/lib/stamp-preference";
+import type { MomentKind, StampStyle } from "@/lib/domain/moments";
 import type { Rarity } from "@/lib/data";
 import { rarityGradeFilter, rarityHalation } from "@/lib/rarity-fx";
 import { MomentStamp } from "@/components/moment-stamp";

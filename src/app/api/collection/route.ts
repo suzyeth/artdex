@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getUserId } from "@/lib/auth";
 import { getCollection, getAllArtworks, getAllArtists, getAllMuseums } from "@/lib/db/queries";
 import { presignedGetUrl } from "@/lib/aws/s3";
+import { normalizeStampStyle } from "@/lib/stamp-preference";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export async function GET() {
           exhibitionLabel: mo.exhibitionLabel ?? "",
           note: mo.note ?? "",
           photo: await resolvePhoto(mo.photo),
-          stampStyle: mo.stampStyle === "ticket" ? "ticket" : "postmark",
+          stampStyle: normalizeStampStyle(mo.stampStyle),
         })),
       );
 

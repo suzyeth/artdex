@@ -122,7 +122,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ artworkId, index, note }),
-    }).catch(() => {})
+    }).catch((err) => console.warn("moment note PATCH failed; local edit kept until reload", err))
   }, [])
 
   const isCollected = useCallback((id: string) => Boolean(collected[id]), [collected])

@@ -4,55 +4,9 @@ import { cn } from "@/lib/utils"
 import type { Artwork } from "@/lib/data"
 import { rarityStyles } from "@/lib/rarity"
 import { RarityBadge } from "@/components/rarity-badge"
+import { playRarityFx } from "@/lib/rarity-fx"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useMemo } from "react"
-
-const RARITY_INTENSITY: Record<Artwork["rarity"], number> = {
-  common: 1, rare: 2, epic: 3, legendary: 4,
-}
-
-// Fallback: synthesize the chime inline if the pre-rendered SFX file can't load.
-function synthChime(intensity: number) {
-  try {
-    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    const ctx = new Ctx()
-    const base = 523.25 // C5
-    const steps = [0, 4, 7, 12].slice(0, intensity)
-    steps.forEach((semi, i) => {
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.frequency.value = base * 2 ** (semi / 12)
-      osc.type = "triangle"
-      const t = ctx.currentTime + i * 0.12
-      gain.gain.setValueAtTime(0.001, t)
-      gain.gain.exponentialRampToValueAtTime(0.2, t + 0.02)
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5)
-      osc.connect(gain).connect(ctx.destination)
-      osc.start(t)
-      osc.stop(t + 0.6)
-    })
-  } catch {
-    // audio is a nice-to-have; never break the flow
-  }
-}
-
-// Capture chime + haptics — richer pre-rendered SFX per rarity (see scripts/genSfx.ts),
-// with the inline synth as a graceful fallback. Plays on a user gesture, so autoplay is allowed.
-function playCelebration(rarity: Artwork["rarity"]) {
-  const intensity = RARITY_INTENSITY[rarity] ?? 1
-  try {
-    const audio = new Audio(`/sfx/collect-${rarity}.wav`)
-    audio.volume = 0.2 + intensity * 0.12
-    audio.play().catch(() => synthChime(intensity))
-  } catch {
-    synthChime(intensity)
-  }
-  try {
-    navigator.vibrate?.([40, 60, 40, 60, 80, 60, 160].slice(0, intensity * 2 - 1))
-  } catch {
-    // haptics optional
-  }
-}
 
 function Particles({ rarity }: { rarity: Artwork["rarity"] }) {
   const count = rarity === "legendary" ? 40 : rarity === "epic" ? 26 : 16
@@ -109,7 +63,7 @@ export function CaptureCelebration({
   const s = artwork ? rarityStyles[artwork.rarity] : null
 
   useEffect(() => {
-    if (artwork) playCelebration(artwork.rarity)
+    if (artwork) playRarityFx(artwork.rarity)
   }, [artwork?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

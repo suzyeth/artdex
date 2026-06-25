@@ -22,6 +22,7 @@
 - **Display (wordmark, screen titles, artwork & artist names):** **Playfair Display** (`--font-playfair`), via `.font-heading`. Italic available. The museum-catalogue face.
 - **UI / Body / Labels:** **Geist Sans** (`--font-geist-sans`) — the default `font-sans` on `<html>`.
 - **Data / Numbers:** **Geist Mono** (`font-mono`) with `tabular-nums` for counts and ledgers ("3 / 12", index numbers).
+- **Handwritten voice:** **Caveat** (`--font-hand`), via `.font-hand`. Reserved **only** for the user's personal memory captions on moment polaroids — the one human, off-ledger mark in the system. Never for chrome, titles, or labels.
 - **Catalogue label:** `.label-caps` — uppercase, `0.18em` tracking, `0.6875rem`, weight 600.
 - **Loading:** `next/font/google` (self-hosted, `display: swap`). Loaded in `app/layout.tsx`.
 

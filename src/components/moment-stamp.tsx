@@ -1,7 +1,6 @@
 "use client";
 
-import type { MomentKind } from "@/lib/domain/moments";
-import type { StampStyle } from "@/lib/stamp-preference";
+import type { MomentKind, StampStyle } from "@/lib/domain/moments";
 import { stampDateLong, stampYear, museumShort } from "@/lib/stamp-format";
 import { cn } from "@/lib/utils";
 

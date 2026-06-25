@@ -53,9 +53,13 @@ export function rarityDevelopMs(rarity: Rarity): number {
   }
 }
 
-/** G — a synthesized chime + haptic at the reveal, fuller for higher rarity. Browser-only. */
-export function playRarityFx(rarity: Rarity): void {
-  const intensity = rarity === "legendary" ? 4 : rarity === "epic" ? 3 : rarity === "rare" ? 2 : 1;
+/** Intensity tier 1–4 (common→legendary), shared by the chime and haptics. */
+function rarityIntensity(rarity: Rarity): number {
+  return rarity === "legendary" ? 4 : rarity === "epic" ? 3 : rarity === "rare" ? 2 : 1;
+}
+
+/** Fallback: synthesize the bell chime inline if the pre-rendered SFX file can't load. */
+function synthChime(intensity: number): void {
   try {
     const Ctx =
       window.AudioContext ||
@@ -78,6 +82,23 @@ export function playRarityFx(rarity: Rarity): void {
     });
   } catch {
     // audio is a nice-to-have; never break the flow
+  }
+}
+
+/**
+ * G — a reveal chime + haptic, fuller for higher rarity. Browser-only.
+ * Plays the pre-rendered bell SFX (see scripts/genSfx.ts), with the inline synth as a
+ * graceful fallback. Fires from the develop flow, which is user-gesture initiated, so
+ * autoplay is allowed.
+ */
+export function playRarityFx(rarity: Rarity): void {
+  const intensity = rarityIntensity(rarity);
+  try {
+    const audio = new Audio(`/sfx/collect-${rarity}.wav`);
+    audio.volume = 0.2 + intensity * 0.12;
+    audio.play().catch(() => synthChime(intensity));
+  } catch {
+    synthChime(intensity);
   }
   try {
     navigator.vibrate?.([30, 50, 30, 50, 70, 50, 140].slice(0, intensity * 2 - 1));

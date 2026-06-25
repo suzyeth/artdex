@@ -3,6 +3,7 @@ import { getUserId } from "@/lib/auth";
 import { getArtwork, getMuseum, appendMoment } from "@/lib/db/queries";
 import { isOnSiteRequired } from "@/lib/domain/rarity";
 import { haversineMeters, isWithinGate } from "@/lib/domain/locationGate";
+import { normalizeStampStyle } from "@/lib/stamp-preference";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
     exhibitionLabel: exhibitionLabel || undefined,
     photo: b.selfieUrl || b.photoUrl || undefined,
     note: b.note || undefined,
-    stampStyle: b.stampStyle === "ticket" ? "ticket" : "postmark",
+    stampStyle: normalizeStampStyle(b.stampStyle),
   });
 
   return NextResponse.json({ collected: true, isFirst, rarity: artwork.rarity });
