@@ -3,14 +3,13 @@
 // (local: ~/.aws/credentials; Vercel: AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY env).
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-
-const region = process.env.AWS_REGION ?? "us-east-1";
+import { awsClientConfig } from "./credentials";
 
 let _doc: DynamoDBDocumentClient | null = null;
 
 export function ddb(): DynamoDBDocumentClient {
   if (!_doc) {
-    const client = new DynamoDBClient({ region });
+    const client = new DynamoDBClient(awsClientConfig());
     _doc = DynamoDBDocumentClient.from(client, {
       marshallOptions: { removeUndefinedValues: true },
     });

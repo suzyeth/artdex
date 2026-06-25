@@ -2,13 +2,13 @@
 // the browser uploads via a short-lived PUT url and views via a GET url.
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { awsClientConfig } from "./credentials";
 
-const region = process.env.AWS_REGION ?? "us-east-1";
 const bucket = process.env.S3_BUCKET ?? "artdex-images-525033346195";
 
 let _s3: S3Client | null = null;
 function s3(): S3Client {
-  return (_s3 ??= new S3Client({ region }));
+  return (_s3 ??= new S3Client(awsClientConfig()));
 }
 
 /** Short-lived URL the browser uses to PUT a selfie directly to S3. */

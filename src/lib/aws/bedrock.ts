@@ -1,14 +1,14 @@
 // Bedrock vision wrapper for ArtDex artwork recognition.
 // Uses Claude Haiku 4.5 via the us. cross-region inference profile by default.
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
+import { awsClientConfig } from "./credentials";
 
-const region = process.env.AWS_REGION ?? "us-east-1";
 const modelId =
   process.env.BEDROCK_MODEL_ID ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0";
 
 let _client: BedrockRuntimeClient | null = null;
 function client(): BedrockRuntimeClient {
-  return (_client ??= new BedrockRuntimeClient({ region }));
+  return (_client ??= new BedrockRuntimeClient(awsClientConfig()));
 }
 
 /** Send a photo + recognition prompt to Claude; returns the raw text reply. */
