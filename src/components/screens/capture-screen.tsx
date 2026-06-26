@@ -12,8 +12,9 @@ import { fetchCandidates, uploadSelfie } from "@/lib/api";
 import type { Candidate } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Scan, ImageIcon, Zap, MapPin } from "lucide-react";
+import { Scan, ImageIcon, MapPin } from "lucide-react";
 import { useGeolocation } from "@/lib/useGeolocation";
+import { useCamera } from "@/lib/useCamera";
 import { nearestMuseum, haversineMeters, GATE_RADIUS_M } from "@/lib/domain/locationGate";
 
 type Phase = "idle" | "scanning";
@@ -94,9 +95,19 @@ export function CaptureScreen() {
   const captureKey = useRef<string | undefined>(undefined);
   const uploadPromise = useRef<Promise<string | undefined> | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const { videoRef, status: camStatus, capture: captureFrame } = useCamera();
 
-  function startScan() {
+  // Shutter: grab the live frame when the camera is running, else fall back to the
+  // gallery picker (camera denied / unavailable / not a secure context).
+  async function shoot() {
     if (phase === "scanning") return;
+    if (camStatus === "live") {
+      const file = await captureFrame();
+      if (file) {
+        onPhoto(file);
+        return;
+      }
+    }
     fileRef.current?.click();
   }
 
@@ -198,29 +209,23 @@ export function CaptureScreen() {
 
   return (
     <div className="flex min-h-dvh flex-col px-5 pb-28 pt-6">
-      {/* Editorial header */}
-      <div className="mx-auto mb-6 w-full max-w-sm border-b border-border pb-4 text-center">
-        <p className="label-caps text-muted-foreground">Field Identification</p>
-        <h1 className="mt-1 font-heading text-3xl font-bold leading-none">Capture a Moment</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Stand beside a work, frame you both, and seal the moment</p>
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <span className="label-caps text-muted-foreground">Museum</span>
-          <select
-            value={museumId}
-            onChange={(e) => setMuseumId(e.target.value)}
-            disabled={phase === "scanning"}
-            aria-label="Choose the museum to identify against"
-            className="label-caps max-w-[16rem] cursor-pointer border-b-2 border-foreground bg-transparent pb-0.5 text-foreground outline-none disabled:opacity-50"
-          >
-            {CAPTURE_MUSEUMS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Compact header — the museum line carries it; no title/subtitle chrome */}
+      <div className="mx-auto mb-4 w-full max-w-sm border-b border-border pb-3 text-center">
+        <select
+          value={museumId}
+          onChange={(e) => setMuseumId(e.target.value)}
+          disabled={phase === "scanning"}
+          aria-label="Choose the museum to identify against"
+          className="label-caps max-w-[18rem] cursor-pointer border-b-2 border-foreground bg-transparent pb-0.5 text-center text-foreground outline-none disabled:opacity-50"
+        >
+          {CAPTURE_MUSEUMS.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.name}
+            </option>
+          ))}
+        </select>
         {coords && distToSelected !== null && (
-          <p className="mt-2 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+          <p className="mt-1.5 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
             <MapPin className="size-3 text-primary" />
             {located ? "Located · " : ""}
             {distToSelected < 1000
@@ -230,18 +235,41 @@ export function CaptureScreen() {
         )}
       </div>
 
-      {/* Viewfinder */}
-      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm overflow-hidden rounded-sm border border-foreground/15 bg-secondary">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,oklch(0.955_0.01_78),oklch(0.9_0.012_78))]" />
-        <div className="absolute left-1/2 top-1/2 size-40 -translate-x-1/2 -translate-y-1/2 rounded-sm border border-foreground/20 bg-card/70" />
+      {/* Viewfinder — the live camera is the hero */}
+      <div className="relative mx-auto w-full max-w-sm flex-1 min-h-[50vh] overflow-hidden rounded-md border border-foreground/15 bg-secondary">
+        {/* Live camera feed */}
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity",
+            camStatus === "live" && phase === "idle" && !capturePreview ? "opacity-100" : "opacity-0",
+          )}
+        />
 
+        {/* Frozen frame held while scanning / before sealing */}
+        {capturePreview && (
+          <img src={capturePreview} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        )}
+
+        {/* Camera unavailable → guide to the gallery (shutter routes there too) */}
+        {camStatus === "unavailable" && phase === "idle" && !capturePreview && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
+            <ImageIcon className="size-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">相机不可用 — 用相册选一张图</p>
+          </div>
+        )}
+
+        {/* Corner ticks */}
         {[
-          "left-4 top-4 border-l-2 border-t-2 rounded-tl-lg",
-          "right-4 top-4 border-r-2 border-t-2 rounded-tr-lg",
-          "left-4 bottom-4 border-l-2 border-b-2 rounded-bl-lg",
-          "right-4 bottom-4 border-r-2 border-b-2 rounded-br-lg",
+          "left-3 top-3 border-l-2 border-t-2",
+          "right-3 top-3 border-r-2 border-t-2",
+          "left-3 bottom-3 border-l-2 border-b-2",
+          "right-3 bottom-3 border-r-2 border-b-2",
         ].map((c) => (
-          <span key={c} className={cn("absolute size-10 border-primary/70", c)} />
+          <span key={c} className={cn("pointer-events-none absolute size-7 border-primary/70", c)} />
         ))}
 
         <AnimatePresence>
@@ -274,21 +302,22 @@ export function CaptureScreen() {
           )}
         </AnimatePresence>
 
-        {phase === "idle" && (
-          <div className="absolute inset-x-0 bottom-6 text-center">
-            <p className="text-xs text-muted-foreground">
-              {miss ? "Couldn't identify it — try another angle" : "Stand beside the work — keep some of it in frame"}
+        {phase === "idle" && miss && !capturePreview && (
+          <div className="absolute inset-x-0 bottom-5 text-center">
+            <p className="mx-auto inline-block rounded bg-background/70 px-2 py-1 text-xs text-muted-foreground">
+              Couldn&apos;t identify it — try another angle
             </p>
           </div>
         )}
       </div>
 
-      {/* Controls */}
-      <div className="mx-auto mt-7 flex w-full max-w-sm items-center justify-between px-2">
+      {/* Controls — gallery + shutter (no flash) */}
+      <div className="mx-auto mt-6 flex w-full max-w-sm items-center justify-center gap-12">
         <button
-          onClick={startScan}
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
-          aria-label="Upload from library"
+          onClick={() => fileRef.current?.click()}
+          disabled={phase === "scanning"}
+          className="flex size-12 items-center justify-center rounded-md border border-border text-muted-foreground transition-transform active:scale-90 disabled:opacity-50"
+          aria-label="Choose from library"
         >
           <ImageIcon className="size-5" />
         </button>
@@ -297,7 +326,6 @@ export function CaptureScreen() {
           ref={fileRef}
           type="file"
           accept="image/*"
-          capture="environment"
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -307,29 +335,22 @@ export function CaptureScreen() {
         />
 
         <button
-          onClick={startScan}
+          onClick={shoot}
           disabled={phase === "scanning"}
           aria-label="Capture artwork"
-          className="relative flex size-20 items-center justify-center rounded-full"
+          className="relative flex size-[72px] items-center justify-center rounded-full"
         >
           <span className="absolute inset-0 rounded-full border border-foreground/25" />
-          <span className="absolute inset-1.5 rounded-full border border-foreground/15" />
           <span
             className={cn(
-              "flex size-14 items-center justify-center rounded-full bg-foreground text-background transition-transform",
-              phase === "scanning" ? "scale-90 opacity-70" : "active:scale-95",
+              "size-16 rounded-full bg-foreground transition-transform",
+              phase === "scanning" ? "scale-90 opacity-60" : "active:scale-95",
             )}
-          >
-            <Scan className="size-6" />
-          </span>
+          />
         </button>
 
-        <button
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
-          aria-label="Toggle flash"
-        >
-          <Zap className="size-5" />
-        </button>
+        {/* balances the gallery button so the shutter stays centered */}
+        <span className="size-12" aria-hidden />
       </div>
 
       <MatchSheet
