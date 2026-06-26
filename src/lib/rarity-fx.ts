@@ -39,17 +39,18 @@ export function rarityRevealGlow(rarity: Rarity): number {
   }
 }
 
-/** G — develop lingers for rarer works (more anticipation). Within the 10–18s window. */
+/** G — develop lingers slightly longer for rarer works (more anticipation), but stays
+ * snappy so the reveal keeps its dopamine hit instead of making the user wait. */
 export function rarityDevelopMs(rarity: Rarity): number {
   switch (rarity) {
     case "legendary":
-      return 17000;
+      return 4500;
     case "epic":
-      return 14000;
+      return 3500;
     case "rare":
-      return 12000;
+      return 3000;
     default:
-      return 10000;
+      return 2500;
   }
 }
 
