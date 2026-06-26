@@ -49,6 +49,8 @@ export async function GET() {
           note: mo.note ?? "",
           photo: await resolvePhoto(mo.photo),
           stampStyle: normalizeStampStyle(mo.stampStyle),
+          lat: mo.lat ?? null,
+          lon: mo.lon ?? null,
         })),
       );
 
