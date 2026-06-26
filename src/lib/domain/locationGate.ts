@@ -19,3 +19,25 @@ export function haversineMeters(
 export function isWithinGate(_unused: number, distanceM: number): boolean {
   return distanceM <= GATE_RADIUS_M;
 }
+
+/**
+ * Nearest museum to a point, by haversine. Generic over any object carrying
+ * lat/lon, so it works on both the DynamoDB MuseumRow and the seed shape.
+ * Returns the matched museum plus its distance in meters, or null for an empty list.
+ */
+export function nearestMuseum<M extends { lat: number; lon: number }>(
+  lat: number,
+  lon: number,
+  museums: M[],
+): { museum: M; distanceM: number } | null {
+  let best: M | null = null;
+  let bestD = Infinity;
+  for (const m of museums) {
+    const d = haversineMeters(lat, lon, m.lat, m.lon);
+    if (d < bestD) {
+      bestD = d;
+      best = m;
+    }
+  }
+  return best ? { museum: best, distanceM: bestD } : null;
+}
