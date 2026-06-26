@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { getArtwork, getMuseum, type Rarity } from "@/lib/data";
+import { getArtwork, getMuseum, MUSEUMS, type Rarity } from "@/lib/data";
 import { useCollection } from "@/lib/collection-store";
 import { kindOf, type Moment, type MomentKind, type StampStyle } from "@/lib/domain/moments";
 import { MatchSheet } from "@/components/match-sheet";
@@ -27,11 +27,9 @@ type DevelopState = {
 };
 
 // Capture is scoped to one museum's on-display works at a time; Bedrock matches the
-// photo against only that museum's current candidates. Switch between the demo museums.
-const CAPTURE_MUSEUMS = [
-  { id: "moma", label: "MoMA" },
-  { id: "va", label: "V&A" },
-] as const;
+// photo against only that museum's current candidates. Any catalogued museum can be
+// the target — the list comes straight from the catalog so it stays in sync.
+const CAPTURE_MUSEUMS = Object.values(MUSEUMS).sort((a, b) => a.name.localeCompare(b.name));
 const MAX_EDGE = 1024;
 
 function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }> {
@@ -169,23 +167,21 @@ export function CaptureScreen() {
         <p className="label-caps text-muted-foreground">Field Identification</p>
         <h1 className="mt-1 font-heading text-3xl font-bold leading-none">Capture a Moment</h1>
         <p className="mt-2 text-sm text-muted-foreground">Stand beside a work, frame you both, and seal the moment</p>
-        <div className="mt-3 flex items-center justify-center gap-4">
+        <div className="mt-3 flex items-center justify-center gap-2">
           <span className="label-caps text-muted-foreground">Museum</span>
-          {CAPTURE_MUSEUMS.map((m) => (
-            <button
-              key={m.id}
-              onClick={() => setMuseumId(m.id)}
-              disabled={phase === "scanning"}
-              className={cn(
-                "label-caps border-b-2 pb-0.5 transition-colors disabled:opacity-50",
-                museumId === m.id
-                  ? "border-foreground text-foreground"
-                  : "border-transparent text-muted-foreground",
-              )}
-            >
-              {m.label}
-            </button>
-          ))}
+          <select
+            value={museumId}
+            onChange={(e) => setMuseumId(e.target.value)}
+            disabled={phase === "scanning"}
+            aria-label="Choose the museum to identify against"
+            className="label-caps max-w-[16rem] cursor-pointer border-b-2 border-foreground bg-transparent pb-0.5 text-foreground outline-none disabled:opacity-50"
+          >
+            {CAPTURE_MUSEUMS.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
