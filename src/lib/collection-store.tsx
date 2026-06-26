@@ -10,6 +10,9 @@ export interface CollectedEntry {
   selfie?: string
   collectedAt: string // ISO date
   stampStyle?: StampStyle
+  museumId?: string   // GPS-resolved museum the capture happened in
+  lat?: number        // capture location (GPS), when available
+  lon?: number
 }
 
 interface CollectionContextValue {
@@ -86,14 +89,18 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
 
   const collect = useCallback((entry: CollectedEntry) => {
     setCollected((prev) => ({ ...prev, [entry.artworkId]: entry })) // optimistic
-    const museumId = getArtwork(entry.artworkId)?.museumId
+    // Prefer the GPS-resolved museum (where the user actually is); fall back to the
+    // artwork's catalog museum only when no location was supplied.
+    const museumId = entry.museumId ?? getArtwork(entry.artworkId)?.museumId ?? ""
     setMomentsByArtwork((prev) => {
       const moment: Moment = {
         capturedAt: new Date().toISOString(),
-        museumId: museumId ?? "",
+        museumId,
         photo: entry.selfie,
         note: entry.note,
         stampStyle: entry.stampStyle,
+        lat: entry.lat,
+        lon: entry.lon,
       }
       return { ...prev, [entry.artworkId]: sortMoments([...(prev[entry.artworkId] ?? []), moment]) }
     })
@@ -103,7 +110,8 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({
         artworkId: entry.artworkId,
         museumId,
-        onSite: true, // the capture flow only fires once the user is "at" the museum
+        lat: entry.lat,
+        lon: entry.lon,
         note: entry.note,
         selfieUrl: entry.selfie,
         stampStyle: entry.stampStyle,
