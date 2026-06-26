@@ -64,6 +64,7 @@ export function MatchSheet({
   alreadyCollected,
   isReproduction,
   photoPreview,
+  locationVerified,
   onClose,
   onSeal,
 }: {
@@ -71,6 +72,7 @@ export function MatchSheet({
   alreadyCollected: boolean;
   isReproduction?: boolean;
   photoPreview?: string;
+  locationVerified?: boolean;
   onClose: () => void;
   onSeal: (note: string, stampStyle: StampStyle) => void;
 }) {
@@ -81,6 +83,7 @@ export function MatchSheet({
   const [stamp, setStamp] = useState<StampStyle>("postmark");
 
   const isLegendary = artwork?.rarity === "legendary";
+  const legendaryBlocked = isLegendary && !locationVerified;
   const s = artwork ? rarityStyles[artwork.rarity] : null;
 
   function handleSeal() {
@@ -117,8 +120,10 @@ export function MatchSheet({
             <div className="mt-4 flex items-start gap-2 border-l-2 border-primary bg-primary/5 p-3">
               <Lock className="mt-0.5 size-4 shrink-0 text-primary" />
               <p className="text-xs leading-relaxed text-primary">
-                <span className="font-semibold">Legendary — on-site only.</span> This work can only be sealed inside{" "}
-                {museum?.name}. Your location has been verified.
+                <span className="font-semibold">Legendary — on-site only.</span>{" "}
+                {legendaryBlocked
+                  ? `未能确认你在 ${museum?.name ?? "the museum"} 现场,传奇作品需到博物馆 150 米内才能封缄。`
+                  : `This work can only be sealed inside ${museum?.name ?? "the museum"}. Your location has been verified.`}
               </p>
             </div>
           )}
@@ -174,7 +179,13 @@ export function MatchSheet({
             </div>
           </div>
 
-          <SealButton onSeal={handleSeal} />
+          {legendaryBlocked ? (
+            <p className="mt-5 w-full select-none border border-border bg-secondary/40 py-4 text-center text-xs text-muted-foreground">
+              到现场后即可封缄这枚传奇
+            </p>
+          ) : (
+            <SealButton onSeal={handleSeal} />
+          )}
         </div>
       )}
     </BottomSheet>
