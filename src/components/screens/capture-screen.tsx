@@ -26,8 +26,12 @@ type DevelopState = {
   rarity: Rarity;
 };
 
-// Demo museum: real Bedrock recognition is scoped to this museum's works on display.
-const MUSEUM_ID = "moma";
+// Capture is scoped to one museum's on-display works at a time; Bedrock matches the
+// photo against only that museum's current candidates. Switch between the demo museums.
+const CAPTURE_MUSEUMS = [
+  { id: "moma", label: "MoMA" },
+  { id: "va", label: "V&A" },
+] as const;
 const MAX_EDGE = 1024;
 
 function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }> {
@@ -54,6 +58,7 @@ function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }
 
 export function CaptureScreen() {
   const { collect, isCollected, momentsByArtwork } = useCollection();
+  const [museumId, setMuseumId] = useState<string>("moma");
   const [phase, setPhase] = useState<Phase>("idle");
   const [matchId, setMatchId] = useState<string | null>(null);
   const [develop, setDevelop] = useState<DevelopState | null>(null);
@@ -71,7 +76,7 @@ export function CaptureScreen() {
   }
 
   async function openManual() {
-    const candidates = await fetchCandidates(MUSEUM_ID);
+    const candidates = await fetchCandidates(museumId);
     setManual(candidates);
   }
 
@@ -94,7 +99,7 @@ export function CaptureScreen() {
       const res = await fetch("/api/recognize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ museumId: MUSEUM_ID, imageBase64: base64, mediaType }),
+        body: JSON.stringify({ museumId, imageBase64: base64, mediaType }),
       });
       const { artwork, isReproduction } = await res.json();
       setPhase("idle");
@@ -164,6 +169,24 @@ export function CaptureScreen() {
         <p className="label-caps text-muted-foreground">Field Identification</p>
         <h1 className="mt-1 font-heading text-3xl font-bold leading-none">Capture a Moment</h1>
         <p className="mt-2 text-sm text-muted-foreground">Stand beside a work, frame you both, and seal the moment</p>
+        <div className="mt-3 flex items-center justify-center gap-4">
+          <span className="label-caps text-muted-foreground">Museum</span>
+          {CAPTURE_MUSEUMS.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setMuseumId(m.id)}
+              disabled={phase === "scanning"}
+              className={cn(
+                "label-caps border-b-2 pb-0.5 transition-colors disabled:opacity-50",
+                museumId === m.id
+                  ? "border-foreground text-foreground"
+                  : "border-transparent text-muted-foreground",
+              )}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Viewfinder */}

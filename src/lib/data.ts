@@ -136,6 +136,16 @@ export const MUSEUMS: Record<string, Museum> = {
     "lat": 55.9509,
     "x": 49.11,
     "y": 18.92
+  },
+  "va": {
+    "id": "va",
+    "name": "Victoria and Albert Museum",
+    "city": "London",
+    "country": "UK",
+    "lon": -0.1719,
+    "lat": 51.4966,
+    "x": 49.95,
+    "y": 21.39
   }
 }
 
@@ -249,6 +259,26 @@ export const ARTISTS: Artist[] = [
     "id": "millais",
     "name": "John Everett Millais",
     "nationality": "British"
+  },
+  {
+    "id": "canova",
+    "name": "Antonio Canova",
+    "nationality": "Italian"
+  },
+  {
+    "id": "raphael",
+    "name": "Raphael",
+    "nationality": "Italian"
+  },
+  {
+    "id": "morris",
+    "name": "William Morris",
+    "nationality": "British"
+  },
+  {
+    "id": "mysore",
+    "name": "Unknown (Mysore)",
+    "nationality": "Indian"
   }
 ]
 
@@ -910,6 +940,66 @@ export const ARTWORKS: Artwork[] = [
     "rarity": "rare",
     "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Diego%20Velazquez%20-%20An%20Old%20Woman%20Cooking%20Eggs%20-%20Google%20Art%20Project.jpg?width=1000",
     "museumId": "scottish-national",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "tipus-tiger",
+    "title": "Tipu's Tiger",
+    "artist": "Unknown (Mysore)",
+    "artistId": "mysore",
+    "year": "c.1793",
+    "rarity": "legendary",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Tipu's%20Tiger%20with%20keyboard%20on%20display%202006AH4168.jpg?width=1000",
+    "museumId": "va",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "three-graces",
+    "title": "The Three Graces",
+    "artist": "Antonio Canova",
+    "artistId": "canova",
+    "year": "1817",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Canova%20-%20The%20Three%20Graces%2C%20A.4-1994%2C%202006AT7724.jpg?width=1000",
+    "museumId": "va",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "miraculous-draught",
+    "title": "The Miraculous Draught of Fishes",
+    "artist": "Raphael",
+    "artistId": "raphael",
+    "year": "1515",
+    "rarity": "epic",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Raphael%20-%20The%20Miraculous%20Draft%20of%20Fishes%20-%20Google%20Art%20Project.jpg?width=1000",
+    "museumId": "va",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "strawberry-thief",
+    "title": "Strawberry Thief",
+    "artist": "William Morris",
+    "artistId": "morris",
+    "year": "1883",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Morris%20Strawberry%20Thief%201883.jpg?width=1000",
+    "museumId": "va",
+    "medium": "Oil on canvas",
+    "blurb": ""
+  },
+  {
+    "id": "salisbury-cathedral-bishops",
+    "title": "Salisbury Cathedral from the Bishop's Grounds",
+    "artist": "John Constable",
+    "artistId": "constable",
+    "year": "1823",
+    "rarity": "rare",
+    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Constable%20-%20Salisbury%20Cathedral%20from%20the%20Bishop's%20Grounds.jpg?width=1000",
+    "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""
   }

@@ -30,6 +30,10 @@ export const artists = [
   { id: "holbein", name: "Hans Holbein the Younger", era: "1497–1543", movement: "Northern Renaissance" },
   { id: "constable", name: "John Constable", era: "1776–1837", movement: "Romanticism" },
   { id: "millais", name: "John Everett Millais", era: "1829–1896", movement: "Pre-Raphaelite" },
+  { id: "canova", name: "Antonio Canova", era: "1757–1822", movement: "Neoclassicism" },
+  { id: "raphael", name: "Raphael", era: "1483–1520", movement: "High Renaissance" },
+  { id: "morris", name: "William Morris", era: "1834–1896", movement: "Arts and Crafts" },
+  { id: "mysore", name: "Unknown (Mysore)", era: "18th c.", movement: "Mysore court workshop" },
 ];
 
 export const museums = [
@@ -46,6 +50,7 @@ export const museums = [
   { id: "courtauld", name: "The Courtauld Gallery", city: "London", country: "UK", lon: -0.117, lat: 51.5115 },
   { id: "tate-britain", name: "Tate Britain", city: "London", country: "UK", lon: -0.1276, lat: 51.4911 },
   { id: "scottish-national", name: "Scottish National Gallery", city: "Edinburgh", country: "UK", lon: -3.1956, lat: 55.9509 },
+  { id: "va", name: "Victoria and Albert Museum", city: "London", country: "UK", lon: -0.1719, lat: 51.4966 },
 ];
 
 export const artworks: {
@@ -201,6 +206,18 @@ export const artworks: {
     rarity: "rare", isSignature: false, imageUrl: img("Joseph Mallord William Turner - Snow Storm - Steam-Boat off a Harbour's Mouth - WGA23178.jpg") },
   { id: "old-woman-eggs", artistId: "velazquez", title: "An Old Woman Cooking Eggs", year: "1618",
     rarity: "rare", isSignature: false, imageUrl: img("Diego Velazquez - An Old Woman Cooking Eggs - Google Art Project.jpg") },
+
+  // --- Victoria and Albert Museum, London (added) ---
+  { id: "tipus-tiger", artistId: "mysore", title: "Tipu's Tiger", year: "c.1793",
+    rarity: "legendary", isSignature: true, imageUrl: img("Tipu's Tiger with keyboard on display 2006AH4168.jpg") },
+  { id: "three-graces", artistId: "canova", title: "The Three Graces", year: "1817",
+    rarity: "epic", isSignature: true, imageUrl: img("Canova - The Three Graces, A.4-1994, 2006AT7724.jpg") },
+  { id: "miraculous-draught", artistId: "raphael", title: "The Miraculous Draught of Fishes", year: "1515",
+    rarity: "epic", isSignature: true, imageUrl: img("Raphael - The Miraculous Draft of Fishes - Google Art Project.jpg") },
+  { id: "strawberry-thief", artistId: "morris", title: "Strawberry Thief", year: "1883",
+    rarity: "rare", isSignature: true, imageUrl: img("Morris Strawberry Thief 1883.jpg") },
+  { id: "salisbury-cathedral-bishops", artistId: "constable", title: "Salisbury Cathedral from the Bishop's Grounds", year: "1823",
+    rarity: "rare", isSignature: false, imageUrl: img("John Constable - Salisbury Cathedral from the Bishop's Grounds.jpg") },
 ];
 
 // Exhibitions: every artwork is placed at its real home museum with a window
@@ -308,4 +325,11 @@ export const exhibitions: {
   { id: "ex-ophelia", artworkId: "ophelia", museumId: "tate-britain", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-snow-storm-steamboat", artworkId: "snow-storm-steamboat", museumId: "tate-britain", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-old-woman-eggs", artworkId: "old-woman-eggs", museumId: "scottish-national", start: "2020-01-01", end: "2030-01-01" },
+
+  // Victoria and Albert Museum, London (added)
+  { id: "ex-tipus-tiger", artworkId: "tipus-tiger", museumId: "va", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-three-graces", artworkId: "three-graces", museumId: "va", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-miraculous-draught", artworkId: "miraculous-draught", museumId: "va", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-strawberry-thief", artworkId: "strawberry-thief", museumId: "va", start: "2020-01-01", end: "2030-01-01" },
+  { id: "ex-salisbury-cathedral-bishops", artworkId: "salisbury-cathedral-bishops", museumId: "va", start: "2020-01-01", end: "2030-01-01" },
 ];
