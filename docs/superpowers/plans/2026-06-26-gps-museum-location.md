@@ -4,7 +4,7 @@
 
 **Goal:** Capture 页用手机 GPS 自动选最近博物馆来驱动识别候选集,并把拍照时的真实经纬度+博物馆留痕到收藏;传奇作品由服务端真实 150m 定位门把关,GPS 失败时退回手动选馆。
 
-**Architecture:** 复用已有但未接线的零件(`useGeolocation`、`fetchNearbyMuseum`、`/api/collect` 的 lat/lon 门)。先抽出一个纯函数 `nearestMuseum()` 并 TDD,再把它接进 `/api/museums/nearby`、capture 页、collection store、collect/collection 路由。纯逻辑走 TDD,AWS/I-O 边界走"跑通验证"(curl + DynamoDB 核查 + 浏览器)。
+**Architecture:** 复用已有但未接线的零件(`useGeolocation`、`/api/collect` 的 lat/lon 门)。先抽出纯函数 `nearestMuseum()` 并 TDD,capture 页**客户端**直接用它把已有的 14 馆下拉(用户 `51fc044` 引入)预选到最近馆并显示距离;再把坐标接进 collection store 与 collect/collection 路由。`/api/museums/nearby` 同步改用该纯函数(DRY)。纯逻辑走 TDD,AWS/I-O 边界走"跑通验证"(curl + DynamoDB 核查 + 浏览器)。
 
 **Tech Stack:** Next.js 15 App Router · React 19 · TypeScript · Vitest(jsdom,`@`→`src/`)· DynamoDB(`@aws-sdk/lib-dynamodb`)· 浏览器 Geolocation API。
 
@@ -26,7 +26,7 @@
 | `src/app/api/collection/route.ts` | 收集读取边界 | moment 回传 lat/lon |
 | `src/lib/collection-store.tsx` | 客户端收藏状态 | `collect()` 接收 lat/lon/museumId,删 `onSite:true` |
 | `src/components/match-sheet.tsx` | 匹配确认弹层 | 传奇未定位时改文案+禁封缄 |
-| `src/components/screens/capture-screen.tsx` | 拍照主流程 | GPS 选馆 + 显示距离 + 兜底 + 透传坐标 |
+| `src/components/screens/capture-screen.tsx` | 拍照主流程 | GPS 客户端预选最近馆(下拉)+ 距离提示 + 透传坐标。基线含用户 `51fc044` 的 14 馆下拉 |
 
 ---
 
@@ -122,7 +122,9 @@ git commit -m "feat(domain): add nearestMuseum() with tests"
 
 ---
 
-### Task 2: `/api/museums/nearby` 改用 `nearestMuseum()`
+### Task 2: `/api/museums/nearby` 改用 `nearestMuseum()`(DRY 清理)
+
+> capture 页用客户端 `nearestMuseum`,不依赖本路由;但路由仍是通用 API 且当前内联了同一套循环。本任务把它换成共享纯函数,消除重复实现。
 
 **Files:**
 - Modify: `src/app/api/museums/nearby/route.ts`
@@ -411,25 +413,25 @@ git commit -m "feat(match): block legendary seal until location verified"
 
 ---
 
-### Task 6: capture-screen —— GPS 选馆 + 显示距离 + 兜底 + 透传坐标
+### Task 6: capture-screen —— GPS 预选最近馆 + 显示距离 + 透传坐标
+
+> **⚠️ 基线变更**:分支已含用户提交 `51fc044`,capture 头部现在是**全部 14 馆的 `<select>` 下拉**(`CAPTURE_MUSEUMS = Object.values(MUSEUMS).sort(...)`,见 `data.ts` 的 `MUSEUMS`),不再是 MoMA/V&A 双按钮。本任务在其之上接 GPS:进页用**客户端纯函数** `nearestMuseum`(MUSEUMS 客户端已加载,无需网络)把下拉**预选**为最近馆,并在下方显示到所选馆的距离;下拉保留为**手动覆盖 / GPS 失败时的兜底**。`fetchNearbyMuseum`/`/api/museums/nearby` 不被 capture 使用(仍保留为通用 API)。
 
 **Files:**
 - Modify: `src/components/screens/capture-screen.tsx`
 
 - [ ] **Step 1: 追加 import**
 
-把现有 import 区补上(放在已有 import 之后):
+- 顶部 `import { useRef, useState } from "react";` → `import { useEffect, useRef, useState } from "react";`
+- 现有 `import { Scan, ImageIcon, Zap } from "lucide-react";` → `import { Scan, ImageIcon, Zap, MapPin } from "lucide-react";`
+- 在 import 区追加两行:
 
 ```ts
-import { useEffect } from "react";
 import { useGeolocation } from "@/lib/useGeolocation";
-import { fetchCandidates, fetchNearbyMuseum, uploadSelfie } from "@/lib/api";
-import { GATE_RADIUS_M } from "@/lib/domain/locationGate";
-import type { Candidate, NearbyMuseum } from "@/lib/types";
-import { MapPin } from "lucide-react";
+import { nearestMuseum, haversineMeters, GATE_RADIUS_M } from "@/lib/domain/locationGate";
 ```
 
-> 注意:`useEffect` 合并进顶部那一行 `import { useRef, useState } from "react";` → 改成 `import { useEffect, useRef, useState } from "react";`;`fetchCandidates`/`uploadSelfie` 已在原 import 行,只是补 `fetchNearbyMuseum`;`MapPin` 加进现有 `lucide-react` import;`Candidate` 已 import,补 `NearbyMuseum`。不要重复 import。
+> `MUSEUMS` 已在 `import { getArtwork, getMuseum, MUSEUMS, type Rarity } from "@/lib/data";` 中导入;`fetchCandidates`/`uploadSelfie`/`Candidate` 已导入。不要重复 import,也不要再引入 `fetchNearbyMuseum`/`NearbyMuseum`。
 
 - [ ] **Step 2: 加入 GPS 状态与解析 effect**
 
@@ -437,74 +439,48 @@ import { MapPin } from "lucide-react";
 
 ```ts
   const geo = useGeolocation();
-  const [nearby, setNearby] = useState<NearbyMuseum | null>(null);
-  const [geoMode, setGeoMode] = useState<"locating" | "gps" | "manual">("locating");
+  const [located, setLocated] = useState(false);
 
-  // Resolve GPS -> nearest museum once a position is known. On any geo failure,
-  // fall back to the manual MoMA/V&A toggle (keeps the demo usable).
+  // GPS -> nearest catalogued museum, computed client-side (MUSEUMS is already loaded).
+  // Pre-selects the dropdown; the user can still override it. On geo failure we simply
+  // leave the dropdown at its default — it doubles as the manual fallback.
   useEffect(() => {
-    if (geo.status === "loading") return;
-    if (geo.status === "error") {
-      setGeoMode("manual");
-      return;
+    if (geo.status !== "ready") return;
+    const hit = nearestMuseum(geo.lat, geo.lon, Object.values(MUSEUMS));
+    if (hit) {
+      setMuseumId(hit.museum.id);
+      setLocated(true);
     }
-    let cancelled = false;
-    fetchNearbyMuseum(geo.lat, geo.lon).then((m) => {
-      if (cancelled) return;
-      if (m) {
-        setNearby(m);
-        setMuseumId(m.id);
-        setGeoMode("gps");
-      } else {
-        setGeoMode("manual");
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
   }, [geo]);
 
-  // Capture coordinates (null in manual fallback). Legendary seal needs us within the gate.
+  // Distance to the CURRENTLY SELECTED museum (not just the nearest), so a manual
+  // override is judged correctly. Legendary seal requires being within the gate of it.
   const coords = geo.status === "ready" ? { lat: geo.lat, lon: geo.lon } : null;
-  const locationVerified = Boolean(nearby && nearby.distM <= GATE_RADIUS_M);
+  const selectedMuseum = MUSEUMS[museumId];
+  const distToSelected =
+    coords && selectedMuseum
+      ? haversineMeters(coords.lat, coords.lon, selectedMuseum.lat, selectedMuseum.lon)
+      : null;
+  const locationVerified = distToSelected !== null && distToSelected <= GATE_RADIUS_M;
 ```
 
-- [ ] **Step 3: 头部按模式渲染"侦测馆/距离" or "手动切换"**
+- [ ] **Step 3: 下拉下方加一行距离提示**
 
-把头部那段 `<div className="mt-3 flex items-center justify-center gap-4"> ... </div>`(渲染 `CAPTURE_MUSEUMS.map(...)` 切换的整块)替换为:
+在头部那块 `<div className="mt-3 flex items-center justify-center gap-2"> ...（含 `<select>`）... </div>` 的**闭合 `</div>` 之后**(仍在 `border-b` 头部容器内)插入:
 
 ```tsx
-        {geoMode === "gps" && nearby ? (
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-sm">
-            <MapPin className="size-3.5 text-primary" />
-            <span className="font-medium text-foreground">{nearby.name}</span>
-            <span className="text-muted-foreground">
-              · {nearby.distM < 1000 ? `${Math.round(nearby.distM)} m` : `${(nearby.distM / 1000).toFixed(1)} km`}
-            </span>
-          </div>
-        ) : (
-          <div className="mt-3 flex items-center justify-center gap-4">
-            <span className="label-caps text-muted-foreground">
-              {geoMode === "locating" ? "Locating…" : "Museum"}
-            </span>
-            {CAPTURE_MUSEUMS.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setMuseumId(m.id)}
-                disabled={phase === "scanning"}
-                className={cn(
-                  "label-caps border-b-2 pb-0.5 transition-colors disabled:opacity-50",
-                  museumId === m.id
-                    ? "border-foreground text-foreground"
-                    : "border-transparent text-muted-foreground",
-                )}
-              >
-                {m.label}
-              </button>
-            ))}
-          </div>
+        {coords && distToSelected !== null && (
+          <p className="mt-2 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="size-3 text-primary" />
+            {located ? "Located · " : ""}
+            {distToSelected < 1000
+              ? `${Math.round(distToSelected)} m away`
+              : `${(distToSelected / 1000).toFixed(1)} km away`}
+          </p>
         )}
 ```
+
+> 不改动 `<select>` 下拉本身(它就是手动覆盖 / 兜底)。GPS 成功时下拉已被 effect 预选到最近馆,提示行显示「Located · N m away」;GPS 失败时无 `coords`,提示行隐藏,下拉停在默认值。
 
 - [ ] **Step 4: 封缄时透传 museumId + 坐标**
 
@@ -579,7 +555,7 @@ Run: `npm run dev`
 
 - [ ] **Step 2: 浏览器跑通(用 preview 工具)**
 
-- 打开 `/`(或 capture 页),确认头部显示「📍 Museum of Modern Art · 0 m」(GPS 模式,非 MoMA/V&A 切换)。
+- 打开 capture 页,确认 14 馆下拉**已预选 Museum of Modern Art**,且下方提示行显示「📍 Located · 0 m away」。
 - 在 capture 页用《星夜》图片走识别(可拖入/选取一张 Starry Night 图)→ 命中「The Starry Night」。
 - 传奇信息块显示「…Your location has been verified.」(因 mock 在馆内),封缄按钮可用。
 - 长按封缄 → 显影 → 收藏成功。
@@ -602,7 +578,7 @@ Expected:返回项里 `moments` 列表中最新一条含 `lat`≈40.7614、`lon`
 - [ ] **Step 4: 验证降级路径(手动选馆)**
 
 临时在 `.env.local` 注释掉 `NEXT_PUBLIC_MOCK_LOCATION`,重启 `npm run dev`,在浏览器**拒绝**定位授权:
-- 头部应回退为 MoMA/V&A 手动切换。
+- 距离提示行应消失(无坐标);14 馆下拉停在默认值,可手动选。
 - 选 MoMA → 识别《星夜》(传奇)→ MatchSheet 显示「未能确认你在现场…」且**无封缄按钮**(改为"到现场后即可封缄")。
 - 选一个**非传奇**作品(如 The Bedroom)→ 可正常封缄收集。
 
@@ -631,7 +607,7 @@ git commit -m "docs(env): note MOCK_LOCATION coords for demoing the legendary ga
 
 ## Self-Review 记录
 
-- **Spec 覆盖**:§3.1 GPS 选馆→Task 6;§3.2 collect 透传坐标→Task 4;§3.3 降级+传奇提示→Task 5/6 + Task 7 Step 4;§4.1 抽 `nearestMuseum`→Task 1/2;§4.2 文件清单逐项有对应 Task;§5 数据流→Task 1/3/4/6;§7 demo 配方→Task 7;§8 测试→Task 1(单测)+Task 7(跑通)。无遗漏。
+- **基线**:分支已含用户 `51fc044`(14 馆下拉);Task 6 在其之上接 GPS 预选,不回退到旧 MoMA/V&A 双按钮。
+- **Spec 覆盖**:§3.1 GPS 选馆→Task 6(客户端 `nearestMuseum` 预选下拉);§3.2 collect 透传坐标→Task 4;§3.3 降级+传奇提示→Task 5/6 + Task 7 Step 4;§4.1 抽 `nearestMuseum`→Task 1(+Task 2 DRY 清理路由);§4.2 文件清单逐项有对应 Task;§5 数据流→Task 1/3/4/6;§7 demo 配方→Task 7;§8 测试→Task 1(单测)+Task 7(跑通)。无遗漏。
 - **Placeholder**:无 TBD/TODO;每个改代码步骤均含完整代码。
-- **类型一致**:`nearestMuseum` 返回 `{ museum, distanceM }` 在 Task 1 定义、Task 2 解构使用一致;`NearbyMuseum.distM`(Task 6)与 nearby 路由输出字段名一致;`CollectedEntry` 新增 `museumId/lat/lon`(Task 4)与 capture 调用(Task 6 Step 4)一致;`Moment.lat/lon`(Task 3)与 store(Task 4)、collect 路由(Task 3 Step 2)一致;`locationVerified` prop 在 Task 5 定义、Task 6 Step 5 传入一致。
-```
+- **类型一致**:`nearestMuseum(lat,lon,M[])` 返回 `{ museum, distanceM }` 在 Task 1 定义,Task 2(路由)与 Task 6(capture 客户端)解构使用一致;capture 用 `haversineMeters` 算到所选馆距离(Task 6),门常量 `GATE_RADIUS_M` 共享;`CollectedEntry` 新增 `museumId/lat/lon`(Task 4)与 capture 调用(Task 6 Step 4)一致;`Moment.lat/lon`(Task 3)与 store(Task 4)、collect 路由(Task 3 Step 2)一致;`locationVerified` prop 在 Task 5 定义、Task 6 Step 5 传入一致。
