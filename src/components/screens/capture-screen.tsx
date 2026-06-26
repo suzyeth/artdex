@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getArtwork, getMuseum, MUSEUMS, type Rarity } from "@/lib/data";
 import { useCollection } from "@/lib/collection-store";
 import { kindOf, type Moment, type MomentKind, type StampStyle } from "@/lib/domain/moments";
@@ -12,7 +12,9 @@ import { fetchCandidates, uploadSelfie } from "@/lib/api";
 import type { Candidate } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Scan, ImageIcon, Zap } from "lucide-react";
+import { Scan, ImageIcon, Zap, MapPin } from "lucide-react";
+import { useGeolocation } from "@/lib/useGeolocation";
+import { nearestMuseum, haversineMeters, GATE_RADIUS_M } from "@/lib/domain/locationGate";
 
 type Phase = "idle" | "scanning";
 
@@ -57,6 +59,31 @@ function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }
 export function CaptureScreen() {
   const { collect, isCollected, momentsByArtwork } = useCollection();
   const [museumId, setMuseumId] = useState<string>("moma");
+  const geo = useGeolocation();
+  const [located, setLocated] = useState(false);
+
+  // GPS -> nearest catalogued museum, computed client-side (MUSEUMS is already loaded).
+  // Pre-selects the dropdown; the user can still override it. On geo failure we simply
+  // leave the dropdown at its default — it doubles as the manual fallback.
+  useEffect(() => {
+    if (geo.status !== "ready") return;
+    const hit = nearestMuseum(geo.lat, geo.lon, Object.values(MUSEUMS));
+    if (hit) {
+      setMuseumId(hit.museum.id);
+      setLocated(true);
+    }
+  }, [geo]);
+
+  // Distance to the CURRENTLY SELECTED museum (not just the nearest), so a manual
+  // override is judged correctly. Legendary seal requires being within the gate of it.
+  const coords = geo.status === "ready" ? { lat: geo.lat, lon: geo.lon } : null;
+  const selectedMuseum = MUSEUMS[museumId];
+  const distToSelected =
+    coords && selectedMuseum
+      ? haversineMeters(coords.lat, coords.lon, selectedMuseum.lat, selectedMuseum.lon)
+      : null;
+  const locationVerified = distToSelected !== null && distToSelected <= GATE_RADIUS_M;
+
   const [phase, setPhase] = useState<Phase>("idle");
   const [matchId, setMatchId] = useState<string | null>(null);
   const [develop, setDevelop] = useState<DevelopState | null>(null);
@@ -130,7 +157,7 @@ export function CaptureScreen() {
     const id = matchId;
     if (!id) return;
     const art = getArtwork(id);
-    const museum = art ? getMuseum(art.museumId) : undefined;
+    const museum = getMuseum(museumId) ?? (art ? getMuseum(art.museumId) : undefined);
     const capturedAt = new Date().toISOString();
 
     // Derive 初遇/重逢 from the moments BEFORE this one is appended (kindOf sorts internally).
@@ -141,7 +168,16 @@ export function CaptureScreen() {
     // Persist with the keepsake key. If the S3 upload hasn't finished yet, wait for
     // it so we never silently drop the photo; the develop overlay still shows instantly.
     const commit = (selfie?: string) =>
-      collect({ artworkId: id, note: note || undefined, selfie, collectedAt: capturedAt.slice(0, 10), stampStyle });
+      collect({
+        artworkId: id,
+        note: note || undefined,
+        selfie,
+        collectedAt: capturedAt.slice(0, 10),
+        stampStyle,
+        museumId,
+        lat: coords?.lat,
+        lon: coords?.lon,
+      });
     if (captureKey.current) commit(captureKey.current);
     else if (uploadPromise.current) uploadPromise.current.then(commit);
     else commit(undefined);
@@ -183,6 +219,15 @@ export function CaptureScreen() {
             ))}
           </select>
         </div>
+        {coords && distToSelected !== null && (
+          <p className="mt-2 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="size-3 text-primary" />
+            {located ? "Located · " : ""}
+            {distToSelected < 1000
+              ? `${Math.round(distToSelected)} m away`
+              : `${(distToSelected / 1000).toFixed(1)} km away`}
+          </p>
+        )}
       </div>
 
       {/* Viewfinder */}
@@ -292,6 +337,7 @@ export function CaptureScreen() {
         alreadyCollected={matchId ? isCollected(matchId) : false}
         isReproduction={isRepro}
         photoPreview={capturePreview}
+        locationVerified={locationVerified}
         onClose={() => setMatchId(null)}
         onSeal={handleSeal}
       />
