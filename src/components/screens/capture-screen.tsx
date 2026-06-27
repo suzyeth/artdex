@@ -12,7 +12,7 @@ import { fetchCandidates, uploadSelfie } from "@/lib/api";
 import type { Candidate } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Scan, ImageIcon, MapPin } from "lucide-react";
+import { Scan, ImageIcon, MapPin, ChevronDown } from "lucide-react";
 import { useGeolocation } from "@/lib/useGeolocation";
 import { useCamera } from "@/lib/useCamera";
 import { nearestMuseum, haversineMeters, GATE_RADIUS_M } from "@/lib/domain/locationGate";
@@ -60,6 +60,7 @@ function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }
 export function CaptureScreen() {
   const { collect, isCollected, momentsByArtwork } = useCollection();
   const [museumId, setMuseumId] = useState<string>("moma");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const geo = useGeolocation();
   const [located, setLocated] = useState(false);
 
@@ -84,6 +85,14 @@ export function CaptureScreen() {
       ? haversineMeters(coords.lat, coords.lon, selectedMuseum.lat, selectedMuseum.lon)
       : null;
   const locationVerified = distToSelected !== null && distToSelected <= GATE_RADIUS_M;
+
+  // Museum picker rows: nearest-first when located, else alphabetical.
+  const museumChoices = CAPTURE_MUSEUMS.map((m) => ({
+    m,
+    dist: coords ? haversineMeters(coords.lat, coords.lon, m.lat, m.lon) : null,
+  })).sort((a, b) =>
+    a.dist != null && b.dist != null ? a.dist - b.dist : a.m.name.localeCompare(b.m.name),
+  );
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [matchId, setMatchId] = useState<string | null>(null);
@@ -209,23 +218,20 @@ export function CaptureScreen() {
 
   return (
     <div className="flex min-h-dvh flex-col px-5 pb-28 pt-6">
-      {/* Compact header — the museum line carries it; no title/subtitle chrome */}
-      <div className="mx-auto mb-4 w-full max-w-sm border-b border-border pb-3 text-center">
-        <select
-          value={museumId}
-          onChange={(e) => setMuseumId(e.target.value)}
+      {/* Compact header — a quiet catalogue plate; tap to switch museum */}
+      <div className="mx-auto mb-5 w-full max-w-sm border-b border-border pb-3.5 text-center">
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
           disabled={phase === "scanning"}
           aria-label="Choose the museum to identify against"
-          className="label-caps max-w-[18rem] cursor-pointer border-b-2 border-foreground bg-transparent pb-0.5 text-center text-foreground outline-none disabled:opacity-50"
+          className="inline-flex max-w-full items-center gap-1.5 transition-opacity active:opacity-60 disabled:opacity-50"
         >
-          {CAPTURE_MUSEUMS.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.name}
-            </option>
-          ))}
-        </select>
+          <span className="label-caps truncate text-foreground">{selectedMuseum?.name ?? "Choose a museum"}</span>
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+        </button>
         {coords && distToSelected !== null && (
-          <p className="mt-1.5 inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+          <p className="mt-2 inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
             <MapPin className="size-3 text-primary" />
             {located ? "Located · " : ""}
             {distToSelected < 1000
@@ -236,7 +242,7 @@ export function CaptureScreen() {
       </div>
 
       {/* Viewfinder — the live camera is the hero */}
-      <div className="relative mx-auto w-full max-w-sm flex-1 min-h-[50vh] overflow-hidden rounded-md border border-foreground/15 bg-secondary">
+      <div className="relative mx-auto w-full max-w-sm flex-1 min-h-[52vh] overflow-hidden rounded-lg border border-foreground/12 bg-secondary">
         {/* Live camera feed */}
         <video
           ref={videoRef}
@@ -262,15 +268,8 @@ export function CaptureScreen() {
           </div>
         )}
 
-        {/* Corner ticks */}
-        {[
-          "left-3 top-3 border-l-2 border-t-2",
-          "right-3 top-3 border-r-2 border-t-2",
-          "left-3 bottom-3 border-l-2 border-b-2",
-          "right-3 bottom-3 border-r-2 border-b-2",
-        ].map((c) => (
-          <span key={c} className={cn("pointer-events-none absolute size-7 border-primary/70", c)} />
-        ))}
+        {/* A quiet inset mat — refined framing, no gamey ticks */}
+        <div className="pointer-events-none absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10" />
 
         <AnimatePresence>
           {phase === "scanning" && (
@@ -316,10 +315,10 @@ export function CaptureScreen() {
         <button
           onClick={() => fileRef.current?.click()}
           disabled={phase === "scanning"}
-          className="flex size-12 items-center justify-center rounded-md border border-border text-muted-foreground transition-transform active:scale-90 disabled:opacity-50"
+          className="flex size-12 items-center justify-center rounded-full text-muted-foreground transition-transform active:scale-90 disabled:opacity-50"
           aria-label="Choose from library"
         >
-          <ImageIcon className="size-5" />
+          <ImageIcon className="size-6" />
         </button>
 
         <input
@@ -338,13 +337,13 @@ export function CaptureScreen() {
           onClick={shoot}
           disabled={phase === "scanning"}
           aria-label="Capture artwork"
-          className="relative flex size-[72px] items-center justify-center rounded-full"
+          className="relative flex size-[76px] items-center justify-center rounded-full transition-transform active:scale-95 disabled:opacity-60"
         >
-          <span className="absolute inset-0 rounded-full border border-foreground/25" />
+          <span className="absolute inset-0 rounded-full border border-foreground/30" />
           <span
             className={cn(
-              "size-16 rounded-full bg-foreground transition-transform",
-              phase === "scanning" ? "scale-90 opacity-60" : "active:scale-95",
+              "size-[58px] rounded-full bg-foreground transition-transform",
+              phase === "scanning" && "scale-90 opacity-60",
             )}
           />
         </button>
@@ -362,6 +361,38 @@ export function CaptureScreen() {
         onClose={() => setMatchId(null)}
         onSeal={handleSeal}
       />
+
+      {/* Museum picker — replaces the native select; nearest-first when located */}
+      <BottomSheet open={pickerOpen} onClose={() => setPickerOpen(false)}>
+        <div className="px-5 pb-8 pt-3">
+          <p className="label-caps mb-3 text-center text-muted-foreground">Choose a museum</p>
+          <div className="max-h-[55vh] space-y-0.5 overflow-y-auto">
+            {museumChoices.map(({ m, dist }) => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  setMuseumId(m.id);
+                  setPickerOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center justify-between gap-3 rounded-sm px-3 py-2.5 text-left transition-colors active:bg-secondary/60",
+                  m.id === museumId && "bg-secondary/50",
+                )}
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-heading text-sm font-semibold">{m.name}</span>
+                  <span className="label-caps text-muted-foreground">{m.city}</span>
+                </span>
+                {dist != null && (
+                  <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+                    {dist < 1000 ? `${Math.round(dist)} m` : `${(dist / 1000).toFixed(1)} km`}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </BottomSheet>
 
       {/* Manual fallback — pick from the works currently on display */}
       <BottomSheet open={manual !== null} onClose={() => setManual(null)}>
