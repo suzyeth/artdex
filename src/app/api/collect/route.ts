@@ -49,6 +49,8 @@ export async function POST(req: NextRequest) {
     photo: b.selfieUrl || b.photoUrl || undefined,
     note: b.note || undefined,
     stampStyle: normalizeStampStyle(b.stampStyle),
+    lat: typeof b.lat === "number" ? b.lat : undefined,
+    lon: typeof b.lon === "number" ? b.lon : undefined,
   });
 
   return NextResponse.json({ collected: true, isFirst, rarity: artwork.rarity });

@@ -12,6 +12,8 @@ export interface Moment {
   photo?: string;            // keepsake photo (the with-it / selfie shot)
   note?: string;
   stampStyle?: StampStyle;   // chosen at capture; defaults to "postmark" when absent
+  lat?: number;              // capture location latitude (GPS), when available
+  lon?: number;              // capture location longitude (GPS), when available
 }
 
 export type MomentKind = "first" | "reunion";

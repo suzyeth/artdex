@@ -290,7 +290,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1889",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Van%20Gogh%20-%20Starry%20Night%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/van-gogh-starry-night-google-art-project.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -302,7 +302,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1888",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20Willem%20van%20Gogh%20127.jpg?width=1000",
+    "image": "/artworks/vincent-willem-van-gogh-127.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -314,7 +314,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1888",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20De%20slaapkamer%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-de-slaapkamer-google-art-project.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -326,7 +326,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1890",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Almond%20blossom%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-almond-blossom-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -338,7 +338,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1890",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheatfield%20with%20crows%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-wheatfield-with-crows-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -350,7 +350,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1885",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20The%20potato%20eaters%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-the-potato-eaters-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -362,7 +362,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1888",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Starry%20Night%20Over%20the%20Rhone.jpg?width=1000",
+    "image": "/artworks/starry-night-over-the-rhone.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -374,7 +374,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1889",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Irises-Vincent%20van%20Gogh.jpg?width=1000",
+    "image": "/artworks/irises-vincent-van-gogh.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -386,7 +386,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1889",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Wheat%20Field%20with%20Cypresses%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-wheat-field-with-cypresses-google-art-project.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -398,7 +398,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "davinci",
     "year": "1503",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Mona%20Lisa%2C%20by%20Leonardo%20da%20Vinci%2C%20from%20C2RMF%20retouched.jpg?width=1000",
+    "image": "/artworks/mona-lisa-by-leonardo-da-vinci-from-c2rmf-retouched.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -410,7 +410,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "davinci",
     "year": "1486",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20Da%20Vinci%20-%20Vergine%20delle%20Rocce%20(Louvre).jpg?width=1000",
+    "image": "/artworks/leonardo-da-vinci-vergine-delle-rocce-louvre.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -422,7 +422,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "davinci",
     "year": "1472",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo%20da%20Vinci%20-%20Annunciazione%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/leonardo-da-vinci-annunciazione-google-art-project.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -434,7 +434,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "monet",
     "year": "1916",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20Blue%20Water%20Lilies%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/claude-monet-blue-water-lilies-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -446,7 +446,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "monet",
     "year": "1873",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20037.jpg?width=1000",
+    "image": "/artworks/claude-monet-037.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -458,7 +458,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "monet",
     "year": "1869",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20The%20Magpie%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/claude-monet-the-magpie-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -470,7 +470,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "monet",
     "year": "1877",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude%20Monet%20-%20The%20Saint-Lazare%20Station%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/claude-monet-the-saint-lazare-station-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -482,7 +482,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vermeer",
     "year": "1665",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/1665%20Girl%20with%20a%20Pearl%20Earring.jpg?width=1000",
+    "image": "/artworks/1665-girl-with-a-pearl-earring.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -494,7 +494,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vermeer",
     "year": "1658",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes%20Vermeer%20-%20Het%20melkmeisje%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/johannes-vermeer-het-melkmeisje-google-art-project.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -506,7 +506,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vermeer",
     "year": "1661",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vermeer-view-of-delft.jpg?width=1000",
+    "image": "/artworks/vermeer-view-of-delft.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -518,7 +518,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vermeer",
     "year": "1662",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Young%20Woman%20with%20a%20Water%20Pitcher%20MET%20DP353257.jpg?width=1000",
+    "image": "/artworks/young-woman-with-a-water-pitcher-met-dp353257.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -530,7 +530,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "rembrandt",
     "year": "1642",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Night%20Watch%20-%20HD.jpg?width=1000",
+    "image": "/artworks/the-night-watch-hd.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -542,7 +542,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "rembrandt",
     "year": "1632",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20-%20The%20Anatomy%20Lesson%20of%20Dr%20Nicolaes%20Tulp.jpg?width=1000",
+    "image": "/artworks/rembrandt-the-anatomy-lesson-of-dr-nicolaes-tulp.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -554,7 +554,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "rembrandt",
     "year": "1665",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt%20Harmensz.%20van%20Rijn%20-%20Portret%20van%20een%20paar%20als%20oudtestamentische%20figuren%2C%20genaamd%20'Het%20Joodse%20bruidje'%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/rembrandt-harmensz-van-rijn-portret-van-een-paar-als-oudtestamentische-figuren-genaamd-het-joodse-bruidje-google-art-project.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -566,7 +566,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "hokusai",
     "year": "1831",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Tsunami%20by%20hokusai%2019th%20century.jpg?width=1000",
+    "image": "/artworks/tsunami-by-hokusai-19th-century.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -578,7 +578,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "botticelli",
     "year": "1485",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sandro%20Botticelli%20-%20La%20nascita%20di%20Venere%20-%20Google%20Art%20Project%20-%20edited.jpg?width=1000",
+    "image": "/artworks/sandro-botticelli-la-nascita-di-venere-google-art-project-edited.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -590,7 +590,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "botticelli",
     "year": "1482",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Botticelli-primavera.jpg?width=1000",
+    "image": "/artworks/botticelli-primavera.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -602,7 +602,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "degas",
     "year": "1874",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Edgar%20Degas%20-%20The%20Ballet%20Class%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/edgar-degas-the-ballet-class-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -614,7 +614,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "degas",
     "year": "1876",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Edgar%20Degas%20-%20In%20a%20Caf%C3%A9%20-%20Google%20Art%20Project%202.jpg?width=1000",
+    "image": "/artworks/edgar-degas-in-a-caf-google-art-project-2.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -626,7 +626,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "renoir",
     "year": "1876",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Pierre-Auguste%20Renoir%2C%20Le%20Moulin%20de%20la%20Galette.jpg?width=1000",
+    "image": "/artworks/pierre-auguste-renoir-le-moulin-de-la-galette.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -638,7 +638,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "renoir",
     "year": "1892",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Auguste%20Renoir%20-%20Young%20Girls%20at%20the%20Piano%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/auguste-renoir-young-girls-at-the-piano-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -650,7 +650,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "cezanne",
     "year": "1895",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Les%20Joueurs%20de%20cartes%2C%20par%20Paul%20C%C3%A9zanne.jpg?width=1000",
+    "image": "/artworks/les-joueurs-de-cartes-par-paul-c-zanne.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -662,7 +662,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "cezanne",
     "year": "1899",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Paul%20C%C3%A9zanne%20179.jpg?width=1000",
+    "image": "/artworks/paul-c-zanne-179.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -674,7 +674,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "caravaggio",
     "year": "1597",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Caravaggio%20-%20Medusa%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/caravaggio-medusa-google-art-project.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -686,7 +686,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "caravaggio",
     "year": "1596",
     "rarity": "common",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Bacchus%20by%20Caravaggio%201.jpg?width=1000",
+    "image": "/artworks/bacchus-by-caravaggio-1.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -698,7 +698,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "velazquez",
     "year": "1656",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Las%20Meninas%2C%20by%20Diego%20Vel%C3%A1zquez%2C%20from%20Prado%20in%20Google%20Earth.jpg?width=1000",
+    "image": "/artworks/las-meninas-by-diego-vel-zquez-from-prado-in-google-earth.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -710,7 +710,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "goya",
     "year": "1814",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/El%20Tres%20de%20Mayo%2C%20by%20Francisco%20de%20Goya%2C%20from%20Prado%20thin%20black%20margin.jpg?width=1000",
+    "image": "/artworks/el-tres-de-mayo-by-francisco-de-goya-from-prado-thin-black-margin.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -722,7 +722,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "goya",
     "year": "1823",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Francisco%20de%20Goya%2C%20Saturno%20devorando%20a%20su%20hijo%20(1819-1823).jpg?width=1000",
+    "image": "/artworks/francisco-de-goya-saturno-devorando-a-su-hijo-1819-1823.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -734,7 +734,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "turner",
     "year": "1839",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Turner%2C%20J.%20M.%20W.%20-%20The%20Fighting%20T%C3%A9m%C3%A9raire%20tugged%20to%20her%20last%20Berth%20to%20be%20broken.jpg?width=1000",
+    "image": "/artworks/turner-j-m-w-the-fighting-t-m-raire-tugged-to-her-last-berth-to-be-broken.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -746,7 +746,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "turner",
     "year": "1844",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Rain%20Steam%20and%20Speed%20the%20Great%20Western%20Railway.jpg?width=1000",
+    "image": "/artworks/rain-steam-and-speed-the-great-western-railway.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -758,7 +758,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "manet",
     "year": "1863",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Manet%2C%20Edouard%20-%20Olympia%2C%201863.jpg?width=1000",
+    "image": "/artworks/manet-edouard-olympia-1863.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -770,7 +770,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "manet",
     "year": "1863",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Edouard%20Manet%20-%20Luncheon%20on%20the%20Grass%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/edouard-manet-luncheon-on-the-grass-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -782,7 +782,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "rousseau",
     "year": "1897",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/La%20Boh%C3%A9mienne%20endormie.jpg?width=1000",
+    "image": "/artworks/la-boh-mienne-endormie.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -794,7 +794,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "delacroix",
     "year": "1830",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Eug%C3%A8ne%20Delacroix%20-%20Le%2028%20Juillet.%20La%20Libert%C3%A9%20guidant%20le%20peuple.jpg?width=1000",
+    "image": "/artworks/eug-ne-delacroix-le-28-juillet-la-libert-guidant-le-peuple.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -806,7 +806,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "gericault",
     "year": "1819",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/JEAN%20LOUIS%20TH%C3%89ODORE%20G%C3%89RICAULT%20-%20La%20Balsa%20de%20la%20Medusa%20(Museo%20del%20Louvre%2C%201818-19).jpg?width=1000",
+    "image": "/artworks/jean-louis-th-odore-g-ricault-la-balsa-de-la-medusa-museo-del-louvre-1818-19.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -818,7 +818,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vaneyck",
     "year": "1434",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Van%20Eyck%20-%20Arnolfini%20Portrait.jpg?width=1000",
+    "image": "/artworks/van-eyck-arnolfini-portrait.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -830,7 +830,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "holbein",
     "year": "1533",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Hans%20Holbein%20the%20Younger%20-%20The%20Ambassadors%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/hans-holbein-the-younger-the-ambassadors-google-art-project.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -842,7 +842,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "velazquez",
     "year": "1647",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Diego%20Vel%C3%A1zquez%20-%20Rokeby%20Venus.jpg?width=1000",
+    "image": "/artworks/diego-vel-zquez-rokeby-venus.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -854,7 +854,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "constable",
     "year": "1821",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Constable%20The%20Hay%20Wain.jpg?width=1000",
+    "image": "/artworks/john-constable-the-hay-wain.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -866,7 +866,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "caravaggio",
     "year": "1601",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Supper%20at%20Emmaus-Caravaggio%20(1601).jpg?width=1000",
+    "image": "/artworks/supper-at-emmaus-caravaggio-1601.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -878,7 +878,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "botticelli",
     "year": "1485",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Venus%20and%20Mars%20National%20Gallery.jpg?width=1000",
+    "image": "/artworks/venus-and-mars-national-gallery.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -890,7 +890,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "manet",
     "year": "1882",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Edouard%20Manet%2C%20A%20Bar%20at%20the%20Folies-Berg%C3%A8re.jpg?width=1000",
+    "image": "/artworks/edouard-manet-a-bar-at-the-folies-berg-re.jpg",
     "museumId": "courtauld",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -902,7 +902,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "vangogh",
     "year": "1889",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent%20van%20Gogh%20-%20Self-portrait%20with%20bandaged%20ear%20(1889%2C%20Courtauld%20Institute).jpg?width=1000",
+    "image": "/artworks/vincent-van-gogh-self-portrait-with-bandaged-ear-1889-courtauld-institute.jpg",
     "museumId": "courtauld",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -914,7 +914,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "millais",
     "year": "1852",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Everett%20Millais%20-%20Ophelia%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/john-everett-millais-ophelia-google-art-project.jpg",
     "museumId": "tate-britain",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -926,7 +926,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "turner",
     "year": "1842",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Joseph%20Mallord%20William%20Turner%20-%20Snow%20Storm%20-%20Steam-Boat%20off%20a%20Harbour's%20Mouth%20-%20WGA23178.jpg?width=1000",
+    "image": "/artworks/joseph-mallord-william-turner-snow-storm-steam-boat-off-a-harbour-s-mouth-wga23178.jpg",
     "museumId": "tate-britain",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -938,7 +938,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "velazquez",
     "year": "1618",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Diego%20Velazquez%20-%20An%20Old%20Woman%20Cooking%20Eggs%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/diego-velazquez-an-old-woman-cooking-eggs-google-art-project.jpg",
     "museumId": "scottish-national",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -950,7 +950,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "mysore",
     "year": "c.1793",
     "rarity": "legendary",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Tipu's%20Tiger%20with%20keyboard%20on%20display%202006AH4168.jpg?width=1000",
+    "image": "/artworks/tipu-s-tiger-with-keyboard-on-display-2006ah4168.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -962,7 +962,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "canova",
     "year": "1817",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Canova%20-%20The%20Three%20Graces%2C%20A.4-1994%2C%202006AT7724.jpg?width=1000",
+    "image": "/artworks/canova-the-three-graces-a-4-1994-2006at7724.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -974,7 +974,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "raphael",
     "year": "1515",
     "rarity": "epic",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Raphael%20-%20The%20Miraculous%20Draft%20of%20Fishes%20-%20Google%20Art%20Project.jpg?width=1000",
+    "image": "/artworks/raphael-the-miraculous-draft-of-fishes-google-art-project.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -986,7 +986,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "morris",
     "year": "1883",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Morris%20Strawberry%20Thief%201883.jpg?width=1000",
+    "image": "/artworks/morris-strawberry-thief-1883.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""
@@ -998,7 +998,7 @@ export const ARTWORKS: Artwork[] = [
     "artistId": "constable",
     "year": "1823",
     "rarity": "rare",
-    "image": "https://commons.wikimedia.org/wiki/Special:FilePath/John%20Constable%20-%20Salisbury%20Cathedral%20from%20the%20Bishop's%20Grounds.jpg?width=1000",
+    "image": "/artworks/john-constable-salisbury-cathedral-from-the-bishop-s-grounds.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
     "blurb": ""

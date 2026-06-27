@@ -3,9 +3,12 @@
 // the enormous Google Art Project originals.
 
 import type { Rarity } from "../domain/rarity";
+import { imageSlug } from "./imageSlug";
 
-const img = (filename: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=1000`;
+// Artwork images are self-hosted under public/artworks/ (Wikimedia Commons, the
+// original host, is blocked in mainland China). The filename argument is kept as the
+// stable key — scripts/downloadArtworkImages.ts fetches each into <slug>.jpg.
+const img = (filename: string) => `/artworks/${imageSlug(filename)}.jpg`;
 
 export const artists = [
   { id: "vangogh", name: "Vincent van Gogh", era: "1853–1890", movement: "Post-Impressionism" },

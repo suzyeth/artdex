@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getArtwork, getMuseum, MUSEUMS, type Rarity } from "@/lib/data";
 import { useCollection } from "@/lib/collection-store";
 import { kindOf, type Moment, type MomentKind, type StampStyle } from "@/lib/domain/moments";
@@ -12,7 +12,10 @@ import { fetchCandidates, uploadSelfie } from "@/lib/api";
 import type { Candidate } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Scan, ImageIcon, Zap } from "lucide-react";
+import { Scan, ImageIcon, MapPin, ChevronDown } from "lucide-react";
+import { useGeolocation } from "@/lib/useGeolocation";
+import { useCamera } from "@/lib/useCamera";
+import { nearestMuseum, haversineMeters, GATE_RADIUS_M } from "@/lib/domain/locationGate";
 
 type Phase = "idle" | "scanning";
 
@@ -57,6 +60,40 @@ function fileToBase64(file: File): Promise<{ base64: string; mediaType: string }
 export function CaptureScreen() {
   const { collect, isCollected, momentsByArtwork } = useCollection();
   const [museumId, setMuseumId] = useState<string>("moma");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const geo = useGeolocation();
+  const [located, setLocated] = useState(false);
+
+  // GPS -> nearest catalogued museum, computed client-side (MUSEUMS is already loaded).
+  // Pre-selects the dropdown; the user can still override it. On geo failure we simply
+  // leave the dropdown at its default — it doubles as the manual fallback.
+  useEffect(() => {
+    if (geo.status !== "ready") return;
+    const hit = nearestMuseum(geo.lat, geo.lon, Object.values(MUSEUMS));
+    if (hit) {
+      setMuseumId(hit.museum.id);
+      setLocated(true);
+    }
+  }, [geo]);
+
+  // Distance to the CURRENTLY SELECTED museum (not just the nearest), so a manual
+  // override is judged correctly. Legendary seal requires being within the gate of it.
+  const coords = geo.status === "ready" ? { lat: geo.lat, lon: geo.lon } : null;
+  const selectedMuseum = MUSEUMS[museumId];
+  const distToSelected =
+    coords && selectedMuseum
+      ? haversineMeters(coords.lat, coords.lon, selectedMuseum.lat, selectedMuseum.lon)
+      : null;
+  const locationVerified = distToSelected !== null && distToSelected <= GATE_RADIUS_M;
+
+  // Museum picker rows: nearest-first when located, else alphabetical.
+  const museumChoices = CAPTURE_MUSEUMS.map((m) => ({
+    m,
+    dist: coords ? haversineMeters(coords.lat, coords.lon, m.lat, m.lon) : null,
+  })).sort((a, b) =>
+    a.dist != null && b.dist != null ? a.dist - b.dist : a.m.name.localeCompare(b.m.name),
+  );
+
   const [phase, setPhase] = useState<Phase>("idle");
   const [matchId, setMatchId] = useState<string | null>(null);
   const [develop, setDevelop] = useState<DevelopState | null>(null);
@@ -67,9 +104,19 @@ export function CaptureScreen() {
   const captureKey = useRef<string | undefined>(undefined);
   const uploadPromise = useRef<Promise<string | undefined> | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const { videoRef, status: camStatus, capture: captureFrame } = useCamera();
 
-  function startScan() {
+  // Shutter: grab the live frame when the camera is running, else fall back to the
+  // gallery picker (camera denied / unavailable / not a secure context).
+  async function shoot() {
     if (phase === "scanning") return;
+    if (camStatus === "live") {
+      const file = await captureFrame();
+      if (file) {
+        onPhoto(file);
+        return;
+      }
+    }
     fileRef.current?.click();
   }
 
@@ -130,7 +177,7 @@ export function CaptureScreen() {
     const id = matchId;
     if (!id) return;
     const art = getArtwork(id);
-    const museum = art ? getMuseum(art.museumId) : undefined;
+    const museum = getMuseum(museumId) ?? (art ? getMuseum(art.museumId) : undefined);
     const capturedAt = new Date().toISOString();
 
     // Derive 初遇/重逢 from the moments BEFORE this one is appended (kindOf sorts internally).
@@ -141,7 +188,16 @@ export function CaptureScreen() {
     // Persist with the keepsake key. If the S3 upload hasn't finished yet, wait for
     // it so we never silently drop the photo; the develop overlay still shows instantly.
     const commit = (selfie?: string) =>
-      collect({ artworkId: id, note: note || undefined, selfie, collectedAt: capturedAt.slice(0, 10), stampStyle });
+      collect({
+        artworkId: id,
+        note: note || undefined,
+        selfie,
+        collectedAt: capturedAt.slice(0, 10),
+        stampStyle,
+        museumId,
+        lat: coords?.lat,
+        lon: coords?.lon,
+      });
     if (captureKey.current) commit(captureKey.current);
     else if (uploadPromise.current) uploadPromise.current.then(commit);
     else commit(undefined);
@@ -162,42 +218,58 @@ export function CaptureScreen() {
 
   return (
     <div className="flex min-h-dvh flex-col px-5 pb-28 pt-6">
-      {/* Editorial header */}
-      <div className="mx-auto mb-6 w-full max-w-sm border-b border-border pb-4 text-center">
-        <p className="label-caps text-muted-foreground">Field Identification</p>
-        <h1 className="mt-1 font-heading text-3xl font-bold leading-none">Capture a Moment</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Stand beside a work, frame you both, and seal the moment</p>
-        <div className="mt-3 flex items-center justify-center gap-2">
-          <span className="label-caps text-muted-foreground">Museum</span>
-          <select
-            value={museumId}
-            onChange={(e) => setMuseumId(e.target.value)}
-            disabled={phase === "scanning"}
-            aria-label="Choose the museum to identify against"
-            className="label-caps max-w-[16rem] cursor-pointer border-b-2 border-foreground bg-transparent pb-0.5 text-foreground outline-none disabled:opacity-50"
-          >
-            {CAPTURE_MUSEUMS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Compact header — a quiet catalogue plate; tap to switch museum */}
+      <div className="mx-auto mb-5 w-full max-w-sm border-b border-border pb-3.5 text-center">
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          disabled={phase === "scanning"}
+          aria-label="Choose the museum to identify against"
+          className="inline-flex max-w-full items-center gap-1.5 transition-opacity active:opacity-60 disabled:opacity-50"
+        >
+          <span className="label-caps truncate text-foreground">{selectedMuseum?.name ?? "Choose a museum"}</span>
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+        </button>
+        {coords && distToSelected !== null && (
+          <p className="mt-2 inline-flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <MapPin className="size-3 text-primary" />
+            {located ? "Located · " : ""}
+            {distToSelected < 1000
+              ? `${Math.round(distToSelected)} m away`
+              : `${(distToSelected / 1000).toFixed(1)} km away`}
+          </p>
+        )}
       </div>
 
-      {/* Viewfinder */}
-      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm overflow-hidden rounded-sm border border-foreground/15 bg-secondary">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,oklch(0.955_0.01_78),oklch(0.9_0.012_78))]" />
-        <div className="absolute left-1/2 top-1/2 size-40 -translate-x-1/2 -translate-y-1/2 rounded-sm border border-foreground/20 bg-card/70" />
+      {/* Viewfinder — the live camera is the hero */}
+      <div className="relative mx-auto w-full max-w-sm flex-1 min-h-[52vh] overflow-hidden rounded-lg border border-foreground/12 bg-secondary">
+        {/* Live camera feed */}
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity",
+            camStatus === "live" && phase === "idle" && !capturePreview ? "opacity-100" : "opacity-0",
+          )}
+        />
 
-        {[
-          "left-4 top-4 border-l-2 border-t-2 rounded-tl-lg",
-          "right-4 top-4 border-r-2 border-t-2 rounded-tr-lg",
-          "left-4 bottom-4 border-l-2 border-b-2 rounded-bl-lg",
-          "right-4 bottom-4 border-r-2 border-b-2 rounded-br-lg",
-        ].map((c) => (
-          <span key={c} className={cn("absolute size-10 border-primary/70", c)} />
-        ))}
+        {/* Frozen frame held while scanning / before sealing */}
+        {capturePreview && (
+          <img src={capturePreview} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        )}
+
+        {/* Camera unavailable → guide to the gallery (shutter routes there too) */}
+        {camStatus === "unavailable" && phase === "idle" && !capturePreview && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
+            <ImageIcon className="size-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">相机不可用 — 用相册选一张图</p>
+          </div>
+        )}
+
+        {/* A quiet inset mat — refined framing, no gamey ticks */}
+        <div className="pointer-events-none absolute inset-0 rounded-lg ring-1 ring-inset ring-white/10" />
 
         <AnimatePresence>
           {phase === "scanning" && (
@@ -229,30 +301,30 @@ export function CaptureScreen() {
           )}
         </AnimatePresence>
 
-        {phase === "idle" && (
-          <div className="absolute inset-x-0 bottom-6 text-center">
-            <p className="text-xs text-muted-foreground">
-              {miss ? "Couldn't identify it — try another angle" : "Stand beside the work — keep some of it in frame"}
+        {phase === "idle" && miss && !capturePreview && (
+          <div className="absolute inset-x-0 bottom-5 text-center">
+            <p className="mx-auto inline-block rounded bg-background/70 px-2 py-1 text-xs text-muted-foreground">
+              Couldn&apos;t identify it — try another angle
             </p>
           </div>
         )}
       </div>
 
-      {/* Controls */}
-      <div className="mx-auto mt-7 flex w-full max-w-sm items-center justify-between px-2">
+      {/* Controls — gallery + shutter (no flash) */}
+      <div className="mx-auto mt-6 flex w-full max-w-sm items-center justify-center gap-12">
         <button
-          onClick={startScan}
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
-          aria-label="Upload from library"
+          onClick={() => fileRef.current?.click()}
+          disabled={phase === "scanning"}
+          className="flex size-12 items-center justify-center rounded-full text-muted-foreground transition-transform active:scale-90 disabled:opacity-50"
+          aria-label="Choose from library"
         >
-          <ImageIcon className="size-5" />
+          <ImageIcon className="size-6" />
         </button>
 
         <input
           ref={fileRef}
           type="file"
           accept="image/*"
-          capture="environment"
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -262,29 +334,22 @@ export function CaptureScreen() {
         />
 
         <button
-          onClick={startScan}
+          onClick={shoot}
           disabled={phase === "scanning"}
           aria-label="Capture artwork"
-          className="relative flex size-20 items-center justify-center rounded-full"
+          className="relative flex size-[76px] items-center justify-center rounded-full transition-transform active:scale-95 disabled:opacity-60"
         >
-          <span className="absolute inset-0 rounded-full border border-foreground/25" />
-          <span className="absolute inset-1.5 rounded-full border border-foreground/15" />
+          <span className="absolute inset-0 rounded-full border border-foreground/30" />
           <span
             className={cn(
-              "flex size-14 items-center justify-center rounded-full bg-foreground text-background transition-transform",
-              phase === "scanning" ? "scale-90 opacity-70" : "active:scale-95",
+              "size-[58px] rounded-full bg-foreground transition-transform",
+              phase === "scanning" && "scale-90 opacity-60",
             )}
-          >
-            <Scan className="size-6" />
-          </span>
+          />
         </button>
 
-        <button
-          className="flex size-11 items-center justify-center rounded-sm border border-border text-muted-foreground transition-transform active:scale-90"
-          aria-label="Toggle flash"
-        >
-          <Zap className="size-5" />
-        </button>
+        {/* balances the gallery button so the shutter stays centered */}
+        <span className="size-12" aria-hidden />
       </div>
 
       <MatchSheet
@@ -292,9 +357,42 @@ export function CaptureScreen() {
         alreadyCollected={matchId ? isCollected(matchId) : false}
         isReproduction={isRepro}
         photoPreview={capturePreview}
+        locationVerified={locationVerified}
         onClose={() => setMatchId(null)}
         onSeal={handleSeal}
       />
+
+      {/* Museum picker — replaces the native select; nearest-first when located */}
+      <BottomSheet open={pickerOpen} onClose={() => setPickerOpen(false)}>
+        <div className="px-5 pb-8 pt-3">
+          <p className="label-caps mb-3 text-center text-muted-foreground">Choose a museum</p>
+          <div className="max-h-[55vh] space-y-0.5 overflow-y-auto">
+            {museumChoices.map(({ m, dist }) => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  setMuseumId(m.id);
+                  setPickerOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center justify-between gap-3 rounded-sm px-3 py-2.5 text-left transition-colors active:bg-secondary/60",
+                  m.id === museumId && "bg-secondary/50",
+                )}
+              >
+                <span className="min-w-0">
+                  <span className="block truncate font-heading text-sm font-semibold">{m.name}</span>
+                  <span className="label-caps text-muted-foreground">{m.city}</span>
+                </span>
+                {dist != null && (
+                  <span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+                    {dist < 1000 ? `${Math.round(dist)} m` : `${(dist / 1000).toFixed(1)} km`}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </BottomSheet>
 
       {/* Manual fallback — pick from the works currently on display */}
       <BottomSheet open={manual !== null} onClose={() => setManual(null)}>
