@@ -59,9 +59,17 @@ function SealButton({ onSeal }: { onSeal: () => void }) {
   );
 }
 
+// 1st, 2nd, 3rd, 4th … for the "your Nth encounter" label.
+const ordinal = (n: number) => {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return `${n}${s[(v - 20) % 10] ?? s[v] ?? s[0]}`;
+};
+
 export function MatchSheet({
   artworkId,
   alreadyCollected,
+  priorVisits = 0,
   photoPreview,
   locationVerified,
   onClose,
@@ -69,6 +77,7 @@ export function MatchSheet({
 }: {
   artworkId: string | null;
   alreadyCollected: boolean;
+  priorVisits?: number;
   isReproduction?: boolean;
   photoPreview?: string;
   locationVerified?: boolean;
@@ -121,7 +130,7 @@ export function MatchSheet({
               <p className="text-xs leading-relaxed text-primary">
                 <span className="font-semibold">Legendary — on-site only.</span>{" "}
                 {legendaryBlocked
-                  ? `未能确认你在 ${museum?.name ?? "the museum"} 现场,传奇作品需到博物馆 150 米内才能封缄。`
+                  ? `We couldn't confirm you're at ${museum?.name ?? "the museum"}. A legendary can only be sealed within 150 m of it.`
                   : `This work can only be sealed inside ${museum?.name ?? "the museum"}. Your location has been verified.`}
               </p>
             </div>
@@ -129,7 +138,7 @@ export function MatchSheet({
 
           {alreadyCollected && (
             <div className="mt-4 inline-flex items-center gap-2 text-xs text-brass">
-              <RotateCcw className="size-3.5" /> You&apos;re back — this will be a reunion
+              <RotateCcw className="size-3.5" /> This will be your {ordinal(priorVisits + 1)} encounter
             </div>
           )}
 
@@ -170,7 +179,7 @@ export function MatchSheet({
 
           {legendaryBlocked ? (
             <p className="mt-5 w-full select-none border border-border bg-secondary/40 py-4 text-center text-xs text-muted-foreground">
-              到现场后即可封缄这枚传奇
+              Seal this legendary once you&apos;re on-site
             </p>
           ) : (
             <SealButton onSeal={handleSeal} />

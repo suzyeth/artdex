@@ -66,7 +66,7 @@ export function PremiumScreen({ onBack }: { onBack: () => void }) {
         <p className="label-caps text-muted-foreground">For Institutions</p>
         <h2 className="mt-2 font-heading text-xl font-bold">Partner with ArtDex</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Turn your collection into a living game. Drive footfall, unlock on-site legendaries and reach a new generation
+          Turn your collection into a living game. Drive foot traffic, unlock on-site legendaries and reach a new generation
           of visitors.
         </p>
         <button className="mt-4 inline-flex items-center gap-1.5 border-b border-foreground pb-0.5 text-sm font-medium transition-opacity active:opacity-60">

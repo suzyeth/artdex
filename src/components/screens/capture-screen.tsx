@@ -30,7 +30,7 @@ type DevelopState = {
 };
 
 // Capture is scoped to one museum's on-display works at a time; Bedrock matches the
-// photo against only that museum's current candidates. Any catalogued museum can be
+// photo against only that museum's current candidates. Any cataloged museum can be
 // the target — the list comes straight from the catalog so it stays in sync.
 const CAPTURE_MUSEUMS = Object.values(MUSEUMS).sort((a, b) => a.name.localeCompare(b.name));
 const MAX_EDGE = 1024;
@@ -64,7 +64,7 @@ export function CaptureScreen() {
   const geo = useGeolocation();
   const [located, setLocated] = useState(false);
 
-  // GPS -> nearest catalogued museum, computed client-side (MUSEUMS is already loaded).
+  // GPS -> nearest cataloged museum, computed client-side (MUSEUMS is already loaded).
   // Pre-selects the dropdown; the user can still override it. On geo failure we simply
   // leave the dropdown at its default — it doubles as the manual fallback.
   useEffect(() => {
@@ -264,7 +264,7 @@ export function CaptureScreen() {
         {camStatus === "unavailable" && phase === "idle" && !capturePreview && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
             <ImageIcon className="size-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">相机不可用 — 用相册选一张图</p>
+            <p className="text-sm text-muted-foreground">Camera unavailable — pick a photo from your library</p>
           </div>
         )}
 
@@ -355,6 +355,7 @@ export function CaptureScreen() {
       <MatchSheet
         artworkId={matchId}
         alreadyCollected={matchId ? isCollected(matchId) : false}
+        priorVisits={matchId ? (momentsByArtwork[matchId]?.length ?? 0) : 0}
         isReproduction={isRepro}
         photoPreview={capturePreview}
         locationVerified={locationVerified}
@@ -398,7 +399,7 @@ export function CaptureScreen() {
       <BottomSheet open={manual !== null} onClose={() => setManual(null)}>
         <div className="px-5 pb-8 pt-3">
           <p className="label-caps mb-1 text-center text-primary">Couldn&apos;t identify it</p>
-          <p className="mb-4 text-center text-sm text-muted-foreground">Pick the work from what&apos;s on display</p>
+          <p className="mb-4 text-center text-sm text-muted-foreground">Choose from the works on display</p>
           <div className="max-h-[50vh] space-y-2 overflow-y-auto">
             {(manual ?? []).map((c) => (
               <button

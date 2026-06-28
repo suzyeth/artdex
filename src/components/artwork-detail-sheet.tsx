@@ -50,7 +50,7 @@ export function ArtworkDetailSheet({
               <div className="mt-5 rounded-md border border-border bg-muted/30 p-3.5">
                 <p className="label-caps mb-1 text-muted-foreground">Exhibition history</p>
                 <p className="mb-3 text-xs text-muted-foreground">
-                  This work has travelled across {cityCount} cities.
+                  This work has hung in {cityCount} cities.
                 </p>
                 <ol className="space-y-2">
                   {artwork.journey.map((stop, i) => {

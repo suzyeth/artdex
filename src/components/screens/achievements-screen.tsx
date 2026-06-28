@@ -55,7 +55,7 @@ export function AchievementsScreen({ onBack }: { onBack: () => void }) {
 
       {/* Masthead + completion ledger */}
       <header className="mb-6">
-        <p className="label-caps text-muted-foreground">The ArtDex · Honours</p>
+        <p className="label-caps text-muted-foreground">The ArtDex · Honors</p>
         <h1 className="mt-1 font-heading text-[2.5rem] font-bold leading-[0.95] tracking-tight">Achievements</h1>
         <div className="mt-6 rule-t rule-b py-3">
           <div className="flex items-baseline justify-between">

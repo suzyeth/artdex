@@ -133,7 +133,7 @@ export function ProfileScreen() {
           </div>
           <p className="font-heading text-xl font-bold">An empty gallery</p>
           <p className="max-w-[15rem] text-sm text-muted-foreground">
-            Visit a museum and capture your first masterpiece — it will be catalogued here.
+            Visit a museum and capture your first masterpiece — it will be cataloged here.
           </p>
         </div>
       ) : (
