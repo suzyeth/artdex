@@ -7,7 +7,7 @@ import { getArtwork, getMuseum } from "@/lib/data";
 import { rarityStyles } from "@/lib/rarity";
 import { cn } from "@/lib/utils";
 import type { StampStyle } from "@/lib/domain/moments";
-import { Sparkles, Lock, MapPin, AlertTriangle, RotateCcw } from "lucide-react";
+import { Sparkles, Lock, MapPin, RotateCcw } from "lucide-react";
 
 const HOLD_MS = 1000;
 
@@ -62,7 +62,6 @@ function SealButton({ onSeal }: { onSeal: () => void }) {
 export function MatchSheet({
   artworkId,
   alreadyCollected,
-  isReproduction,
   photoPreview,
   locationVerified,
   onClose,
@@ -124,16 +123,6 @@ export function MatchSheet({
                 {legendaryBlocked
                   ? `未能确认你在 ${museum?.name ?? "the museum"} 现场,传奇作品需到博物馆 150 米内才能封缄。`
                   : `This work can only be sealed inside ${museum?.name ?? "the museum"}. Your location has been verified.`}
-              </p>
-            </div>
-          )}
-
-          {isReproduction && (
-            <div className="mt-4 flex items-start gap-2 border-l-2 border-[oklch(0.55_0.145_38)] bg-[oklch(0.55_0.145_38)]/8 p-3">
-              <AlertTriangle className="mt-0.5 size-4 shrink-0 text-[oklch(0.5_0.145_38)]" />
-              <p className="text-xs leading-relaxed text-[oklch(0.45_0.145_38)]">
-                <span className="font-semibold">Looks like a reproduction.</span> This reads as a screen, postcard, or
-                print, not the original. You can still seal it, but go see the real thing.
               </p>
             </div>
           )}
