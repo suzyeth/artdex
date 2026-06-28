@@ -39,6 +39,16 @@ export function rarityRevealGlow(rarity: Rarity): number {
   }
 }
 
+/** B2 — a single bright "landing" flash the instant the print finishes developing,
+ *  reserved for legendary alone. A victory beat in its brass meaning-color. Stays in
+ *  the house style (a flash of meaning, never confetti). null for every other tier —
+ *  common/rare/epic land without the flourish, so legendary stays singular. */
+export function rarityVictoryFlash(rarity: Rarity): string | null {
+  if (rarity === "legendary")
+    return "radial-gradient(circle at center, oklch(0.72 0.1 84 / 0.55), oklch(0.62 0.092 80 / 0.2) 42%, transparent 70%)";
+  return null;
+}
+
 /** G — develop lingers slightly longer for rarer works (more anticipation), but stays
  * snappy so the reveal keeps its dopamine hit instead of making the user wait. */
 export function rarityDevelopMs(rarity: Rarity): number {
