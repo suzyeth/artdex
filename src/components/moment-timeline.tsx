@@ -31,37 +31,49 @@ export function MomentTimeline({ artworkId, moments }: { artworkId: string; mome
           const leanRight = i % 2 === 1;
           const [day, mon] = stampDateLong(m.capturedAt).split(" ");
           const taped = first || i % 2 === 0;
+          const monTitle = mon ? mon.charAt(0) + mon.slice(1).toLowerCase() : "";
+          const dateLine = `${day} ${monTitle} ${stampYear(m.capturedAt)}`;
 
           return (
-            <li key={`${m.capturedAt}-${i}`} className="grid grid-cols-[34px_1fr] gap-x-2.5">
-              {/* Left rail — slim dated spine keeps the chronology */}
-              <div className="relative pt-5 text-right">
+            <li key={`${m.capturedAt}-${i}`} className="grid grid-cols-[16px_1fr] gap-x-2.5">
+              {/* Left spine — thin timeline rail keeps the chronology */}
+              <div className="relative">
                 {!single && (
                   <span
                     className={cn(
-                      "absolute left-[16px] w-px bg-border",
-                      first ? "top-5" : "top-0",
-                      last ? "h-5" : "bottom-0",
+                      "absolute left-[6px] w-px bg-border",
+                      first ? "top-6" : "top-0",
+                      last ? "h-6" : "bottom-0",
                     )}
                   />
                 )}
                 <span
                   className={cn(
-                    "absolute left-[11px] top-[22px] rounded-full ring-4 ring-background",
+                    "absolute left-[2px] top-[23px] rounded-full ring-4 ring-background",
                     first ? "size-2.5 bg-brass" : "size-2 border-[1.5px] border-muted-foreground/50 bg-background",
                   )}
                 />
-                <div className="pr-0.5 font-mono text-[10px] leading-[1.35] tabular-nums text-muted-foreground">
-                  <span className={cn(first && "text-brass")}>{day}</span>
-                  <br />
-                  {mon}
-                  <br />
-                  {stampYear(m.capturedAt)}
-                </div>
               </div>
 
-              {/* Right — the photo, as a tilted, taped instant-film keepsake */}
-              <div className={cn("flex", last ? "pb-3" : "pb-9")}>
+              {/* Right — a horizontal date line, then the tilted instant-film keepsake */}
+              <div className={cn(last ? "pb-3" : "pb-9")}>
+                <div className="flex items-baseline gap-2 pt-[16px]">
+                  <span
+                    className={cn(
+                      "font-mono text-[13px] font-semibold tabular-nums",
+                      first ? "text-brass" : "text-foreground/80",
+                    )}
+                  >
+                    {dateLine}
+                  </span>
+                  {museum && (
+                    <span className="min-w-0 truncate font-heading text-xs italic text-muted-foreground">
+                      {museum.city}
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-2 flex">
                 <motion.button
                   onClick={() => setOpenIndex(i)}
                   aria-label={`View your ${first ? "first encounter" : "reunion"}, ${stampDateLong(m.capturedAt)}`}
@@ -95,6 +107,7 @@ export function MomentTimeline({ artworkId, moments }: { artworkId: string; mome
                     chinNote={m.note}
                   />
                 </motion.button>
+                </div>
               </div>
             </li>
           );
