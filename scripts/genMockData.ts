@@ -25,6 +25,16 @@ for (const e of exhibitions) {
 }
 for (const e of exhibitions) if (!museumOf.has(e.artworkId)) museumOf.set(e.artworkId, e.museumId);
 
+// Objective exhibition history per artwork (where it has hung, chronologically) — the
+// DB's travel record, surfaced in the UI independent of the user's personal moments.
+const journeyOf = new Map<string, { museumId: string; start: string; end: string }[]>();
+for (const e of exhibitions) {
+  const arr = journeyOf.get(e.artworkId) ?? [];
+  arr.push({ museumId: e.museumId, start: e.start, end: e.end });
+  journeyOf.set(e.artworkId, arr);
+}
+for (const arr of journeyOf.values()) arr.sort((a, b) => a.start.localeCompare(b.start));
+
 const museumsObj = Object.fromEntries(
   museums.map((m) => [
     m.id,
@@ -45,7 +55,7 @@ const artistsArr = artists.map((a) => ({
 const artworksArr = artworks.map((w) => ({
   id: w.id, title: w.title, artist: artistName.get(w.artistId) ?? "", artistId: w.artistId,
   year: w.year, rarity: w.rarity, image: w.imageUrl, museumId: museumOf.get(w.id) ?? "",
-  medium: "Oil on canvas", blurb: "",
+  medium: "Oil on canvas", blurb: "", journey: journeyOf.get(w.id) ?? [],
 }));
 
 const out = `// AUTO-GENERATED from src/lib/db/seedData.ts by scripts/genMockData.ts — do not edit by hand.
@@ -53,7 +63,8 @@ const out = `// AUTO-GENERATED from src/lib/db/seedData.ts by scripts/genMockDat
 export type Rarity = "common" | "rare" | "epic" | "legendary"
 
 export interface Museum { id: string; name: string; city: string; country: string; lon: number; lat: number; x: number; y: number }
-export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string }
+export interface JourneyStop { museumId: string; start: string; end: string }
+export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string; journey: JourneyStop[] }
 export interface Artist { id: string; name: string; nationality: string }
 
 export const MUSEUMS: Record<string, Museum> = ${JSON.stringify(museumsObj, null, 2)}

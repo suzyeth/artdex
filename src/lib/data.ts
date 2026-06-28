@@ -3,7 +3,8 @@
 export type Rarity = "common" | "rare" | "epic" | "legendary"
 
 export interface Museum { id: string; name: string; city: string; country: string; lon: number; lat: number; x: number; y: number }
-export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string }
+export interface JourneyStop { museumId: string; start: string; end: string }
+export interface Artwork { id: string; title: string; artist: string; artistId: string; year: string; rarity: Rarity; image: string; museumId: string; medium: string; blurb: string; journey: JourneyStop[] }
 export interface Artist { id: string; name: string; nationality: string }
 
 export const MUSEUMS: Record<string, Museum> = {
@@ -293,7 +294,24 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/van-gogh-starry-night-google-art-project.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "tate-britain",
+        "start": "2023-02-01",
+        "end": "2024-01-31"
+      },
+      {
+        "museumId": "orsay",
+        "start": "2024-02-15",
+        "end": "2025-05-31"
+      },
+      {
+        "museumId": "moma",
+        "start": "2025-06-15",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "sunflowers",
@@ -305,7 +323,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-willem-van-gogh-127.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "bedroom-arles",
@@ -317,7 +342,24 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-de-slaapkamer-google-art-project.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "courtauld",
+        "start": "2021-09-01",
+        "end": "2023-02-28"
+      },
+      {
+        "museumId": "vangoghmuseum",
+        "start": "2023-03-15",
+        "end": "2025-12-31"
+      },
+      {
+        "museumId": "moma",
+        "start": "2026-01-01",
+        "end": "2026-12-31"
+      }
+    ]
   },
   {
     "id": "almond-blossom",
@@ -329,7 +371,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-almond-blossom-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "vangoghmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "wheatfield-crows",
@@ -341,7 +390,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-wheatfield-with-crows-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "vangoghmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "potato-eaters",
@@ -353,7 +409,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-the-potato-eaters-google-art-project.jpg",
     "museumId": "vangoghmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "vangoghmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "starry-night-rhone",
@@ -365,7 +428,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/starry-night-over-the-rhone.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "irises",
@@ -377,7 +447,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/irises-vincent-van-gogh.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "met",
+        "start": "2026-01-01",
+        "end": "2026-12-31"
+      }
+    ]
   },
   {
     "id": "wheat-field-cypresses",
@@ -389,7 +466,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-wheat-field-with-cypresses-google-art-project.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "met",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "mona-lisa",
@@ -401,7 +485,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/mona-lisa-by-leonardo-da-vinci-from-c2rmf-retouched.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "louvre",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "virgin-of-the-rocks",
@@ -413,7 +504,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/leonardo-da-vinci-vergine-delle-rocce-louvre.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "louvre",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "annunciation",
@@ -425,7 +523,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/leonardo-da-vinci-annunciazione-google-art-project.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "uffizi",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "blue-water-lilies",
@@ -437,7 +542,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/claude-monet-blue-water-lilies-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "poppies",
@@ -449,7 +561,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/claude-monet-037.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "the-magpie",
@@ -461,7 +580,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/claude-monet-the-magpie-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "gare-saint-lazare",
@@ -473,7 +599,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/claude-monet-the-saint-lazare-station-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "girl-pearl-earring",
@@ -485,7 +618,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/1665-girl-with-a-pearl-earring.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "mauritshuis",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "milkmaid",
@@ -497,7 +637,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/johannes-vermeer-het-melkmeisje-google-art-project.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "rijksmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "view-of-delft",
@@ -509,7 +656,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vermeer-view-of-delft.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "mauritshuis",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "young-woman-water-pitcher",
@@ -521,7 +675,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/young-woman-with-a-water-pitcher-met-dp353257.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "met",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "night-watch",
@@ -533,7 +694,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/the-night-watch-hd.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "rijksmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "anatomy-lesson",
@@ -545,7 +713,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/rembrandt-the-anatomy-lesson-of-dr-nicolaes-tulp.jpg",
     "museumId": "mauritshuis",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "mauritshuis",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "jewish-bride",
@@ -557,7 +732,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/rembrandt-harmensz-van-rijn-portret-van-een-paar-als-oudtestamentische-figuren-genaamd-het-joodse-bruidje-google-art-project.jpg",
     "museumId": "rijksmuseum",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "rijksmuseum",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "great-wave",
@@ -569,7 +751,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/tsunami-by-hokusai-19th-century.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "met",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "birth-of-venus",
@@ -581,7 +770,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/sandro-botticelli-la-nascita-di-venere-google-art-project-edited.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "uffizi",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "primavera",
@@ -593,7 +789,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/botticelli-primavera.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "uffizi",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "ballet-class",
@@ -605,7 +808,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/edgar-degas-the-ballet-class-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "absinthe",
@@ -617,7 +827,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/edgar-degas-in-a-caf-google-art-project-2.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "moulin-galette",
@@ -629,7 +846,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/pierre-auguste-renoir-le-moulin-de-la-galette.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "girls-at-piano",
@@ -641,7 +865,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/auguste-renoir-young-girls-at-the-piano-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "card-players",
@@ -653,7 +884,24 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/les-joueurs-de-cartes-par-paul-c-zanne.jpg",
     "museumId": "met",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "tate-britain",
+        "start": "2021-05-01",
+        "end": "2023-04-30"
+      },
+      {
+        "museumId": "orsay",
+        "start": "2023-05-15",
+        "end": "2025-12-31"
+      },
+      {
+        "museumId": "met",
+        "start": "2026-01-01",
+        "end": "2026-12-31"
+      }
+    ]
   },
   {
     "id": "apples-oranges",
@@ -665,7 +913,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/paul-c-zanne-179.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "medusa",
@@ -677,7 +932,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/caravaggio-medusa-google-art-project.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "uffizi",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "bacchus",
@@ -689,7 +951,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/bacchus-by-caravaggio-1.jpg",
     "museumId": "uffizi",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "uffizi",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "las-meninas",
@@ -701,7 +970,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/las-meninas-by-diego-vel-zquez-from-prado-in-google-earth.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "prado",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "third-of-may",
@@ -713,7 +989,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/el-tres-de-mayo-by-francisco-de-goya-from-prado-thin-black-margin.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "prado",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "saturn",
@@ -725,7 +1008,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/francisco-de-goya-saturno-devorando-a-su-hijo-1819-1823.jpg",
     "museumId": "prado",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "prado",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "fighting-temeraire",
@@ -737,7 +1027,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/turner-j-m-w-the-fighting-t-m-raire-tugged-to-her-last-berth-to-be-broken.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "rain-steam-speed",
@@ -749,7 +1046,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/rain-steam-and-speed-the-great-western-railway.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "olympia",
@@ -761,7 +1065,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/manet-edouard-olympia-1863.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "dejeuner-herbe",
@@ -773,7 +1084,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/edouard-manet-luncheon-on-the-grass-google-art-project.jpg",
     "museumId": "orsay",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "orsay",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "sleeping-gypsy",
@@ -785,7 +1103,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/la-boh-mienne-endormie.jpg",
     "museumId": "moma",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "moma",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "liberty-leading",
@@ -797,7 +1122,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/eug-ne-delacroix-le-28-juillet-la-libert-guidant-le-peuple.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "louvre",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "raft-medusa",
@@ -809,7 +1141,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/jean-louis-th-odore-g-ricault-la-balsa-de-la-medusa-museo-del-louvre-1818-19.jpg",
     "museumId": "louvre",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "louvre",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "arnolfini-portrait",
@@ -821,7 +1160,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/van-eyck-arnolfini-portrait.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "the-ambassadors",
@@ -833,7 +1179,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/hans-holbein-the-younger-the-ambassadors-google-art-project.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "rokeby-venus",
@@ -845,7 +1198,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/diego-vel-zquez-rokeby-venus.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "hay-wain",
@@ -857,7 +1217,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/john-constable-the-hay-wain.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "supper-at-emmaus",
@@ -869,7 +1236,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/supper-at-emmaus-caravaggio-1601.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "venus-and-mars",
@@ -881,7 +1255,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/venus-and-mars-national-gallery.jpg",
     "museumId": "nationalgallery",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "nationalgallery",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "bar-folies-bergere",
@@ -893,7 +1274,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/edouard-manet-a-bar-at-the-folies-berg-re.jpg",
     "museumId": "courtauld",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "courtauld",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "self-portrait-bandaged-ear",
@@ -905,7 +1293,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/vincent-van-gogh-self-portrait-with-bandaged-ear-1889-courtauld-institute.jpg",
     "museumId": "courtauld",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "courtauld",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "ophelia",
@@ -917,7 +1312,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/john-everett-millais-ophelia-google-art-project.jpg",
     "museumId": "tate-britain",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "tate-britain",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "snow-storm-steamboat",
@@ -929,7 +1331,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/joseph-mallord-william-turner-snow-storm-steam-boat-off-a-harbour-s-mouth-wga23178.jpg",
     "museumId": "tate-britain",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "tate-britain",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "old-woman-eggs",
@@ -941,7 +1350,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/diego-velazquez-an-old-woman-cooking-eggs-google-art-project.jpg",
     "museumId": "scottish-national",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "scottish-national",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "tipus-tiger",
@@ -953,7 +1369,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/tipu-s-tiger-with-keyboard-on-display-2006ah4168.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "va",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "three-graces",
@@ -965,7 +1388,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/canova-the-three-graces-a-4-1994-2006at7724.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "va",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "miraculous-draught",
@@ -977,7 +1407,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/raphael-the-miraculous-draft-of-fishes-google-art-project.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "va",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "strawberry-thief",
@@ -989,7 +1426,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/morris-strawberry-thief-1883.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "va",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   },
   {
     "id": "salisbury-cathedral-bishops",
@@ -1001,7 +1445,14 @@ export const ARTWORKS: Artwork[] = [
     "image": "/artworks/john-constable-salisbury-cathedral-from-the-bishop-s-grounds.jpg",
     "museumId": "va",
     "medium": "Oil on canvas",
-    "blurb": ""
+    "blurb": "",
+    "journey": [
+      {
+        "museumId": "va",
+        "start": "2020-01-01",
+        "end": "2030-01-01"
+      }
+    ]
   }
 ]
 
