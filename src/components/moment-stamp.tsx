@@ -33,12 +33,13 @@ export function MomentStamp({
     );
   }
 
-  // postmark — round rubber-stamp look
+  // postmark — round rubber-stamp look. A faint frosted disc keeps the inked stamp
+  // legible over dark or busy artwork (a bare cobalt stamp vanished on blue paintings).
   return (
     <div
       className={cn(
-        "flex size-14 -rotate-12 flex-col items-center justify-center rounded-full",
-        first ? "border-[1.5px] border-brass text-brass" : "border-[1.5px] border-primary/70 text-primary/85",
+        "flex size-14 -rotate-12 flex-col items-center justify-center rounded-full bg-[oklch(0.99_0.008_85/0.6)] shadow-[0_1px_4px_oklch(0.3_0.02_70/0.3)] backdrop-blur-[1px]",
+        first ? "border-[1.5px] border-brass text-brass" : "border-[1.5px] border-primary/70 text-primary",
       )}
     >
       <span className="text-[8px] font-semibold tracking-wide">{museumShort(museumName)}</span>
