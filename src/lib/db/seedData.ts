@@ -224,16 +224,23 @@ export const artworks: {
 ];
 
 // Exhibitions: every artwork is placed at its real home museum with a window
-// covering today. Two works are "touring" (two date-disjoint rows) to exercise
-// the dynamic-location model — their current 2026 window is at the visiting museum.
+// covering today. A few famous works are "touring" — they carry several
+// date-disjoint rows tracing a multi-city journey (London → Paris/Amsterdam →
+// New York), so the temporal + geospatial model is exercised by real data, not
+// just present structurally. Exactly one row per work covers today() (its current
+// location, used by the candidate-set query); the earlier rows are its history.
 export const exhibitions: {
   id: string; artworkId: string; museumId: string; start: string; end: string;
 }[] = [
   // Van Gogh
-  { id: "ex-starry-night", artworkId: "starry-night", museumId: "moma", start: "2020-01-01", end: "2030-01-01" },
+  // touring hero: Starry Night's journey — Tate (London) → Orsay (Paris) → MoMA (current)
+  { id: "ex-starry-loan-tate", artworkId: "starry-night", museumId: "tate-britain", start: "2023-02-01", end: "2024-01-31" },
+  { id: "ex-starry-loan-orsay", artworkId: "starry-night", museumId: "orsay", start: "2024-02-15", end: "2025-05-31" },
+  { id: "ex-starry-night", artworkId: "starry-night", museumId: "moma", start: "2025-06-15", end: "2030-01-01" },
   { id: "ex-sunflowers", artworkId: "sunflowers", museumId: "nationalgallery", start: "2020-01-01", end: "2030-01-01" },
-  // touring demo: The Bedroom is visiting MoMA for 2026
-  { id: "ex-bedroom-home", artworkId: "bedroom-arles", museumId: "vangoghmuseum", start: "2020-01-01", end: "2025-12-31" },
+  // touring: The Bedroom — Courtauld (London) → Van Gogh Museum → MoMA (current 2026)
+  { id: "ex-bedroom-loan-courtauld", artworkId: "bedroom-arles", museumId: "courtauld", start: "2021-09-01", end: "2023-02-28" },
+  { id: "ex-bedroom-home", artworkId: "bedroom-arles", museumId: "vangoghmuseum", start: "2023-03-15", end: "2025-12-31" },
   { id: "ex-bedroom-tour", artworkId: "bedroom-arles", museumId: "moma", start: "2026-01-01", end: "2026-12-31" },
   { id: "ex-almond-blossom", artworkId: "almond-blossom", museumId: "vangoghmuseum", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-wheatfield-crows", artworkId: "wheatfield-crows", museumId: "vangoghmuseum", start: "2020-01-01", end: "2030-01-01" },
@@ -281,8 +288,9 @@ export const exhibitions: {
   { id: "ex-moulin-galette", artworkId: "moulin-galette", museumId: "orsay", start: "2020-01-01", end: "2030-01-01" },
   { id: "ex-girls-at-piano", artworkId: "girls-at-piano", museumId: "orsay", start: "2020-01-01", end: "2030-01-01" },
 
-  // Cézanne — touring demo: The Card Players is visiting the Met for 2026
-  { id: "ex-card-players-home", artworkId: "card-players", museumId: "orsay", start: "2020-01-01", end: "2025-12-31" },
+  // Cézanne — touring: The Card Players — Tate (London) → Orsay (Paris) → Met (current 2026)
+  { id: "ex-card-players-loan-tate", artworkId: "card-players", museumId: "tate-britain", start: "2021-05-01", end: "2023-04-30" },
+  { id: "ex-card-players-home", artworkId: "card-players", museumId: "orsay", start: "2023-05-15", end: "2025-12-31" },
   { id: "ex-card-players-tour", artworkId: "card-players", museumId: "met", start: "2026-01-01", end: "2026-12-31" },
   { id: "ex-apples-oranges", artworkId: "apples-oranges", museumId: "orsay", start: "2020-01-01", end: "2030-01-01" },
 
