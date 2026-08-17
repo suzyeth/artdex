@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap');
+  :root{
+    --bg:#F4EFE4; --card:#FDFBF6; --ink:#2C2823; --muted:#857E73;
+    --hair:rgba(44,40,35,.14); --cobalt:#2C40B5; --brass:#A9854E; --brass-bright:#C2A05D;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1920px;height:1080px}
+  body{background:var(--bg); color:var(--ink); font-family:'Geist','Segoe UI',sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; position:relative; overflow:hidden}
+  /* faint frame corners — museum mat */
+  .frame{position:absolute; inset:54px; border:1px solid var(--hair); border-radius:10px}
+  .corner{position:absolute; width:34px; height:34px; border:2px solid var(--brass); opacity:.55}
+  .c1{top:40px;left:40px;border-right:0;border-bottom:0}
+  .c2{top:40px;right:40px;border-left:0;border-bottom:0}
+  .c3{bottom:40px;left:40px;border-right:0;border-top:0}
+  .c4{bottom:40px;right:40px;border-left:0;border-top:0}
+
+  .kicker{font-size:19px; letter-spacing:.32em; text-transform:uppercase; font-weight:600; color:var(--muted); margin-bottom:30px}
+  .wordmark{font-family:'Playfair Display',Georgia,serif; font-weight:700; font-size:168px; line-height:.96; letter-spacing:-.01em}
+  .wordmark .dex{font-style:italic; color:var(--brass)}
+  .tag{font-family:'Playfair Display',Georgia,serif; font-style:italic; font-size:42px; color:var(--ink); margin-top:34px; max-width:1150px; line-height:1.35}
+  .tag .b{color:var(--cobalt); font-style:normal; font-weight:600}
+  .hair{width:120px;height:2px;background:var(--brass); margin:48px 0 40px}
+  .stack{display:flex; gap:18px; align-items:center; font-family:'Geist Mono',monospace; font-size:18px; color:var(--muted); letter-spacing:.04em}
+  .stack .sep{opacity:.4}
+  .foot{position:absolute; bottom:96px; display:flex; flex-direction:column; gap:14px; align-items:center}
+  .url{font-family:'Geist Mono',monospace; font-size:22px; color:var(--cobalt)}
+  .hash{font-size:18px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); font-weight:600}
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+
+  <div class="kicker">Hack the Zero Stack · H0</div>
+  <div class="wordmark">Art<span class="dex">Dex</span></div>
+  <div class="tag">Keep the moment you<br><span class="b">met a masterpiece.</span></div>
+  <div class="hair"></div>
+  <div class="stack">
+    <span>Next.js + Vercel</span><span class="sep">·</span>
+    <span>Amazon DynamoDB</span><span class="sep">·</span>
+    <span>Bedrock</span><span class="sep">·</span>
+    <span>S3</span>
+  </div>
+
+  <div class="foot">
+    <div class="url">artdex-fawn.vercel.app</div>
+    <div class="hash">#H0Hackathon</div>
+  </div>
+</body>
+</html>

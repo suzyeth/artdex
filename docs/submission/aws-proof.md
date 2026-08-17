@@ -9,7 +9,7 @@ in the AWS Console**, and/or the **CLI output** below (already captured live).
 3. **DynamoDB → `artdex_collections` → Explore items** — a row whose `moments` list carries **lat/lon** (open one of the 2026-06-26/27 `starry-night` / `bedroom-arles` rows). ⭐ This is the money shot — it proves the geospatial write.
 4. **S3 → `artdex-images-525033346195` → Objects** — uploaded selfie keepsakes.
 
-## Live CLI proof — captured 2026-06-27 (us-east-1)
+## Live CLI proof — captured 2026-06-28 (us-east-1)
 
 DynamoDB row counts:
 
@@ -18,8 +18,8 @@ DynamoDB row counts:
 | `artdex_artists` | 26 |
 | `artdex_museums` | 14 |
 | `artdex_artworks` | 60 |
-| `artdex_exhibitions` | 62 |
-| `artdex_collections` | 91 |
+| `artdex_exhibitions` | 66 |
+| `artdex_collections` | 116 |
 
 Sample artwork (`artdex_artworks`):
 ```json
@@ -35,8 +35,8 @@ Geo-stamped moment (`artdex_collections` — proves the geospatial write):
   "capturedAt": "2026-06-26T13:11:08Z" }
 ```
 
-Amazon S3 keepsakes (`artdex-images-525033346195`): 11 objects, e.g.
-`selfies/<user-id>/<uuid>.jpeg` (517 KB – 5 MB).
+Amazon S3 keepsakes (`artdex-images-525033346195`): 30 objects, e.g.
+`selfies/<user-id>/<uuid>.jpeg` (24 KB – 5 MB).
 
 ## Commands (re-run any time)
 ```bash

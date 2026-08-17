@@ -8,6 +8,13 @@ const COOKIE = "artdex_uid";
 
 /** Read the caller's user id, minting + setting one on first visit. */
 export async function getUserId(): Promise<string> {
+  // Local demo override: when DEMO_USER_ID is set (e.g. in .env.local) outside
+  // production, every request acts as that pre-seeded user — so `npm run dev`
+  // can showcase the demo-hero account (rich map + moment timeline) with no
+  // cookie fiddling. Guarded off in production to avoid a shared-account footgun.
+  const demo = process.env.DEMO_USER_ID;
+  if (demo && process.env.NODE_ENV !== "production") return demo;
+
   const jar = await cookies();
   const existing = jar.get(COOKIE)?.value;
   if (existing) return existing;

@@ -21,11 +21,16 @@ export async function POST(req: NextRequest) {
   const prompt = buildRecognitionPrompt(
     candidates.map((c) => ({ id: c.id, title: c.title, artist: c.artistName }))
   );
+  // Demo/dev escape hatch: set DISABLE_REPRO_CHECK=1 (e.g. in .env.local) to
+  // suppress the "looks like a reproduction" warning when demoing from a print
+  // or screen. Off by default, so deployed builds keep the check.
+  const reproCheckEnabled = process.env.DISABLE_REPRO_CHECK !== "1";
   try {
     const text = await recognizeArtwork(imageBase64, mediaType ?? "image/jpeg", prompt);
     const id = parseRecognition(text, candidates.map((c) => c.id));
     const artwork = candidates.find((c) => c.id === id) ?? null;
-    return NextResponse.json({ artwork, isReproduction: artwork ? isReproduction(text) : false });
+    const repro = artwork ? reproCheckEnabled && isReproduction(text) : false;
+    return NextResponse.json({ artwork, isReproduction: repro });
   } catch (err) {
     // Don't crash the capture flow on a Bedrock hiccup — the UI falls back to
     // manual search when recognition is unavailable.

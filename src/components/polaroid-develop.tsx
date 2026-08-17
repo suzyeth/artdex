@@ -16,6 +16,7 @@ export function PolaroidDevelop({
   kind,
   stampStyle,
   rarity,
+  note,
   onContinue,
 }: {
   photo: string;
@@ -25,6 +26,7 @@ export function PolaroidDevelop({
   kind: MomentKind;
   stampStyle: StampStyle;
   rarity: Rarity;
+  note?: string;
   onContinue: () => void;
 }) {
   const style = stampStyle;
@@ -101,6 +103,7 @@ export function PolaroidDevelop({
           size="lg"
           showStamp={developed}
           animateStamp
+          chinNote={note}
           photoNode={
             <motion.img
               src={photo}

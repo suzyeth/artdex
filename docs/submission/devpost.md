@@ -18,14 +18,14 @@ Most people walk past masterpieces and forget them. Pokémon GO made people walk
 ## What it does
 - **Snap → identify → collect.** Point your camera at an artwork; AI matches it and adds it to your Dex with a rarity reveal.
 - **The database is the game.** GPS finds your nearest museum → DynamoDB returns the works *currently exhibited there today* → the photo is matched against only those few candidates, which makes recognition reliable.
-- **Artworks travel.** The `exhibitions` table is a time-bounded artwork↔museum relationship; your collection snapshots *where a piece was when you caught it*.
+- **Artworks travel — and the app shows it.** The `exhibitions` table is a time-bounded artwork↔museum relationship, so a piece's location is *dynamic* (The Starry Night: London → Paris → New York). Each artwork's detail view surfaces this exhibition history straight from DynamoDB, and your collection snapshots *where a piece was when you caught it* — meet the same work again in a new city and your encounters string into one memory timeline.
 - **Location-gated legendaries.** The rarest works can only be sealed when you're physically within 150 m of the holding museum — enforced server-side with a haversine check against DynamoDB.
 - **Keepsakes.** Each capture saves a selfie-with-the-art to S3 and a "moment" (with GPS coordinates) to DynamoDB; revisit a work and it becomes a "reunion."
 - **World map + progress.** Collected pieces pin to a world map; per-artist progress ("Van Gogh 3 / 9") ticks up.
 
 ## How we built it
 - **Frontend:** Next.js 15 (App Router) + React 19 + Tailwind 4 + TypeScript, deployed on **Vercel**. In-app live camera via `getUserMedia`; world map via react-leaflet + OpenStreetMap.
-- **Database — Amazon DynamoDB** (`@aws-sdk/client-dynamodb` + `lib-dynamodb`), PAY_PER_REQUEST, region `us-east-1`. Five tables: `artdex_artworks`, `artdex_museums`, `artdex_artists`, `artdex_exhibitions`, `artdex_collections` (per-user append-only "moments"). Catalog: **60 artworks · 14 museums · 26 artists · 62 exhibition rows**.
+- **Database — Amazon DynamoDB** (`@aws-sdk/client-dynamodb` + `lib-dynamodb`), PAY_PER_REQUEST, region `us-east-1`. Five tables: `artdex_artworks`, `artdex_museums`, `artdex_artists`, `artdex_exhibitions`, `artdex_collections` (per-user append-only "moments"). Catalog: **60 artworks · 14 museums · 26 artists · 66 exhibition rows** (several masterpieces tour three cities to exercise the temporal model).
 - **Recognition — Amazon Bedrock**, `claude-haiku-4-5` vision. We send the photo plus the GPS-narrowed candidate list and ask for an id or "none."
 - **Images — Amazon S3** presigned PUT/GET for selfie keepsakes (bucket `artdex-images-…`).
 - **Auth:** cookie-based anonymous id (one Dex per browser) — zero-friction for a demo.
@@ -43,7 +43,7 @@ A database schema that *is* the gameplay: time-bounded exhibitions and a 150 m g
 DynamoDB's single-table, append-only "moments" shape fits an event-sourced collection log cleanly; and that narrowing the problem (candidate sets) beats a bigger model for reliability.
 
 ## What's next for ArtDex
-Friends + leaderboards (aggregated in DynamoDB), a museum "passport" sub-goal, and museum B2B partnerships.
+Friends and shared world-map footprints (aggregated in DynamoDB), a museum "passport" sub-goal, and museum B2B partnerships. (Achievements and a global collectors' leaderboard already ship.)
 
 ## Built with (tags)
 `amazon-dynamodb` `amazon-bedrock` `amazon-s3` `aws` `vercel` `next.js` `react` `typescript` `tailwindcss` `claude` `react-leaflet`

@@ -27,6 +27,7 @@ type DevelopState = {
   kind: MomentKind;
   stampStyle: StampStyle;
   rarity: Rarity;
+  note?: string;
 };
 
 // Capture is scoped to one museum's on-display works at a time; Bedrock matches the
@@ -212,6 +213,7 @@ export function CaptureScreen() {
         kind,
         stampStyle,
         rarity: art.rarity,
+        note: note || undefined,
       });
     }
   }

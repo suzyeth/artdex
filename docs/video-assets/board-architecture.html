@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap');
+
+  :root{
+    --bg:#F4EFE4; --card:#FDFBF6; --ink:#2C2823; --muted:#857E73;
+    --hair:rgba(44,40,35,.14); --cobalt:#2C40B5; --brass:#A9854E; --brass-bright:#C2A05D;
+    --rare:#3050C4; --epic:#C05B33; --legendary:#A9854E; --common:#8B847A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1920px;height:1080px}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Geist','Segoe UI',sans-serif;
+    display:flex; flex-direction:column; padding:88px 110px;
+    position:relative; overflow:hidden;
+  }
+  .label{font-size:18px; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--muted)}
+  h1{font-family:'Playfair Display',Georgia,serif; font-weight:600; font-size:74px; line-height:1.04; margin-top:10px}
+  h1 .it{font-style:italic}
+  .sub{font-size:24px; color:var(--muted); margin-top:18px; max-width:1100px; line-height:1.5}
+  .rule{height:1px; background:var(--hair); margin:46px 0 0}
+
+  .stage{flex:1; display:flex; align-items:center; justify-content:center; gap:0; margin-top:30px}
+  .node{
+    background:var(--card); border:1px solid var(--hair); border-radius:18px;
+    padding:34px 38px; width:300px; text-align:center; box-shadow:0 18px 40px -28px rgba(44,40,35,.5);
+  }
+  .node .ico{font-size:46px; line-height:1}
+  .node .t{font-family:'Playfair Display',Georgia,serif; font-size:30px; font-weight:600; margin-top:14px}
+  .node .d{font-size:17px; color:var(--muted); margin-top:8px; line-height:1.45}
+  .node .tag{display:inline-block; margin-top:14px; font-family:'Geist Mono',monospace; font-size:13px;
+    letter-spacing:.04em; color:var(--cobalt); border:1px solid var(--hair); border-radius:999px; padding:5px 13px}
+
+  /* left column (client) */
+  .col{display:flex; flex-direction:column; gap:0; align-items:center}
+
+  /* the three AWS service nodes stacked */
+  .aws{display:flex; flex-direction:column; gap:26px}
+  .aws .node{width:430px; text-align:left; display:flex; align-items:center; gap:22px; padding:26px 30px}
+  .aws .node .ico{font-size:38px}
+  .aws .node .t{font-size:26px; margin:0}
+  .aws .node .d{margin-top:5px}
+
+  /* connectors */
+  .conn{display:flex; flex-direction:column; align-items:center; justify-content:center; width:230px; position:relative}
+  .arrow{display:flex; align-items:center; width:100%}
+  .arrow .line{flex:1; height:2px; background:var(--ink); opacity:.78}
+  .arrow .head{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid var(--ink); opacity:.78}
+  .arrow .lbl{position:absolute; top:-30px; left:50%; transform:translateX(-50%); font-size:15px; color:var(--muted); white-space:nowrap; background:var(--bg); padding:0 10px}
+
+  .fanout{display:flex; flex-direction:column; gap:26px; width:170px}
+  .leg{display:flex; align-items:center; gap:0; height:78px}
+  .leg .line{flex:1;height:2px;background:var(--ink);opacity:.7}
+  .leg .head{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:11px solid var(--ink);opacity:.7}
+  .leg .lbl{position:absolute; font-size:14px; color:var(--muted)}
+
+  .vercel-wrap{position:relative; padding:26px; border:1.5px dashed var(--hair); border-radius:22px}
+  .vercel-cap{position:absolute; top:-13px; left:24px; background:var(--bg); padding:0 12px;
+    font-size:15px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--ink)}
+
+  .foot{position:absolute; bottom:54px; left:110px; right:110px; display:flex; justify-content:space-between; align-items:center}
+  .foot .brand{font-family:'Playfair Display',Georgia,serif; font-size:24px; font-weight:600}
+  .foot .meta{font-family:'Geist Mono',monospace; font-size:15px; color:var(--muted); letter-spacing:.03em}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:9px;vertical-align:middle}
+</style>
+</head>
+<body>
+  <div class="label">System Architecture</div>
+  <h1>From a museum photo to a <span class="it">DynamoDB</span> record</h1>
+  <div class="sub">GPS narrows the candidate set · Bedrock recognizes the artwork · every encounter is stored in DynamoDB, selfies in S3.</div>
+  <div class="rule"></div>
+
+  <div class="stage">
+    <!-- Client -->
+    <div class="col">
+      <div class="node">
+        <div class="ico">📱</div>
+        <div class="t">Browser</div>
+        <div class="d">Next.js PWA · camera + GPS + map</div>
+        <span class="tag">client</span>
+      </div>
+    </div>
+
+    <!-- arrow client -> vercel -->
+    <div class="conn">
+      <div class="arrow"><span class="lbl">photo + GPS</span><div class="line"></div><div class="head"></div></div>
+    </div>
+
+    <!-- Vercel API -->
+    <div class="vercel-wrap">
+      <div class="vercel-cap">▲ Vercel</div>
+      <div class="node" style="width:320px">
+        <div class="ico">⚡</div>
+        <div class="t">API Routes</div>
+        <div class="d">recognize · collect · candidates<br>location gate (haversine, 150 m)</div>
+        <span class="tag">edge / serverless</span>
+      </div>
+    </div>
+
+    <!-- fan-out to AWS -->
+    <div class="conn" style="width:150px">
+      <div class="arrow"><div class="line"></div><div class="head"></div></div>
+    </div>
+
+    <!-- AWS services -->
+    <div class="aws">
+      <div class="node">
+        <div class="ico">🗄️</div>
+        <div>
+          <div class="t">Amazon DynamoDB</div>
+          <div class="d">5 tables · collections, exhibitions (time-bounded), catalog</div>
+        </div>
+      </div>
+      <div class="node">
+        <div class="ico">👁️</div>
+        <div>
+          <div class="t">Amazon Bedrock</div>
+          <div class="d">Claude vision · matches photo vs on-site candidates</div>
+        </div>
+      </div>
+      <div class="node">
+        <div class="ico">🖼️</div>
+        <div>
+          <div class="t">Amazon S3</div>
+          <div class="d">selfie + artwork photos · presigned upload</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="brand">ArtDex</div>
+    <div class="meta">Next.js · Vercel · Amazon DynamoDB · Bedrock · S3 &nbsp;|&nbsp; us-east-1</div>
+  </div>
+</body>
+</html>

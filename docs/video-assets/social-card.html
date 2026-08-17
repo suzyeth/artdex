@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap');
+  :root{
+    --bg:#F4EFE4; --card:#FDFBF6; --ink:#2C2823; --muted:#857E73;
+    --hair:rgba(44,40,35,.14); --cobalt:#2C40B5; --brass:#A9854E; --brass-b:#C2A05D;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:675px}
+  body{background:var(--bg); color:var(--ink); font-family:'Geist','Segoe UI',sans-serif;
+    padding:46px 56px; position:relative; overflow:hidden; display:flex; flex-direction:column}
+  .frame{position:absolute; inset:24px; border:1px solid var(--hair); border-radius:8px; pointer-events:none}
+  .corner{position:absolute; width:26px; height:26px; border:2px solid var(--brass); opacity:.5}
+  .c1{top:16px;left:16px;border-right:0;border-bottom:0}.c2{top:16px;right:16px;border-left:0;border-bottom:0}
+  .c3{bottom:16px;left:16px;border-right:0;border-top:0}.c4{bottom:16px;right:16px;border-left:0;border-top:0}
+
+  .kicker{font-size:15px; letter-spacing:.26em; text-transform:uppercase; font-weight:600; color:var(--muted)}
+  .word{font-family:'Playfair Display',Georgia,serif; font-weight:700; font-size:78px; line-height:.95; margin-top:6px}
+  .word .dex{font-style:italic; color:var(--brass)}
+  .tag{font-family:'Playfair Display',Georgia,serif; font-style:italic; font-size:27px; color:var(--ink); margin-top:10px}
+
+  .strip{display:flex; gap:14px; margin:26px 0 24px}
+  .thumb{flex:1; height:150px; border:3px solid var(--card); outline:1px solid var(--hair);
+    box-shadow:0 10px 24px -12px rgba(44,40,35,.5); overflow:hidden; border-radius:2px}
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+
+  .feats{display:flex; flex-direction:column; gap:9px; margin-top:auto}
+  .feat{display:flex; align-items:center; gap:11px; font-size:18px; color:var(--ink)}
+  .feat .b{font-weight:600}
+  .feat .ic{font-size:20px; width:24px; text-align:center}
+  .feat .accent{color:var(--cobalt); font-weight:600}
+
+  .foot{display:flex; justify-content:space-between; align-items:center; margin-top:22px;
+    border-top:1px solid var(--hair); padding-top:16px}
+  .foot .url{font-family:'Geist Mono',monospace; font-size:18px; color:var(--cobalt)}
+  .foot .meta{font-family:'Geist Mono',monospace; font-size:15px; color:var(--muted); letter-spacing:.03em}
+  .hash{font-weight:600; color:var(--brass)}
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div>
+
+  <div class="kicker">Hack the Zero Stack · H0 · Vercel + AWS</div>
+  <div class="word">Art<span class="dex">Dex</span></div>
+  <div class="tag">Catch real masterpieces. Build your Dex.</div>
+
+  <div class="strip">
+    <div class="thumb"><img src="file:///G:/2026claude/artdex/ArtDex/public/artworks/van-gogh-starry-night-google-art-project.jpg"></div>
+    <div class="thumb"><img src="file:///G:/2026claude/artdex/ArtDex/public/artworks/mona-lisa-by-leonardo-da-vinci-from-c2rmf-retouched.jpg"></div>
+    <div class="thumb"><img src="file:///G:/2026claude/artdex/ArtDex/public/artworks/1665-girl-with-a-pearl-earring.jpg"></div>
+    <div class="thumb"><img src="file:///G:/2026claude/artdex/ArtDex/public/artworks/tsunami-by-hokusai-19th-century.jpg"></div>
+    <div class="thumb"><img src="file:///G:/2026claude/artdex/ArtDex/public/artworks/the-night-watch-hd.jpg"></div>
+  </div>
+
+  <div class="feats">
+    <div class="feat"><span class="ic">📷</span><span>Snap a real painting — <span class="accent">Claude vision on Amazon Bedrock</span> identifies it on the spot.</span></div>
+    <div class="feat"><span class="ic">🗺️</span><span><span class="accent">Amazon DynamoDB</span> logs where &amp; when you caught it — masterpieces travel between cities.</span></div>
+    <div class="feat"><span class="ic">🏛️</span><span>Legendaries unlock <span class="b">only on-site</span> — a 150 m geofence, no photographing a poster.</span></div>
+  </div>
+
+  <div class="foot">
+    <div class="url">artdex-fawn.vercel.app</div>
+    <div class="meta"><span class="hash">#H0Hackathon</span> · Next.js · DynamoDB · Bedrock · S3</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap');
+  :root{
+    --bg:#F4EFE4; --card:#FDFBF6; --ink:#2C2823; --muted:#857E73;
+    --hair:rgba(44,40,35,.14); --cobalt:#2C40B5; --brass:#A9854E;
+    --common:#8B847A; --rare:#3050C4; --epic:#C05B33; --legendary:#A9854E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1920px;height:1080px}
+  body{background:var(--bg); color:var(--ink); font-family:'Geist','Segoe UI',sans-serif;
+    padding:92px 110px; display:flex; flex-direction:column}
+  .label{font-size:18px; letter-spacing:.18em; text-transform:uppercase; font-weight:600; color:var(--muted)}
+  h1{font-family:'Playfair Display',Georgia,serif; font-weight:600; font-size:70px; margin-top:10px}
+  h1 .it{font-style:italic}
+  .rule{height:1px; background:var(--hair); margin:40px 0 56px}
+  .cards{display:flex; gap:46px; flex:1}
+  .card{flex:1; background:var(--card); border:1px solid var(--hair); border-radius:22px;
+    padding:50px 46px; display:flex; flex-direction:column;
+    box-shadow:0 22px 50px -34px rgba(44,40,35,.55); position:relative; overflow:hidden}
+  .card .num{font-family:'Geist Mono',monospace; font-size:20px; color:var(--muted); letter-spacing:.05em}
+  .card .ico{font-size:74px; margin:26px 0 30px; line-height:1}
+  .card h2{font-family:'Playfair Display',Georgia,serif; font-weight:600; font-size:42px; line-height:1.12}
+  .card p{font-size:23px; color:var(--muted); line-height:1.5; margin-top:20px}
+  .card .accent{position:absolute; left:0; top:0; bottom:0; width:7px}
+  .a1{background:var(--cobalt)} .a2{background:linear-gradient(180deg,var(--common),var(--rare),var(--epic),var(--legendary))} .a3{background:var(--legendary)}
+
+  .chips{display:flex; gap:10px; margin-top:auto; padding-top:30px; flex-wrap:wrap}
+  .chip{font-family:'Geist Mono',monospace; font-size:15px; padding:7px 14px; border-radius:999px;
+    border:1px solid var(--hair); display:flex; align-items:center; gap:8px}
+  .d{width:11px;height:11px;border-radius:50%}
+  .foot{margin-top:54px; display:flex; justify-content:space-between; align-items:center}
+  .brand{font-family:'Playfair Display',Georgia,serif; font-size:24px; font-weight:600}
+  .meta{font-family:'Geist Mono',monospace; font-size:15px; color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="label">How it works</div>
+  <h1>Three rules turn a visit into a <span class="it">collection</span></h1>
+  <div class="rule"></div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="accent a1"></div>
+      <div class="num">01</div>
+      <div class="ico">📍</div>
+      <h2>GPS narrows the catch</h2>
+      <p>Your location loads only the works on the wall <b>right where you stand</b> — so AI recognition matches against tens of pieces, not millions.</p>
+      <div class="chips"><span class="chip">nearest museum</span><span class="chip">on-site candidates</span></div>
+    </div>
+
+    <div class="card">
+      <div class="accent a2"></div>
+      <div class="num">02</div>
+      <div class="ico">✦</div>
+      <h2>Rarity is the chase</h2>
+      <p>Every masterpiece has a tier. The celebration scales with it — a Legendary catch is a far bigger payoff than a Common one.</p>
+      <div class="chips">
+        <span class="chip"><span class="d" style="background:var(--common)"></span>Common</span>
+        <span class="chip"><span class="d" style="background:var(--rare)"></span>Rare</span>
+        <span class="chip"><span class="d" style="background:var(--epic)"></span>Epic</span>
+        <span class="chip"><span class="d" style="background:var(--legendary)"></span>Legendary</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="accent a3"></div>
+      <div class="num">03</div>
+      <div class="ico">🏛️</div>
+      <h2>Legendaries are on-site only</h2>
+      <p>The world-famous originals unlock <b>only</b> when GPS confirms you're within 150 m of the museum holding them. No posters, no screens.</p>
+      <div class="chips"><span class="chip">150 m gate</span><span class="chip">anti-repro check</span></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="brand">ArtDex</div>
+    <div class="meta">color reserved for rarity &amp; action — never decoration</div>
+  </div>
+</body>
+</html>
