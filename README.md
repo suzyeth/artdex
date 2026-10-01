@@ -1,4 +1,6 @@
-# 🖼️ ArtDex`n`n[![Test](https://github.com/suzyeth/artdex/actions/workflows/test.yml/badge.svg)](https://github.com/suzyeth/artdex/actions/workflows/test.yml)
+# 🖼️ ArtDex
+
+[![Test](https://github.com/suzyeth/artdex/actions/workflows/test.yml/badge.svg)](https://github.com/suzyeth/artdex/actions/workflows/test.yml)
 
 > **Pokémon GO, but you collect the world's masterpieces.**
 > Visit a museum, photograph the artwork in front of you, let AI identify it, and collect it into your personal art Pokédex.
